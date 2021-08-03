@@ -39,15 +39,18 @@ void MainWindow::createMenu()
 void MainWindow::createWorkSheet()
 {
     worksheet = new WorkSheet(menuCreate, this);
-    worksheet->setSceneRect(QRectF(0,0,1000,1000));
+    worksheet->setSceneRect(QRectF(0,0,500,500));
     view = new QGraphicsView(worksheet);
+    view->setFrameStyle(0); // removes 2px boundary around worksheet scene
 
-    QHBoxLayout *layout = new QHBoxLayout;
+    setCentralWidget(view);
+
+    /*QHBoxLayout *layout = new QHBoxLayout;
     layout->addWidget(view);
 
     QWidget *widget = new QWidget;
     widget->setLayout(layout);
-    setCentralWidget(widget);
+    setCentralWidget(widget);*/
 }
 
 
@@ -57,15 +60,10 @@ void MainWindow::addPerson()
     if (addPerson.exec() == QDialog::Accepted)
     {
         person new_person;
-        new_person = addPerson.getData();
+        new_person = addPerson.getFormInputs();
 
-        drawPersonCard(new_person);
-
+        worksheet->setMode(WorkSheet::AddCard);
+        worksheet->createTreeCard(new_person);
     }
 }
 
-
-void MainWindow::drawPersonCard(person new_person)
-{
-
-}

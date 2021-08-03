@@ -3,7 +3,9 @@ set(TS_FILES Genealograph_de_DE.ts)
 set(PROJECT_SOURCES
     mainwindow.cpp
     worksheet.cpp
+    treeobject.cpp
     addpersondialog.cpp
+    addpartnershipdialog.cpp
     ${TS_FILES}
 )
 

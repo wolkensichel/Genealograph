@@ -1,5 +1,5 @@
-#ifndef ADDPERSONDIALOG_H
-#define ADDPERSONDIALOG_H
+#ifndef ADDPARTNERSHIPDIALOG_H
+#define ADDPARTNERSHIPDIALOG_H
 
 #include <QDialog>
 #include <QLabel>
@@ -8,12 +8,12 @@
 
 #include "data.h"
 
-class AddPersonDialog : public QDialog
+class AddPartnershipDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    AddPersonDialog(QWidget *parent = nullptr);
+    AddPartnershipDialog(QWidget *parent = nullptr);
     person getFormInputs();
 
 private:
@@ -27,4 +27,4 @@ private:
 
 };
 
-#endif // ADDPERSONDIALOG_H
+#endif // ADDPARTNERSHIPDIALOG_H

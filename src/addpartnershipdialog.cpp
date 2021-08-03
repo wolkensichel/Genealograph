@@ -1,11 +1,11 @@
 #include <QGridLayout>
 
-#include "addpersondialog.h"
+#include "addpartnershipdialog.h"
 #include "mainwindow.h"
 #include <QObject>
 
 
-AddPersonDialog::AddPersonDialog(QWidget *parent) : QDialog(parent)
+AddPartnershipDialog::AddPartnershipDialog(QWidget *parent) : QDialog(parent)
 {
     label_firstname = new QLabel(tr("First Name:"));
     label_lastname = new QLabel(tr("Last Name:"));
@@ -29,7 +29,7 @@ AddPersonDialog::AddPersonDialog(QWidget *parent) : QDialog(parent)
 }
 
 
-person AddPersonDialog::getFormInputs()
+person AddPartnershipDialog::getFormInputs()
 {
     person new_person;
     //new_person.firstname = form_firstname->text();
