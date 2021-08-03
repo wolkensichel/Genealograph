@@ -2,7 +2,6 @@
 
 #include "addpersondialog.h"
 #include "mainwindow.h"
-#include <QObject>
 
 
 AddPersonDialog::AddPersonDialog(QWidget *parent) : QDialog(parent)
@@ -29,7 +28,7 @@ AddPersonDialog::AddPersonDialog(QWidget *parent) : QDialog(parent)
 }
 
 
-person AddPersonDialog::getFormInputs()
+person AddPersonDialog::fetchFormInputs()
 {
     person new_person;
     //new_person.firstname = form_firstname->text();

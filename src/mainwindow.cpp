@@ -3,6 +3,7 @@
 
 #include "mainwindow.h"
 #include "addpersondialog.h"
+#include "addpartnershipdialog.h"
 #include "worksheet.h"
 
 
@@ -23,6 +24,8 @@ void MainWindow::createActions()
 {
     actionAddPerson = new QAction(tr("&Add Person"), this);
     connect(actionAddPerson, &QAction::triggered, this, &MainWindow::addPerson);
+    actionAddPartnership = new QAction(tr("&Add Partnership"), this);
+    connect(actionAddPartnership, &QAction::triggered, this, &MainWindow::addPartnership);
 }
 
 
@@ -32,7 +35,7 @@ void MainWindow::createMenu()
 
     QMenu *menuCreate = menuBar()->addMenu(tr("&Create"));
     menuCreate->addAction(actionAddPerson);
-
+    menuCreate->addAction(actionAddPartnership);
 }
 
 
@@ -59,11 +62,19 @@ void MainWindow::addPerson()
     AddPersonDialog addPerson;
     if (addPerson.exec() == QDialog::Accepted)
     {
-        person new_person;
-        new_person = addPerson.getFormInputs();
-
         worksheet->setMode(WorkSheet::AddCard);
-        worksheet->createTreeCard(new_person);
+        worksheet->createTreeCard(addPerson.fetchFormInputs());
     }
 }
 
+
+void MainWindow::addPartnership()
+{
+    AddPartnershipDialog addPartnership;
+    addPartnership.populateDropDownMenus(worksheet->getTreeObjectList());
+
+    if (addPartnership.exec() == QDialog::Accepted)
+    {
+        worksheet->createPartnershipConnection(addPartnership.fetchFormInputs());
+    }
+}

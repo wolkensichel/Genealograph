@@ -23,9 +23,10 @@ private:
     void createWorkSheet();
 
     void addPerson();
-    void drawPersonCard(person);
+    void addPartnership();
 
     QAction *actionAddPerson;
+    QAction *actionAddPartnership;
 
     AddPersonDialog *addPersonDialog;
 

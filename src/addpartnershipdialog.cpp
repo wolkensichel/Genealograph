@@ -2,41 +2,51 @@
 
 #include "addpartnershipdialog.h"
 #include "mainwindow.h"
-#include <QObject>
+#include "worksheet.h"
 
 
 AddPartnershipDialog::AddPartnershipDialog(QWidget *parent) : QDialog(parent)
 {
-    label_firstname = new QLabel(tr("First Name:"));
-    label_lastname = new QLabel(tr("Last Name:"));
+    label_partner1 = new QLabel(tr("Partner 1:"));
+    label_partner2 = new QLabel(tr("Partner 2:"));
 
-    form_firstname = new QLineEdit;
-    form_lastname = new QLineEdit;
+    form_partner1 = new QComboBox;
+    form_partner2 = new QComboBox;
 
     buttonbox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     connect(buttonbox, SIGNAL(accepted()), this, SLOT(accept()));
     connect(buttonbox, SIGNAL(rejected()), this, SLOT(reject()));
 
     QGridLayout *layout = new QGridLayout;
-    layout->addWidget(label_firstname, 0, 0);
-    layout->addWidget(form_firstname, 0, 1);
-    layout->addWidget(label_lastname, 1, 0);
-    layout->addWidget(form_lastname, 1, 1);
+    layout->addWidget(label_partner1, 0, 0);
+    layout->addWidget(form_partner1, 0, 1);
+    layout->addWidget(label_partner2, 1, 0);
+    layout->addWidget(form_partner2, 1, 1);
     layout->addWidget(buttonbox, 3, 0, 1, 3);
     setLayout(layout);
 
-    setWindowTitle("Add Person");
+    setWindowTitle("Add Partnership");
 }
 
 
-person AddPartnershipDialog::getFormInputs()
+void AddPartnershipDialog::populateDropDownMenus(QList<TreeObject *> tree_objects)
+{  
+    form_partner1->addItem(tr("Select"));
+    form_partner2->addItem(tr("Select"));
+
+    foreach(TreeObject *obj, tree_objects)
+    {
+        form_partner1->addItem(obj->getName());
+        form_partner2->addItem(obj->getName());
+    }
+}
+
+
+int * AddPartnershipDialog::fetchFormInputs()
 {
-    person new_person;
-    //new_person.firstname = form_firstname->text();
-    //new_person.lastname = form_lastname->text();
+    static int partnership[2];
+    partnership[0] = form_partner1->currentIndex()-1;
+    partnership[1] = form_partner2->currentIndex()-1;
 
-    new_person.firstname = "First Name";
-    new_person.lastname = "Last Name";
-
-    return new_person;
+    return partnership;
 }

@@ -3,10 +3,11 @@
 
 #include <QDialog>
 #include <QLabel>
-#include <QLineEdit>
+#include <QComboBox>
 #include <QDialogButtonBox>
 
 #include "data.h"
+#include "treeobject.h"
 
 class AddPartnershipDialog : public QDialog
 {
@@ -14,14 +15,15 @@ class AddPartnershipDialog : public QDialog
 
 public:
     AddPartnershipDialog(QWidget *parent = nullptr);
-    person getFormInputs();
+    void populateDropDownMenus(QList<TreeObject *>);
+    int * fetchFormInputs();
 
 private:
-    QLabel *label_firstname;
-    QLabel *label_lastname;
+    QLabel *label_partner1;
+    QLabel *label_partner2;
 
-    QLineEdit *form_firstname;
-    QLineEdit *form_lastname;
+    QComboBox *form_partner1;
+    QComboBox *form_partner2;
 
     QDialogButtonBox *buttonbox;
 

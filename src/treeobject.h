@@ -12,6 +12,7 @@ class TreeObject : public QGraphicsRectItem
 {
 public:
     TreeObject(person);
+    QString getName();
 
 private:
     void fillFields(person);
@@ -21,6 +22,9 @@ private:
 
     QLabel* first_name;
     QLabel* last_name;
+
+protected:
+    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
 };
 
 #endif // TREEOBJECT_H

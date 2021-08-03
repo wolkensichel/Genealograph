@@ -5,6 +5,7 @@
 #include <QMenu>
 
 #include "data.h"
+#include "treeobject.h"
 
 class WorkSheet : public QGraphicsScene
 {
@@ -15,16 +16,17 @@ public:
     explicit WorkSheet(QMenu *menuCreate, QObject *parent = nullptr);
     void setMode(Mode mode);
     void createTreeCard(person);
+    void createPartnershipConnection(int*);
+    QList<TreeObject *> getTreeObjectList();
 
 private:
+    QList<TreeObject *> tree_objects;
     Mode current_mode;
-    QGraphicsLineItem *hline;
-    QGraphicsLineItem *vline1;
-    QGraphicsLineItem *vline2;
+    QPen pen;
 
 protected:
-    void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) override;
-    void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent) override;
+    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+    void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
 
 };
 

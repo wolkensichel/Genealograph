@@ -14,7 +14,7 @@ class AddPersonDialog : public QDialog
 
 public:
     AddPersonDialog(QWidget *parent = nullptr);
-    person getFormInputs();
+    person fetchFormInputs();
 
 private:
     QLabel *label_firstname;

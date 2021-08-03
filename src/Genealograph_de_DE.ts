@@ -4,11 +4,15 @@
 <context>
     <name>AddPartnershipDialog</name>
     <message>
-        <source>First Name:</source>
+        <source>Partner 1:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Last Name:</source>
+        <source>Partner 2:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -31,6 +35,10 @@
     </message>
     <message>
         <source>&amp;Add Person</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Add Partnership</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
