@@ -6,6 +6,7 @@
 *.lo
 *.o
 *.obj
+*.user
 
 # Precompiled Headers
 *.gch
@@ -30,3 +31,12 @@
 *.exe
 *.out
 *.app
+
+# Qmake Project files
+*.pro
+
+# Cmake files
+CMakeCache.txt
+cmake_install.cmake
+CMakeFiles/
+*_autogen/
