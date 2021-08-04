@@ -9,11 +9,11 @@
 TreeObject::TreeObject(person new_person, QGraphicsScene *scene)
 {
     setRect(0, 0, 79, 99);
-    setFlags(QGraphicsItem::ItemIsMovable); //QGraphicsItem::ItemIsSelectable
+    setFlags(QGraphicsItem::ItemIsMovable|QGraphicsItem::ItemSendsGeometryChanges); //QGraphicsItem::ItemIsSelectable
     setBrush(Qt::lightGray);
 
     proxy = new QGraphicsProxyWidget(this);
-    //proxy->setFlags(QGraphicsItem::ItemIsMovable|QGraphicsItem::ItemSendsGeometryChanges);
+    //proxy->setFlags(QGraphicsItem::ItemIsMovable|QGraphicsItem::ItemIsSelectable);
 
     QWidget *widget = new QWidget();
     layout = new QVBoxLayout;

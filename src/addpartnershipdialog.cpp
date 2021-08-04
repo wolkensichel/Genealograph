@@ -10,8 +10,8 @@ AddPartnershipDialog::AddPartnershipDialog(QWidget *parent) : QDialog(parent)
     label_partner1 = new QLabel(tr("Partner 1:"));
     label_partner2 = new QLabel(tr("Partner 2:"));
 
-    form_partner1 = new QComboBox;
-    form_partner2 = new QComboBox;
+    form_partner1 = new QComboBox();
+    form_partner2 = new QComboBox();
 
     buttonbox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     connect(buttonbox, SIGNAL(accepted()), this, SLOT(accept()));
