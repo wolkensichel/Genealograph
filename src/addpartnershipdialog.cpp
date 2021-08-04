@@ -34,10 +34,10 @@ void AddPartnershipDialog::populateDropDownMenus(QList<TreeObject *> tree_object
     form_partner1->addItem(tr("Select"));
     form_partner2->addItem(tr("Select"));
 
-    foreach(TreeObject *obj, tree_objects)
+    foreach(TreeObject *treecard, tree_objects)
     {
-        form_partner1->addItem(obj->getName());
-        form_partner2->addItem(obj->getName());
+        form_partner1->addItem(treecard->getName());
+        form_partner2->addItem(treecard->getName());
     }
 }
 

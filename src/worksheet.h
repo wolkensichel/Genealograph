@@ -6,6 +6,8 @@
 
 #include "data.h"
 #include "treeobject.h"
+#include "relation.h"
+
 
 class WorkSheet : public QGraphicsScene
 {
@@ -16,13 +18,13 @@ public:
     explicit WorkSheet(QMenu *menuCreate, QObject *parent = nullptr);
     void setMode(Mode mode);
     void createTreeCard(person);
-    void createPartnershipConnection(int*);
+    void createPartnershipRelation(int*);
     QList<TreeObject *> getTreeObjectList();
 
 private:
     QList<TreeObject *> tree_objects;
+    QList<Relation *> relations;
     Mode current_mode;
-    QPen pen;
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;

@@ -1,15 +1,19 @@
 #include <QPen>
 
 #include "treeobject.h"
+#include "relation.h"
 
-TreeObject::TreeObject(person new_person)
+#include <QTextStream>
+
+
+TreeObject::TreeObject(person new_person, QGraphicsScene *scene)
 {
-    setRect(0, 0, 79, 100);
+    setRect(0, 0, 79, 99);
     setFlags(QGraphicsItem::ItemIsMovable); //QGraphicsItem::ItemIsSelectable
     setBrush(Qt::lightGray);
 
     proxy = new QGraphicsProxyWidget(this);
-    proxy->setFlags(QGraphicsItem::ItemIsMovable|QGraphicsItem::ItemIsSelectable);
+    //proxy->setFlags(QGraphicsItem::ItemIsMovable|QGraphicsItem::ItemSendsGeometryChanges);
 
     QWidget *widget = new QWidget();
     layout = new QVBoxLayout;
@@ -18,6 +22,9 @@ TreeObject::TreeObject(person new_person)
     fillFields(new_person);
 
     proxy->setWidget(widget);
+
+    setPos(scene->width()/2-40, scene->height()/2-50);
+    scene->addItem(this);
 }
 
 
@@ -51,4 +58,21 @@ void TreeObject::fillFields(person person)
 QString TreeObject::getName()
 {
     return first_name->text();
+}
+
+
+void TreeObject::addRelation(Relation* relation)
+{
+    relations.append(relation);
+}
+
+
+QVariant TreeObject::itemChange(GraphicsItemChange change, const QVariant &value)
+{
+    if (change == QGraphicsItem::ItemPositionChange) {
+        for (Relation *relation : qAsConst(relations))
+            relation->updatePosition();
+    }
+
+    return value;
 }

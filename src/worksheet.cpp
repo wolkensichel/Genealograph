@@ -2,12 +2,13 @@
 #include <QLabel>
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsProxyWidget>
-#include <QPushButton>
+#include <QGraphicsItem>
 #include <QTextStream>
 #include <iostream>
 
 #include "worksheet.h"
 #include "treeobject.h"
+#include "relation.h"
 
 
 WorkSheet::WorkSheet(QMenu *menuCreate, QObject *parent)
@@ -25,25 +26,23 @@ void WorkSheet::setMode(Mode mode)
 
 void WorkSheet::createTreeCard(person new_person)
 {
-    TreeObject *treecard = new TreeObject(new_person);
-    treecard->setPos(this->width()/2-40, this->height()/2-50);
-    addItem(treecard);
-    setMode(MoveCard);
+    TreeObject *treecard = new TreeObject(new_person, this);
     tree_objects.append(treecard);
+    //setMode(MoveCard);
 }
 
 
-void WorkSheet::createPartnershipConnection(int* partnership)
+void WorkSheet::createPartnershipRelation(int* partnership)
 {
-    // get tree objects
     if (*partnership != -1 and *(partnership+1) != -1)
     {
-        //TreeObject *treecard_partner1 = tree_objects.at(*partnership);
-        //TreeObject *treecard_partner2 = tree_objects.at(*(partnership+1));
+        TreeObject* partner1 = tree_objects.at(*partnership);
+        TreeObject* partner2 = tree_objects.at(*(partnership+1));
 
-        //line_partner = new QGraphicsItem(QLineF);
+        Relation *relation = new Relation(partner1, partner2, this);
+        relations.append(relation);
+        //setMode(MoveCard);
     }
-    // draw single hline
 }
 
 
@@ -54,8 +53,7 @@ void WorkSheet::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
     foreach (TreeObject *treecard, tree_objects)
     {
-        pen = QPen(Qt::black);
-        treecard->setPen(pen);
+        treecard->setPen(QPen(Qt::black, 1));
         treecard->setZValue(0);
     }
 

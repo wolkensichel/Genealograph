@@ -45,6 +45,7 @@ void MainWindow::createWorkSheet()
     worksheet->setSceneRect(QRectF(0,0,500,500));
     view = new QGraphicsView(worksheet);
     view->setFrameStyle(0); // removes 2px boundary around worksheet scene
+    //view->setRenderHints(QPainter::Antialiasing);
 
     setCentralWidget(view);
 
@@ -62,7 +63,7 @@ void MainWindow::addPerson()
     AddPersonDialog addPerson;
     if (addPerson.exec() == QDialog::Accepted)
     {
-        worksheet->setMode(WorkSheet::AddCard);
+        //worksheet->setMode(WorkSheet::AddCard);
         worksheet->createTreeCard(addPerson.fetchFormInputs());
     }
 }
@@ -75,6 +76,6 @@ void MainWindow::addPartnership()
 
     if (addPartnership.exec() == QDialog::Accepted)
     {
-        worksheet->createPartnershipConnection(addPartnership.fetchFormInputs());
+        worksheet->createPartnershipRelation(addPartnership.fetchFormInputs());
     }
 }
