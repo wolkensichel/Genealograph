@@ -8,8 +8,8 @@
 
 TreeObject::TreeObject(person new_person, QGraphicsScene *scene)
 {
-    setRect(0, 0, 79, 99);
     setFlags(QGraphicsItem::ItemIsMovable|QGraphicsItem::ItemSendsGeometryChanges); //QGraphicsItem::ItemIsSelectable
+    setRect(0, 0, 79, 99);
     setBrush(Qt::lightGray);
 
     proxy = new QGraphicsProxyWidget(this);
@@ -69,9 +69,14 @@ void TreeObject::addRelation(Relation* relation)
 
 QVariant TreeObject::itemChange(GraphicsItemChange change, const QVariant &value)
 {
-    if (change == QGraphicsItem::ItemPositionChange) {
+    if (change == QGraphicsItem::ItemPositionChange)
+    {
         for (Relation *relation : qAsConst(relations))
+        {
             relation->updatePosition();
+            for (Relation *child : relation->getChildRelations())
+                child->updatePosition();
+        }
     }
 
     return value;

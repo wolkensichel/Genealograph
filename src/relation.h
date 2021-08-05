@@ -2,20 +2,26 @@
 #define RELATION_H
 
 
-#include <QGraphicsLineItem>
+#include <QGraphicsPathItem>
 
 
 class TreeObject;
 
-class Relation : public QGraphicsLineItem
+class Relation : public QGraphicsPathItem
 {
 public:
     Relation(TreeObject*, TreeObject*, QGraphicsScene*);
+    Relation(Relation*, TreeObject*, QGraphicsScene*);
     void updatePosition();
+    QList<TreeObject *>getTreeObjects();
+    Relation* getParentsRelation();
+    QList<Relation *>getChildRelations();
 
 private:
-    QGraphicsLineItem *line;
     QList<TreeObject *> tree_objects;
+    Relation *parents = nullptr;
+    QList<Relation *> children;
+    QPainterPath path;
 };
 
 #endif // RELATION_H

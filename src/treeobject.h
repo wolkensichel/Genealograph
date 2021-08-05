@@ -11,6 +11,7 @@
 
 
 class Relation;
+class DescentRelation;
 
 class TreeObject : public QGraphicsRectItem
 {
@@ -29,6 +30,7 @@ private:
     QLabel* last_name;
 
     QList<Relation *> relations;
+    DescentRelation *descent_relation = nullptr;
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;

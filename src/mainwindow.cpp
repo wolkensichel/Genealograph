@@ -4,6 +4,7 @@
 #include "mainwindow.h"
 #include "addpersondialog.h"
 #include "addpartnershipdialog.h"
+#include "adddescentdialog.h"
 #include "worksheet.h"
 
 
@@ -26,6 +27,8 @@ void MainWindow::createActions()
     connect(actionAddPerson, &QAction::triggered, this, &MainWindow::addPerson);
     actionAddPartnership = new QAction(tr("&Add Partnership"), this);
     connect(actionAddPartnership, &QAction::triggered, this, &MainWindow::addPartnership);
+    actionAddDescent = new QAction(tr("&Add Descent"), this);
+    connect(actionAddDescent, &QAction::triggered, this, &MainWindow::addDescent);
 }
 
 
@@ -36,6 +39,7 @@ void MainWindow::createMenu()
     QMenu *menuCreate = menuBar()->addMenu(tr("&Create"));
     menuCreate->addAction(actionAddPerson);
     menuCreate->addAction(actionAddPartnership);
+    menuCreate->addAction(actionAddDescent);
 }
 
 
@@ -77,5 +81,17 @@ void MainWindow::addPartnership()
     if (addPartnership.exec() == QDialog::Accepted)
     {
         worksheet->createPartnershipRelation(addPartnership.fetchFormInputs());
+    }
+}
+
+
+void MainWindow::addDescent()
+{
+    AddDescentDialog addDescent;
+    addDescent.populateDropDownMenus(worksheet->getTreeObjectList(), worksheet->getRelationList());
+
+    if (addDescent.exec() == QDialog::Accepted)
+    {
+        worksheet->createDescentRelation(addDescent.fetchFormInputs());
     }
 }

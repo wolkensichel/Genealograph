@@ -7,6 +7,7 @@ set(PROJECT_SOURCES
     relation.cpp
     addpersondialog.cpp
     addpartnershipdialog.cpp
+    adddescentdialog.cpp
     ${TS_FILES}
 )
 

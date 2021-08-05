@@ -3,7 +3,6 @@
 
 #include <QMainWindow>
 
-#include "addpersondialog.h"
 
 class WorkSheet;
 class QGraphicsView;
@@ -24,11 +23,11 @@ private:
 
     void addPerson();
     void addPartnership();
+    void addDescent();
 
     QAction *actionAddPerson;
     QAction *actionAddPartnership;
-
-    AddPersonDialog *addPersonDialog;
+    QAction *actionAddDescent;
 
     WorkSheet *worksheet;
     QGraphicsView *view;

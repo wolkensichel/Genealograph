@@ -2,6 +2,21 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="de_DE">
 <context>
+    <name>AddDescentDialog</name>
+    <message>
+        <source>Parents:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Child:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>AddPartnershipDialog</name>
     <message>
         <source>Partner 1:</source>
@@ -39,6 +54,10 @@
     </message>
     <message>
         <source>&amp;Add Partnership</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Add Descent</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

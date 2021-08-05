@@ -19,11 +19,14 @@ public:
     void setMode(Mode mode);
     void createTreeCard(person);
     void createPartnershipRelation(int*);
+    void createDescentRelation(int*);
     QList<TreeObject *> getTreeObjectList();
+    QList<Relation *> getRelationList();
 
 private:
     QList<TreeObject *> tree_objects;
     QList<Relation *> relations;
+    QList<DescentRelation *> descent_relations;
     Mode current_mode;
 
 protected:
