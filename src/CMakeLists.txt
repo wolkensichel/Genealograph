@@ -4,6 +4,7 @@ set(PROJECT_SOURCES
     mainwindow.cpp
     worksheet.cpp
     biographyeditor.cpp
+    relationseditor.cpp
     treeobject.cpp
     relation.cpp
     addpersondialog.cpp

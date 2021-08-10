@@ -77,4 +77,27 @@
         <translation type="unfinished"></translation>
     </message>
 </context>
+<context>
+    <name>RelationsEditor</name>
+    <message>
+        <source>Lock Relations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Parents:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Partners:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Children:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Person %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
 </TS>

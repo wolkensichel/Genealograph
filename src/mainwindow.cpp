@@ -7,6 +7,7 @@
 #include "adddescentdialog.h"
 #include "worksheet.h"
 #include "biographyeditor.h"
+#include "relationseditor.h"
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -53,6 +54,7 @@ void MainWindow::createWorkSheet()
     //view->setRenderHints(QPainter::Antialiasing);
     setCentralWidget(view);
 
+    RelationsEditor *editor_relations = new RelationsEditor;
     BiographyEditor *editor_biography = new BiographyEditor;
 
     dock_biography = new QDockWidget("Biography", this);
@@ -60,6 +62,12 @@ void MainWindow::createWorkSheet()
     dock_biography->setWidget(editor_biography);
     addDockWidget(Qt::RightDockWidgetArea, dock_biography);
 
+    dock_relations = new QDockWidget("Relations", this);
+    dock_relations->setAllowedAreas(Qt::RightDockWidgetArea|Qt::LeftDockWidgetArea);
+    dock_relations->setWidget(editor_relations);
+    addDockWidget(Qt::RightDockWidgetArea, dock_relations);
+
+    tabifyDockWidget(dock_biography, dock_relations);
     dock_biography->raise();
     setTabPosition(Qt::RightDockWidgetArea, QTabWidget::North);
     setTabPosition(Qt::LeftDockWidgetArea, QTabWidget::North);
