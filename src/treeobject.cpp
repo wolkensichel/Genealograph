@@ -57,7 +57,7 @@ void TreeObject::fillFields(person person)
 
 QString TreeObject::getName()
 {
-    return first_name->text();
+    return last_name->text() + ", " + first_name->text();
 }
 
 

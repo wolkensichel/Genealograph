@@ -3,6 +3,7 @@ set(TS_FILES Genealograph_de_DE.ts)
 set(PROJECT_SOURCES
     mainwindow.cpp
     worksheet.cpp
+    biographyeditor.cpp
     treeobject.cpp
     relation.cpp
     addpersondialog.cpp

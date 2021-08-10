@@ -29,16 +29,15 @@ AddDescentDialog::AddDescentDialog(QWidget *parent) : QDialog(parent)
 }
 
 
-void AddDescentDialog::populateDropDownMenus(QList<TreeObject *> tree_objects, QList<Relation *> relations)
+void AddDescentDialog::populateDropDownMenus(QList<TreeObject *> tree_objects, QList<Relation *> partnership_relations)
 {
     form_parents->addItem(tr("Select"));
     form_child->addItem(tr("Select"));
 
-    foreach(Relation *relation, relations)
+    foreach(Relation *partnership, partnership_relations)
     {
-        QList<TreeObject *> treecards = relation->getTreeObjects();
-        if (treecards.size() == 2)
-            form_parents->addItem(treecards[0]->getName()+", "+treecards[1]->getName());
+        QList<TreeObject *> treecards = partnership->getTreeObjects();
+        form_parents->addItem(treecards[0]->getName()+", "+treecards[1]->getName());
     }
 
     foreach(TreeObject *treecard, tree_objects)

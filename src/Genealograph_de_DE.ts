@@ -43,6 +43,22 @@
     </message>
 </context>
 <context>
+    <name>BiographyEditor</name>
+    <message>
+        <source>Lock Relations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Customize details displayed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Info
+ %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>MainWindow</name>
     <message>
         <source>&amp;Create</source>

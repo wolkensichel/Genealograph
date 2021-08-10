@@ -31,6 +31,7 @@ private:
 
     WorkSheet *worksheet;
     QGraphicsView *view;
+    QDockWidget *dock_biography;
 
     //QMenu *menuFile;
     QMenu *menuCreate;

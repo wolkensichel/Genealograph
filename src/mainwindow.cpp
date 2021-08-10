@@ -6,6 +6,7 @@
 #include "addpartnershipdialog.h"
 #include "adddescentdialog.h"
 #include "worksheet.h"
+#include "biographyeditor.h"
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -50,15 +51,19 @@ void MainWindow::createWorkSheet()
     view = new QGraphicsView(worksheet);
     view->setFrameStyle(0); // removes 2px boundary around worksheet scene
     //view->setRenderHints(QPainter::Antialiasing);
-
     setCentralWidget(view);
 
-    /*QHBoxLayout *layout = new QHBoxLayout;
-    layout->addWidget(view);
+    BiographyEditor *editor_biography = new BiographyEditor;
 
-    QWidget *widget = new QWidget;
-    widget->setLayout(layout);
-    setCentralWidget(widget);*/
+    dock_biography = new QDockWidget("Biography", this);
+    dock_biography->setAllowedAreas(Qt::RightDockWidgetArea|Qt::LeftDockWidgetArea);
+    dock_biography->setWidget(editor_biography);
+    addDockWidget(Qt::RightDockWidgetArea, dock_biography);
+
+    dock_biography->raise();
+    setTabPosition(Qt::RightDockWidgetArea, QTabWidget::North);
+    setTabPosition(Qt::LeftDockWidgetArea, QTabWidget::North);
+    setDockOptions(ForceTabbedDocks);
 }
 
 
@@ -88,7 +93,7 @@ void MainWindow::addPartnership()
 void MainWindow::addDescent()
 {
     AddDescentDialog addDescent;
-    addDescent.populateDropDownMenus(worksheet->getTreeObjectList(), worksheet->getRelationList());
+    addDescent.populateDropDownMenus(worksheet->getTreeObjectList(), worksheet->getPartnershipRelationList());
 
     if (addDescent.exec() == QDialog::Accepted)
     {

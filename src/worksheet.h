@@ -21,12 +21,12 @@ public:
     void createPartnershipRelation(int*);
     void createDescentRelation(int*);
     QList<TreeObject *> getTreeObjectList();
-    QList<Relation *> getRelationList();
+    QList<Relation *> getPartnershipRelationList();
 
 private:
     QList<TreeObject *> tree_objects;
-    QList<Relation *> relations;
-    QList<DescentRelation *> descent_relations;
+    QList<Relation *> partnership_relations;
+    QList<Relation *> descent_relations;
     Mode current_mode;
 
 protected:

@@ -40,7 +40,7 @@ void WorkSheet::createPartnershipRelation(int* partnership)
         TreeObject* partner2 = tree_objects.at(*(partnership+1));
 
         Relation *relation = new Relation(partner1, partner2, this);
-        relations.append(relation);
+        partnership_relations.append(relation);
         //setMode(MoveCard);
     }
 }
@@ -50,11 +50,11 @@ void WorkSheet::createDescentRelation(int* descent)
 {
     if (*descent != -1 and *(descent+1) != -1)
     {
-        Relation* partnership = relations.at(*descent);
+        Relation* partnership = partnership_relations.at(*descent);
         TreeObject* child = tree_objects.at(*(descent+1));
 
         Relation *relation = new Relation(partnership, child, this);
-        relations.append(relation);
+        descent_relations.append(relation);
         //setMode(MoveCard);
     }
 }
@@ -92,7 +92,7 @@ QList<TreeObject *> WorkSheet::getTreeObjectList()
 }
 
 
-QList<Relation *> WorkSheet::getRelationList()
+QList<Relation *> WorkSheet::getPartnershipRelationList()
 {
-    return relations;
+    return partnership_relations;
 }
