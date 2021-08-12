@@ -15,7 +15,7 @@ public:
     BiographyEditor();
 
 private:
-    void createInfoPage();
+    void createBio();
 
     QScrollArea *area;
     QWidget *widget;

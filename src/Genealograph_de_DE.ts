@@ -52,11 +52,6 @@
         <source>Customize details displayed</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Info
- %1</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>MainWindow</name>
@@ -65,15 +60,15 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&amp;Add Person</source>
+        <source>Add &amp;Person</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&amp;Add Partnership</source>
+        <source>Add Partner&amp;ship</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&amp;Add Descent</source>
+        <source>Add &amp;Descent</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

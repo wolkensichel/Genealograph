@@ -14,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     createActions();
     createMenu();
+    createDockWidgets();
     createWorkSheet();
 }
 
@@ -45,27 +46,21 @@ void MainWindow::createMenu()
 }
 
 
-void MainWindow::createWorkSheet()
+void MainWindow::createDockWidgets()
 {
-    worksheet = new WorkSheet(menuCreate, this);
-    worksheet->setSceneRect(QRectF(0,0,500,500));
-    view = new QGraphicsView(worksheet);
-    view->setFrameStyle(0); // removes 2px boundary around worksheet scene
-    //view->setRenderHints(QPainter::Antialiasing);
-    setCentralWidget(view);
-
-    RelationsEditor *editor_relations = new RelationsEditor;
-    BiographyEditor *editor_biography = new BiographyEditor;
-
     dock_biography = new QDockWidget("Biography", this);
     dock_biography->setAllowedAreas(Qt::RightDockWidgetArea|Qt::LeftDockWidgetArea);
-    dock_biography->setWidget(editor_biography);
     addDockWidget(Qt::RightDockWidgetArea, dock_biography);
+
+    biography_editor = new BiographyEditor;
+    dock_biography->setWidget(biography_editor);
 
     dock_relations = new QDockWidget("Relations", this);
     dock_relations->setAllowedAreas(Qt::RightDockWidgetArea|Qt::LeftDockWidgetArea);
-    dock_relations->setWidget(editor_relations);
     addDockWidget(Qt::RightDockWidgetArea, dock_relations);
+
+    relations_editor = new RelationsEditor(dock_relations);
+    dock_relations->setWidget(relations_editor);
 
     tabifyDockWidget(dock_biography, dock_relations);
     dock_biography->raise();
@@ -74,6 +69,16 @@ void MainWindow::createWorkSheet()
     setDockOptions(ForceTabbedDocks);
 }
 
+
+void MainWindow::createWorkSheet()
+{
+    worksheet = new WorkSheet(menuCreate, biography_editor, relations_editor, this);
+    worksheet->setSceneRect(QRectF(0,0,500,500));
+    view = new QGraphicsView(worksheet);
+    view->setFrameStyle(0); // removes 2px boundary around worksheet scene
+    //view->setRenderHints(QPainter::Antialiasing);
+    setCentralWidget(view);
+}
 
 void MainWindow::addPerson()
 {

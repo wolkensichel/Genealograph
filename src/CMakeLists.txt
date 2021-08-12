@@ -10,6 +10,7 @@ set(PROJECT_SOURCES
     addpersondialog.cpp
     addpartnershipdialog.cpp
     adddescentdialog.cpp
+    listlabel.cpp
     ${TS_FILES}
 )
 

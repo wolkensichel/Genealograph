@@ -2,12 +2,17 @@
 
 #include "treeobject.h"
 #include "relation.h"
+#include "relationseditor.h"
+#include "biographyeditor.h"
 
 #include <QTextStream>
 
 
-TreeObject::TreeObject(person new_person, QGraphicsScene *scene)
+TreeObject::TreeObject(person new_person, BiographyEditor *biography_dock, RelationsEditor *relations_dock, QGraphicsScene *scene)
 {
+    biography_editor = biography_dock;
+    relations_editor = relations_dock;
+
     setFlags(QGraphicsItem::ItemIsMovable|QGraphicsItem::ItemSendsGeometryChanges); //QGraphicsItem::ItemIsSelectable
     setRect(0, 0, 79, 99);
     setBrush(Qt::lightGray);
@@ -36,6 +41,8 @@ void TreeObject::mousePressEvent(QGraphicsSceneMouseEvent *event)
     pen.setWidth(2);
     setPen(pen);
     setZValue(1);
+
+    relations_editor->update(this, relations);
 
     QGraphicsItem::mousePressEvent(event);
 }

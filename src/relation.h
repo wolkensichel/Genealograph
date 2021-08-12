@@ -17,10 +17,11 @@ public:
     Relation* getParentsRelation();
     QList<Relation *>getChildRelations();
 
-private:
     QList<TreeObject *> tree_objects;
     Relation *parents = nullptr;
     QList<Relation *> children;
+
+private:
     QPainterPath path;
 };
 

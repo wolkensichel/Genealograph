@@ -2,11 +2,19 @@
 #include <QCheckBox>
 #include <QLabel>
 #include <QGroupBox>
+#include <QDockWidget>
+
+#include <QTextStream>
+#include <iostream>
 
 #include "relationseditor.h"
+#include "relation.h"
+#include "treeobject.h"
 
-RelationsEditor::RelationsEditor()
+RelationsEditor::RelationsEditor(QDockWidget *dock)
 {
+    parent = dock;
+
     QGridLayout *layout = new QGridLayout;
     layout->setContentsMargins(4, 4, 4, 4);
 
@@ -46,4 +54,67 @@ void RelationsEditor::createGroupBox(QGroupBox *box)
         editlabel_parents[i]->setPalette(palette);
         layout->addWidget(editlabel_parents[i]);
     }
+}
+
+
+void RelationsEditor::populateGroupBox(QLayout* layout, QList<TreeObject *> treecards)
+{
+    QLabel *labels[treecards.size()];
+    QPalette palette;
+    palette.setColor(QPalette::Window, Qt::white);
+
+    for(int i = 0; i < treecards.size(); i++)
+    {
+        labels[i] = new QLabel(treecards[i]->getName());
+        labels[i]->setAutoFillBackground(true);
+        labels[i]->setPalette(palette);
+        layout->addWidget(labels[i]);
+    }
+}
+
+
+void RelationsEditor::cleanGroupBox(QLayout* layout)
+{
+    while(!layout->isEmpty())
+    {
+        delete layout->takeAt(0)->widget();
+        delete layout->takeAt(0);
+    }
+}
+
+
+void RelationsEditor::update(TreeObject* treecard, QList<Relation *> relations)
+{
+    parent->raise();
+    QTextStream cout(stdout);
+
+    cleanGroupBox(groupbox_parents->layout());
+    cleanGroupBox(groupbox_partners->layout());
+    cleanGroupBox(groupbox_children->layout());
+
+    foreach(Relation *relation, relations)
+    {
+        // insert parents
+        if (relation->parents != nullptr) {
+            populateGroupBox(groupbox_parents->layout(), relation->parents->getTreeObjects());
+        }
+
+        // insert partners
+        QList<TreeObject *> partners;
+        if (relation->tree_objects.size() == 2)
+        {
+            if (relation->tree_objects[0] == treecard)
+                partners.append(relation->tree_objects[1]);
+            else
+                partners.append(relation->tree_objects[0]);
+        }
+        populateGroupBox(groupbox_partners->layout(), partners);
+
+        // insert children
+        QList<TreeObject *> children;
+        foreach(Relation* child, relation->children)
+            children.append(child->tree_objects[0]);
+        populateGroupBox(groupbox_children->layout(), children);
+    }
+
 }

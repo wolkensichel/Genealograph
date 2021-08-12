@@ -11,10 +11,12 @@
 #include "relation.h"
 
 
-WorkSheet::WorkSheet(QMenu *menuCreate, QObject *parent)
+WorkSheet::WorkSheet(QMenu *menuCreate, BiographyEditor *biography_dock, RelationsEditor *relations_dock, QObject *parent)
     : QGraphicsScene(parent)
 {
     current_mode = MoveCard;
+    biography_editor = biography_dock;
+    relations_editor = relations_dock;
 }
 
 
@@ -26,7 +28,7 @@ void WorkSheet::setMode(Mode mode)
 
 void WorkSheet::createTreeCard(person new_person)
 {
-    TreeObject *treecard = new TreeObject(new_person, this);
+    TreeObject *treecard = new TreeObject(new_person, biography_editor, relations_editor, this);
     tree_objects.append(treecard);
     //setMode(MoveCard);
 }
