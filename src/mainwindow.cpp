@@ -25,11 +25,11 @@ MainWindow::~MainWindow()
 
 void MainWindow::createActions()
 {
-    actionAddPerson = new QAction(tr("&Add Person"), this);
+    actionAddPerson = new QAction(tr("Add &Person"), this);
     connect(actionAddPerson, &QAction::triggered, this, &MainWindow::addPerson);
-    actionAddPartnership = new QAction(tr("&Add Partnership"), this);
+    actionAddPartnership = new QAction(tr("Add Partner&ship"), this);
     connect(actionAddPartnership, &QAction::triggered, this, &MainWindow::addPartnership);
-    actionAddDescent = new QAction(tr("&Add Descent"), this);
+    actionAddDescent = new QAction(tr("Add &Descent"), this);
     connect(actionAddDescent, &QAction::triggered, this, &MainWindow::addDescent);
 }
 

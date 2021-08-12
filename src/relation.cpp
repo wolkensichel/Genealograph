@@ -10,7 +10,7 @@ Relation::Relation(TreeObject* treecard1, TreeObject* treecard2, QGraphicsScene 
     tree_objects.append(treecard1);
     tree_objects.append(treecard2);
 
-    setPen(QPen(Qt::black, 2));
+    setPen(QPen(Qt::black, 1));
     setZValue(-1);
     updatePosition();
 
@@ -26,7 +26,7 @@ Relation::Relation(Relation* partnership, TreeObject* child, QGraphicsScene *sce
     parents = partnership;
     partnership->children.append(this);
 
-    setPen(QPen(Qt::black, 2));
+    setPen(QPen(Qt::black, 1));
     setZValue(-1);
     updatePosition();
 

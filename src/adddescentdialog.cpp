@@ -1,4 +1,4 @@
-#include <QGridLayout>
+#include <QFormLayout>
 
 #include "adddescentdialog.h"
 #include "mainwindow.h"
@@ -7,9 +7,6 @@
 
 AddDescentDialog::AddDescentDialog(QWidget *parent) : QDialog(parent)
 {
-    label_parents = new QLabel(tr("Parents:"));
-    label_child = new QLabel(tr("Child:"));
-
     form_parents = new QComboBox();
     form_child = new QComboBox();
 
@@ -17,12 +14,10 @@ AddDescentDialog::AddDescentDialog(QWidget *parent) : QDialog(parent)
     connect(buttonbox, SIGNAL(accepted()), this, SLOT(accept()));
     connect(buttonbox, SIGNAL(rejected()), this, SLOT(reject()));
 
-    QGridLayout *layout = new QGridLayout;
-    layout->addWidget(label_parents, 0, 0);
-    layout->addWidget(form_parents, 0, 1);
-    layout->addWidget(label_child, 1, 0);
-    layout->addWidget(form_child, 1, 1);
-    layout->addWidget(buttonbox, 3, 0, 1, 3);
+    QFormLayout *layout = new QFormLayout;
+    layout->addRow(tr("Parents:"), form_parents);
+    layout->addRow(tr("Child:"), form_child);
+    layout->addRow(buttonbox);
     setLayout(layout);
 
     setWindowTitle("Add Descent");

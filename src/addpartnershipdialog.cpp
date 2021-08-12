@@ -1,4 +1,4 @@
-#include <QGridLayout>
+#include <QFormLayout>
 
 #include "addpartnershipdialog.h"
 #include "mainwindow.h"
@@ -7,9 +7,6 @@
 
 AddPartnershipDialog::AddPartnershipDialog(QWidget *parent) : QDialog(parent)
 {
-    label_partner1 = new QLabel(tr("Partner 1:"));
-    label_partner2 = new QLabel(tr("Partner 2:"));
-
     form_partner1 = new QComboBox();
     form_partner2 = new QComboBox();
 
@@ -17,12 +14,10 @@ AddPartnershipDialog::AddPartnershipDialog(QWidget *parent) : QDialog(parent)
     connect(buttonbox, SIGNAL(accepted()), this, SLOT(accept()));
     connect(buttonbox, SIGNAL(rejected()), this, SLOT(reject()));
 
-    QGridLayout *layout = new QGridLayout;
-    layout->addWidget(label_partner1, 0, 0);
-    layout->addWidget(form_partner1, 0, 1);
-    layout->addWidget(label_partner2, 1, 0);
-    layout->addWidget(form_partner2, 1, 1);
-    layout->addWidget(buttonbox, 3, 0, 1, 3);
+    QFormLayout *layout = new QFormLayout;
+    layout->addRow(tr("Partner 1:"), form_partner1);
+    layout->addRow(tr("Partner 2:"), form_partner2);
+    layout->addRow(buttonbox);
     setLayout(layout);
 
     setWindowTitle("Add Partnership");
