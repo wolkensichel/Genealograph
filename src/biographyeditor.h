@@ -6,6 +6,8 @@
 #include <QScrollArea>
 #include <QVBoxLayout>
 
+#include "data.h"
+
 
 class TreeObject;
 
@@ -16,13 +18,15 @@ class BiographyEditor : public QWidget
 
 public:
     BiographyEditor();
-    void update(TreeObject* treecard);
+    void update(person);
     void clear();
 
 private:
     void createBio();
-    void populateGroupBox(QLayout*, TreeObject*);
+    void populateGroupBox(QLayout*, person);
     void cleanGroupBox(QLayout*);
+
+    QPalette palette;
 
     QVBoxLayout *widget_layout;
     QScrollArea *area;

@@ -12,6 +12,7 @@ TreeObject::TreeObject(person new_person, BiographyEditor *biography_dock, Relat
 {
     biography_editor = biography_dock;
     relations_editor = relations_dock;
+    bio = new_person;
 
     setFlags(QGraphicsItem::ItemIsMovable|QGraphicsItem::ItemSendsGeometryChanges); //QGraphicsItem::ItemIsSelectable
     setRect(0, 0, 79, 99);
@@ -24,7 +25,7 @@ TreeObject::TreeObject(person new_person, BiographyEditor *biography_dock, Relat
     layout = new QVBoxLayout;
     widget->setLayout(layout);
 
-    fillFields(new_person);
+    fillFields(bio);
 
     proxy->setWidget(widget);
 
@@ -43,7 +44,7 @@ void TreeObject::mousePressEvent(QGraphicsSceneMouseEvent *event)
     setZValue(1);
 
     biography_editor->clear();
-    biography_editor->update(this);
+    biography_editor->update(bio);
 
     relations_editor->clear();
     QList<Relation *> relations = mergeRelations(partnerships, descent);
@@ -57,12 +58,12 @@ void TreeObject::mousePressEvent(QGraphicsSceneMouseEvent *event)
 void TreeObject::fillFields(person person)
 {
     first_name = new QLabel;
-    first_name->setText(person.firstname);
+    first_name->setText(person.first_name);
     //first_name->setGeometry(0, 0, 80, 25);
     layout->addWidget(first_name);
 
     last_name = new QLabel;
-    last_name->setText(person.lastname);
+    last_name->setText(person.last_name);
     //last_name->setGeometry(0, 0, 80, 25);
     layout->addWidget(last_name);
 }

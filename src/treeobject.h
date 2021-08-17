@@ -23,6 +23,7 @@ public:
     QString getName();
     void addPartnershipRelation(Relation*);
     void setDescentRelation(Relation*);
+    person bio;
 
 private:
     void fillFields(person);

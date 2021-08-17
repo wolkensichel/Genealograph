@@ -46,7 +46,6 @@ void BiographyEditor::createBio()
     area->setWidget(widget);
     area->setWidgetResizable(true);
 
-    QPalette palette;
     palette.setColor(QPalette::Window, Qt::white);
 
     QLabel *field = new QLabel("some\ntext");
@@ -77,9 +76,21 @@ void BiographyEditor::createBio()
 }
 
 
-void BiographyEditor::populateGroupBox(QLayout*, TreeObject*)
+void BiographyEditor::populateGroupBox(QLayout *layout, person bio)
 {
+    QLabel *first_name = new QLabel;
+    first_name->setText(bio.first_name);
+    first_name->setAutoFillBackground(true);
+    first_name->setPalette(palette);
+    first_name->setFixedHeight(40);
+    layout->addWidget(first_name);
 
+    QLabel *last_name = new QLabel;
+    last_name->setText(bio.last_name);
+    last_name->setAutoFillBackground(true);
+    last_name->setPalette(palette);
+    last_name->setFixedHeight(40);
+    layout->addWidget(last_name);
 }
 
 
@@ -100,7 +111,7 @@ void BiographyEditor::clear()
 }
 
 
-void BiographyEditor::update(TreeObject* treecard)
+void BiographyEditor::update(person bio)
 {
-
+    populateGroupBox(widget_layout->layout(), bio);
 }

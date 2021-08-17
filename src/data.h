@@ -6,11 +6,11 @@
 
 struct person {
     int id;
-    QString firstname;
-    QString lastname;
-    QString birthname;
-    QString birthplace;
-    QDate birthdate;
+    QString first_name;
+    QString last_name;
+    QString birth_name;
+    QString birth_place;
+    QDate birth_date;
 };
 
 #endif // DATA_H

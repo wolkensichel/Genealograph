@@ -66,7 +66,7 @@ void RelationsEditor::createGroupBox(QGroupBox *box, int id)
 }
 
 
-void RelationsEditor::populateGroupBox(QLayout* scroll_layout, QList<TreeObject *> treecards)
+void RelationsEditor::populateGroupBox(QLayout* layout, QList<TreeObject *> treecards)
 {
     QLabel *labels[treecards.size()];
 
@@ -76,7 +76,7 @@ void RelationsEditor::populateGroupBox(QLayout* scroll_layout, QList<TreeObject 
         labels[i]->setAutoFillBackground(true);
         labels[i]->setPalette(palette);
         labels[i]->setFixedHeight(40);
-        scroll_layout->addWidget(labels[i]);
+        layout->addWidget(labels[i]);
     }
 }
 

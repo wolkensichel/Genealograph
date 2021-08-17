@@ -26,11 +26,11 @@ AddPersonDialog::AddPersonDialog(QWidget *parent) : QDialog(parent)
 person AddPersonDialog::fetchFormInputs()
 {
     person new_person;
-    new_person.firstname = form_firstname->text();
-    new_person.lastname = form_lastname->text();
+    new_person.first_name = form_firstname->text();
+    new_person.last_name = form_lastname->text();
 
-    //new_person.firstname = "First Name";
-    //new_person.lastname = "Last Name";
+    //new_person.first_name = "First Name";
+    //new_person.last_name = "Last Name";
 
     return new_person;
 }
