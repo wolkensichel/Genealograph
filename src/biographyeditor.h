@@ -7,20 +7,25 @@
 #include <QVBoxLayout>
 
 
+class TreeObject;
+
+
 class BiographyEditor : public QWidget
 {
     Q_OBJECT
 
 public:
     BiographyEditor();
+    void update(TreeObject* treecard);
+    void clear();
 
 private:
     void createBio();
+    void populateGroupBox(QLayout*, TreeObject*);
+    void cleanGroupBox(QLayout*);
 
-    QScrollArea *area;
-    QWidget *widget;
-    QGridLayout *layout;
     QVBoxLayout *widget_layout;
+    QScrollArea *area;
 };
 
 #endif // BIOGRAPHYEDITOR_H

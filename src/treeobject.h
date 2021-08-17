@@ -21,10 +21,12 @@ class TreeObject : public QGraphicsRectItem
 public:
     TreeObject(person, BiographyEditor*, RelationsEditor*, QGraphicsScene*);
     QString getName();
-    void addRelation(Relation*);
+    void addPartnershipRelation(Relation*);
+    void setDescentRelation(Relation*);
 
 private:
     void fillFields(person);
+    QList<Relation *> mergeRelations(QList<Relation *>, Relation*);
 
     QGraphicsProxyWidget* proxy;
     QVBoxLayout *layout;
@@ -32,8 +34,8 @@ private:
     QLabel* first_name;
     QLabel* last_name;
 
-    QList<Relation *> relations;
-    DescentRelation *descent_relation = nullptr;
+    QList<Relation *> partnerships;
+    Relation* descent = nullptr;
 
     BiographyEditor *biography_editor;
     RelationsEditor *relations_editor;

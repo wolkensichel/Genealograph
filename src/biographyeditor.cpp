@@ -1,5 +1,3 @@
-#include <QGridLayout>
-#include <QLabel>
 #include <QCheckBox>
 #include <QSizePolicy>
 
@@ -9,22 +7,28 @@
 
 BiographyEditor::BiographyEditor()
 {
-    layout = new QGridLayout;
+    QVBoxLayout *layout = new QVBoxLayout;
     layout->setContentsMargins(4, 4, 4, 4);
 
-    QLabel *label_enable_edit = new QLabel(tr("Lock Relations"));
+    QHBoxLayout *hlayout = new QHBoxLayout;
+    hlayout->setContentsMargins(0, 0, 0, 0);
+
+    QWidget *enable_edit = new QWidget;
+    enable_edit->setFixedHeight(20);
+    QLabel *label_enable_edit = new QLabel(tr("Lock Biography"));
     QCheckBox *checkbox_enable_edit = new QCheckBox;
 
-    QLabel *label_custom_display = new QLabel(tr("Customize details displayed"));
-    QCheckBox *checkbox_custom_display = new QCheckBox;
+    hlayout->addStretch();
+    hlayout->addWidget(label_enable_edit);
+    hlayout->addWidget(checkbox_enable_edit);
+    hlayout->setAlignment(label_enable_edit, Qt::AlignRight);
+    hlayout->setAlignment(checkbox_enable_edit, Qt::AlignRight);
+    enable_edit->setLayout(hlayout);
 
     createBio();
 
-    layout->addWidget(label_enable_edit, 0, 0, 1, 29, Qt::AlignRight);
-    layout->addWidget(checkbox_enable_edit, 0, 29, Qt::AlignRight);
-    layout->addWidget(label_custom_display, 1, 0, 1, 29, Qt::AlignRight);
-    layout->addWidget(checkbox_custom_display, 1, 29, Qt::AlignRight);
-    layout->addWidget(area, 2, 0, 1, 30); //Qt::AlignTop
+    layout->addWidget(enable_edit);
+    layout->addWidget(area);
     setLayout(layout);
 }
 
@@ -35,7 +39,7 @@ void BiographyEditor::createBio()
     widget_layout->setSizeConstraint(QLayout::SetMinAndMaxSize); // necessary to see labels
     widget_layout->setContentsMargins(2, 2, 2, 2);
 
-    widget = new QWidget;
+    QWidget *widget = new QWidget;
     widget->setLayout(widget_layout);
 
     area = new QScrollArea;
@@ -70,4 +74,33 @@ void BiographyEditor::createBio()
         widget_layout->addWidget(fields[i], i, 0, 1, 9, Qt::AlignLeft);
         widget_layout->addWidget(checkbox_fields[i], i, 10, 1, 1, Qt::AlignRight);*/
     //}
+}
+
+
+void BiographyEditor::populateGroupBox(QLayout*, TreeObject*)
+{
+
+}
+
+
+void BiographyEditor::cleanGroupBox(QLayout* layout)
+{
+    QLayoutItem *child;
+    while ((child = layout->takeAt(0)) != 0) {
+        delete child->widget();
+        delete child;
+    }
+}
+
+
+void BiographyEditor::clear()
+{
+    for (int i = 0; i <= 2; i++)
+        cleanGroupBox(widget_layout->layout());
+}
+
+
+void BiographyEditor::update(TreeObject* treecard)
+{
+
 }

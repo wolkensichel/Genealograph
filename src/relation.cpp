@@ -7,6 +7,8 @@
 
 Relation::Relation(TreeObject* treecard1, TreeObject* treecard2, QGraphicsScene *scene)
 {
+    descents = QList<Relation *>();
+    tree_objects = QList<TreeObject *>();
     tree_objects.append(treecard1);
     tree_objects.append(treecard2);
 
@@ -14,23 +16,27 @@ Relation::Relation(TreeObject* treecard1, TreeObject* treecard2, QGraphicsScene 
     setZValue(-1);
     updatePosition();
 
-    treecard1->addRelation(this);
-    treecard2->addRelation(this);
+    treecard1->addPartnershipRelation(this);
+    treecard2->addPartnershipRelation(this);
+
     scene->addItem(this);
 }
 
 
 Relation::Relation(Relation* partnership, TreeObject* child, QGraphicsScene *scene)
 {
+    descents = QList<Relation *>();
+    tree_objects = QList<TreeObject *>();
     tree_objects.append(child);
     parents = partnership;
-    partnership->children.append(this);
+
+    child->setDescentRelation(this);
+    partnership->descents.append(this);
 
     setPen(QPen(Qt::black, 1));
     setZValue(-1);
     updatePosition();
 
-    child->addRelation(this);
     scene->addItem(this);
 }
 
@@ -69,7 +75,7 @@ Relation* Relation::getParentsRelation()
 }
 
 
-QList<Relation *> Relation::getChildRelations()
+QList<Relation *> Relation::getDescentRelations()
 {
-    return children;
+    return descents;
 }

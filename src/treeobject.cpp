@@ -42,7 +42,13 @@ void TreeObject::mousePressEvent(QGraphicsSceneMouseEvent *event)
     setPen(pen);
     setZValue(1);
 
-    relations_editor->update(this, relations);
+    biography_editor->clear();
+    biography_editor->update(this);
+
+    relations_editor->clear();
+    QList<Relation *> relations = mergeRelations(partnerships, descent);
+    if (relations.isEmpty() == false)
+        relations_editor->update(this, relations);
 
     QGraphicsItem::mousePressEvent(event);
 }
@@ -68,20 +74,39 @@ QString TreeObject::getName()
 }
 
 
-void TreeObject::addRelation(Relation* relation)
+QList<Relation *> TreeObject::mergeRelations(QList<Relation *> partners, Relation *child)
 {
-    relations.append(relation);
+    QList<Relation *> relations = QList<Relation *>();
+    relations = partners;
+    if (child != nullptr)
+        relations.append(child);
+
+    return relations;
+}
+
+
+void TreeObject::addPartnershipRelation(Relation* partnership)
+{
+    partnerships.append(partnership);
+}
+
+
+void TreeObject::setDescentRelation(Relation* child)
+{
+    descent = child;
 }
 
 
 QVariant TreeObject::itemChange(GraphicsItemChange change, const QVariant &value)
 {
-    if (change == QGraphicsItem::ItemPositionChange)
+    QList<Relation *> relations = mergeRelations(partnerships, descent);
+
+    if (change == QGraphicsItem::ItemPositionChange && relations.isEmpty() == false)
     {
         for (Relation *relation : qAsConst(relations))
         {
             relation->updatePosition();
-            for (Relation *child : relation->getChildRelations())
+            for (Relation *child : relation->getDescentRelations())
                 child->updatePosition();
         }
     }

@@ -15,11 +15,11 @@ public:
     void updatePosition();
     QList<TreeObject *>getTreeObjects();
     Relation* getParentsRelation();
-    QList<Relation *>getChildRelations();
+    QList<Relation *>getDescentRelations();
 
     QList<TreeObject *> tree_objects;
-    Relation *parents = nullptr;
-    QList<Relation *> children;
+    Relation* parents = nullptr;
+    QList<Relation *> descents;
 
 private:
     QPainterPath path;

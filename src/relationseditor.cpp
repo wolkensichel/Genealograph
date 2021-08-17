@@ -1,11 +1,7 @@
-#include <QGridLayout>
 #include <QCheckBox>
-#include <QLabel>
 #include <QGroupBox>
 #include <QDockWidget>
-
-#include <QTextStream>
-#include <iostream>
+#include <QScrollArea>
 
 #include "relationseditor.h"
 #include "relation.h"
@@ -15,106 +11,119 @@ RelationsEditor::RelationsEditor(QDockWidget *dock)
 {
     parent = dock;
 
-    QGridLayout *layout = new QGridLayout;
+    QVBoxLayout *layout = new QVBoxLayout;
     layout->setContentsMargins(4, 4, 4, 4);
 
+    QHBoxLayout *hlayout = new QHBoxLayout;
+    hlayout->setContentsMargins(0, 0, 0, 0);
+
+    QWidget *enable_edit = new QWidget;
+    enable_edit->setFixedHeight(20);
     QLabel *label_enable_edit = new QLabel(tr("Lock Relations"));
     QCheckBox *checkbox_enable_edit = new QCheckBox;
 
+    hlayout->addStretch();
+    hlayout->addWidget(label_enable_edit);
+    hlayout->addWidget(checkbox_enable_edit);
+    hlayout->setAlignment(label_enable_edit, Qt::AlignRight);
+    hlayout->setAlignment(checkbox_enable_edit, Qt::AlignRight);
+    enable_edit->setLayout(hlayout);
+
     groupbox_parents = new QGroupBox(tr("Parents:"));
-    createGroupBox(groupbox_parents);
+    createGroupBox(groupbox_parents, 0);
     groupbox_partners = new QGroupBox(tr("Partners:"));
-    createGroupBox(groupbox_partners);
+    createGroupBox(groupbox_partners, 1);
     groupbox_children = new QGroupBox(tr("Children:"));
-    createGroupBox(groupbox_children);
+    createGroupBox(groupbox_children, 2);
 
-    layout->addWidget(label_enable_edit, 0, 0, 1, 9, Qt::AlignRight);
-    layout->addWidget(checkbox_enable_edit, 0, 9, Qt::AlignRight);
-    layout->addWidget(groupbox_parents, 1, 0, 2, 10, Qt::AlignTop);
-    layout->addWidget(groupbox_partners, 3, 0, 2, 10, Qt::AlignTop);
-    layout->addWidget(groupbox_children, 5, 0, 10, 10, Qt::AlignTop);
+    layout->addWidget(enable_edit);
+    layout->addWidget(groupbox_parents);
+    layout->addWidget(groupbox_partners);
+    layout->addWidget(groupbox_children);
     setLayout(layout);
-
 }
 
 
-void RelationsEditor::createGroupBox(QGroupBox *box)
+void RelationsEditor::createGroupBox(QGroupBox *box, int id)
 {
-    QVBoxLayout *layout = new QVBoxLayout;
-    layout->setContentsMargins(2, 2, 2, 2);
-    box->setLayout(layout);
+    QVBoxLayout *box_layout = new QVBoxLayout;
+    box_layout->setContentsMargins(0, 0, 0, 0);
+    box->setLayout(box_layout);
 
-    QLabel *editlabel_parents[2];
-    QPalette palette;
+    QScrollArea *scrollarea = new QScrollArea;
+    scrollarea->setWidgetResizable(true);
+    box_layout->addWidget(scrollarea);
+
+    QWidget *widget = new QWidget;
+    scrollarea->setWidget(widget);
+
+    widget_layout[id] = new QVBoxLayout;
+    widget_layout[id]->setContentsMargins(0, 0, 0, 0);
+    widget_layout[id]->setAlignment(Qt::AlignTop);
+    widget->setLayout(widget_layout[id]);
+
     palette.setColor(QPalette::Window, Qt::white);
-
-    for (int i = 0; i < 2; ++i) {
-        editlabel_parents[i] = new QLabel(tr("Person %1").arg(i + 1));
-        editlabel_parents[i]->setAutoFillBackground(true);
-        editlabel_parents[i]->setPalette(palette);
-        layout->addWidget(editlabel_parents[i]);
-    }
 }
 
 
-void RelationsEditor::populateGroupBox(QLayout* layout, QList<TreeObject *> treecards)
+void RelationsEditor::populateGroupBox(QLayout* scroll_layout, QList<TreeObject *> treecards)
 {
     QLabel *labels[treecards.size()];
-    QPalette palette;
-    palette.setColor(QPalette::Window, Qt::white);
 
     for(int i = 0; i < treecards.size(); i++)
     {
         labels[i] = new QLabel(treecards[i]->getName());
         labels[i]->setAutoFillBackground(true);
         labels[i]->setPalette(palette);
-        layout->addWidget(labels[i]);
+        labels[i]->setFixedHeight(40);
+        scroll_layout->addWidget(labels[i]);
     }
 }
 
 
 void RelationsEditor::cleanGroupBox(QLayout* layout)
 {
-    while(!layout->isEmpty())
+    QLayoutItem *child;
+    while ((child = layout->takeAt(0)) != 0)
     {
-        delete layout->takeAt(0)->widget();
-        delete layout->takeAt(0);
+        delete child->widget();
+        delete child;
     }
+}
+
+
+void RelationsEditor::clear()
+{
+    for (int i = 0; i <= 2; i++)
+        cleanGroupBox(widget_layout[i]->layout());
 }
 
 
 void RelationsEditor::update(TreeObject* treecard, QList<Relation *> relations)
 {
-    parent->raise();
-    QTextStream cout(stdout);
+    // set parents
+    if(relations.last()->parents != nullptr)
+    {
+        populateGroupBox(widget_layout[0]->layout(), relations.last()->parents->getTreeObjects());
+        relations.removeLast();
+    }
 
-    cleanGroupBox(groupbox_parents->layout());
-    cleanGroupBox(groupbox_partners->layout());
-    cleanGroupBox(groupbox_children->layout());
+    QList<TreeObject *> partners = QList<TreeObject *>();
+    QList<TreeObject *> children = QList<TreeObject *>();
 
     foreach(Relation *relation, relations)
     {
-        // insert parents
-        if (relation->parents != nullptr) {
-            populateGroupBox(groupbox_parents->layout(), relation->parents->getTreeObjects());
-        }
+        // set partners
+        if (relation->tree_objects[0] == treecard)
+            partners.append(relation->tree_objects[1]);
+        else
+            partners.append(relation->tree_objects[0]);
 
-        // insert partners
-        QList<TreeObject *> partners;
-        if (relation->tree_objects.size() == 2)
-        {
-            if (relation->tree_objects[0] == treecard)
-                partners.append(relation->tree_objects[1]);
-            else
-                partners.append(relation->tree_objects[0]);
-        }
-        populateGroupBox(groupbox_partners->layout(), partners);
-
-        // insert children
-        QList<TreeObject *> children;
-        foreach(Relation* child, relation->children)
+        // set children
+        foreach(Relation* child, relation->descents)
             children.append(child->tree_objects[0]);
-        populateGroupBox(groupbox_children->layout(), children);
     }
 
+    populateGroupBox(widget_layout[1]->layout(), partners);
+    populateGroupBox(widget_layout[2]->layout(), children);
 }

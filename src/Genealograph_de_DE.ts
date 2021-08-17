@@ -45,11 +45,7 @@
 <context>
     <name>BiographyEditor</name>
     <message>
-        <source>Lock Relations</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Customize details displayed</source>
+        <source>Lock Biography</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -88,10 +84,6 @@
     </message>
     <message>
         <source>Children:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Person %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
