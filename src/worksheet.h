@@ -19,13 +19,17 @@ class WorkSheet : public QGraphicsScene
 
 public:
     enum Mode {AddCard, MoveCard};
+    quint16 id_counter;
     explicit WorkSheet(QMenu*, BiographyEditor*, RelationsEditor*, QObject *parent = nullptr);
     void setMode(Mode mode);
-    void createTreeCard(person);
+    void createTreeCard(person, quint16 = 0, QPointF = QPointF(0, 0));
     void createPartnershipRelation(int*);
     void createDescentRelation(int*);
+    void clean();
+
     QList<TreeObject *> getTreeObjectList();
     QList<Relation *> getPartnershipRelationList();
+    QList<Relation *> getDescentRelationList();
 
 private:
     QList<TreeObject *> tree_objects;

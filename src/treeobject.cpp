@@ -8,11 +8,12 @@
 #include <QTextStream>
 
 
-TreeObject::TreeObject(person new_person, BiographyEditor *biography_dock, RelationsEditor *relations_dock, QGraphicsScene *scene)
+TreeObject::TreeObject(person new_person, BiographyEditor *biography_dock, RelationsEditor *relations_dock, quint16 current_id, QGraphicsScene *scene)
 {
     biography_editor = biography_dock;
     relations_editor = relations_dock;
     bio = new_person;
+    id = current_id;
 
     setFlags(QGraphicsItem::ItemIsMovable|QGraphicsItem::ItemSendsGeometryChanges); //QGraphicsItem::ItemIsSelectable
     setRect(0, 0, 79, 99);

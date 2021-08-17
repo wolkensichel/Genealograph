@@ -14,6 +14,7 @@
 WorkSheet::WorkSheet(QMenu *menuCreate, BiographyEditor *biography_dock, RelationsEditor *relations_dock, QObject *parent)
     : QGraphicsScene(parent)
 {
+    id_counter = 1;
     current_mode = MoveCard;
     biography_editor = biography_dock;
     relations_editor = relations_dock;
@@ -26,10 +27,22 @@ void WorkSheet::setMode(Mode mode)
 }
 
 
-void WorkSheet::createTreeCard(person new_person)
+void WorkSheet::createTreeCard(person new_person, quint16 id, QPointF pos)
 {
-    TreeObject *treecard = new TreeObject(new_person, biography_editor, relations_editor, this);
-    tree_objects.append(treecard);
+    if (id == 0)
+    {
+        TreeObject *treecard = new TreeObject(new_person, biography_editor, relations_editor, id_counter, this);
+        tree_objects.append(treecard);
+        id_counter++;
+    }
+    else
+    {
+        TreeObject *treecard = new TreeObject(new_person, biography_editor, relations_editor, id, this);
+        tree_objects.append(treecard);
+        treecard->setPos(pos);
+        if (id_counter < id)
+            id_counter = ++id;
+    }
     //setMode(MoveCard);
 }
 
@@ -97,4 +110,19 @@ QList<TreeObject *> WorkSheet::getTreeObjectList()
 QList<Relation *> WorkSheet::getPartnershipRelationList()
 {
     return partnership_relations;
+}
+
+
+QList<Relation *> WorkSheet::getDescentRelationList()
+{
+    return descent_relations;
+}
+
+
+void WorkSheet::clean()
+{
+    tree_objects.clear();
+    partnership_relations.clear();
+    descent_relations.clear();
+    this->clear();
 }

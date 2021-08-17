@@ -50,6 +50,33 @@
     </message>
 </context>
 <context>
+    <name>IOHandler</name>
+    <message>
+        <source>Open File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Generations File (*.gen);;All Files (*)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to open file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No contacts in file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The file you are attempting to open contains no contacts.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>MainWindow</name>
     <message>
         <source>&amp;Create</source>
@@ -60,11 +87,23 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Add Partner&amp;ship</source>
+        <source>Add &amp;Descent</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Add &amp;Descent</source>
+        <source>&amp;Open ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>S&amp;ave As ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add Pa&amp;rtnership</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;File</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

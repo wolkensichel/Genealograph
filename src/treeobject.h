@@ -19,11 +19,12 @@ class BiographyEditor;
 class TreeObject : public QGraphicsRectItem
 {
 public:
-    TreeObject(person, BiographyEditor*, RelationsEditor*, QGraphicsScene*);
+    TreeObject(person, BiographyEditor*, RelationsEditor*, quint16, QGraphicsScene*);
     QString getName();
     void addPartnershipRelation(Relation*);
     void setDescentRelation(Relation*);
     person bio;
+    quint16 id;
 
 private:
     void fillFields(person);

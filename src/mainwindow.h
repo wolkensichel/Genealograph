@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QScrollArea>
 
 
 class WorkSheet;
@@ -24,6 +25,10 @@ private:
     void createDockWidgets();
     void createWorkSheet();
 
+    void saveFile();
+    void saveAsFile();
+    void openFile();
+
     void addPerson();
     void addPartnership();
     void addDescent();
@@ -31,7 +36,10 @@ private:
     QAction *actionAddPerson;
     QAction *actionAddPartnership;
     QAction *actionAddDescent;
+    QAction *actionSaveAsFile;
+    QAction *actionOpenFile;
 
+    QScrollArea *scrollarea;
     WorkSheet *worksheet;
     QGraphicsView *view;
     QDockWidget *dock_biography;
