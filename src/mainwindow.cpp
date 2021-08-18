@@ -9,6 +9,7 @@
 #include "worksheet.h"
 #include "biographyeditor.h"
 #include "relationseditor.h"
+#include "data.h"
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -100,21 +101,19 @@ void MainWindow::createWorkSheet()
 
 void MainWindow::openFile()
 {
+    load_data file_data;
     IOHandler handler;
-    load_data* input_data = handler.openFromFile();
 
-    if (input_data->worksheet.width != 0)
+    if (handler.openFromFile(file_data) == 0)
     {
         worksheet->clean();
 
-        worksheet->setSceneRect(QRectF(0,0,input_data->worksheet.width,input_data->worksheet.height));
+        worksheet->setSceneRect(QRectF(0, 0, file_data.worksheet.width, file_data.worksheet.height));
         view->destroyed();
         view = new QGraphicsView(worksheet, scrollarea);
         scrollarea->setWidget(view);
 
-        QList<object_data *>::iterator it;
-        for (it = input_data->objects.begin(); it != input_data->objects.end(); ++it)
-            worksheet->createTreeCard(it.operator*()->bio, it.operator*()->id, it.operator*()->pos);
+        worksheet->createTreeFromFile(file_data);
     }
 }
 
@@ -123,20 +122,21 @@ void MainWindow::saveAsFile()
 {
     IOHandler handler;
     // fetch data to save and put in as argument to saveToFile()
-    QList<TreeObject *> list = worksheet->getTreeObjectList();
-    //QList<TreeObject *> list = worksheet->getPartnershipRelationList();
-    //QList<TreeObject *> list = worksheet->getDescentRelationList();
+    QList<TreeObject *> tree_objects = worksheet->getTreeObjectList();
+    QList<Relation *> partnerships = worksheet->getPartnershipRelationList();
+    QList<Relation *> descents = worksheet->getDescentRelationList();
 
-    if (!list.isEmpty())
+    if (!tree_objects.isEmpty())
     {
-        //TreeObject *first = *(list.begin());
-        //QTextStream cout(stdout);
-        //cout << first->pos().x() << ", " << first->pos().y() << "\n";
+        sheet sheet_size;
+        sheet_size.width = worksheet->width();
+        sheet_size.height = worksheet->height();
+        handler.saveToFile(sheet_size, tree_objects, partnerships, descents);
     }
-    sheet sheet_size;
-    sheet_size.width = worksheet->width();
-    sheet_size.height = worksheet->height();
-    handler.saveToFile(sheet_size, list);
+    else
+    {
+        // nothing to save message
+    }
 }
 
 

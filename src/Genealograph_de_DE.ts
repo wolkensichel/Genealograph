@@ -68,11 +68,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>No contacts in file</source>
+        <source>No valid Generations file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>The file you are attempting to open contains no contacts.</source>
+        <source>The file you are attempting to open is not a valid file.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

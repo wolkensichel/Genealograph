@@ -25,6 +25,7 @@ public:
     void createTreeCard(person, quint16 = 0, QPointF = QPointF(0, 0));
     void createPartnershipRelation(int*);
     void createDescentRelation(int*);
+    void createTreeFromFile(load_data&);
     void clean();
 
     QList<TreeObject *> getTreeObjectList();
@@ -32,6 +33,9 @@ public:
     QList<Relation *> getDescentRelationList();
 
 private:
+    int getTreeObjectListPosition(quint16);
+    int getPartnershipRelationListPosition(quint16, quint16);
+
     QList<TreeObject *> tree_objects;
     QList<Relation *> partnership_relations;
     QList<Relation *> descent_relations;

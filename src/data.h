@@ -5,6 +5,10 @@
 #include <QDate>
 
 
+class TreeObject;
+class Relation;
+
+
 struct person {
     QString first_name;
     QString last_name;
@@ -37,6 +41,21 @@ struct object_data
 };
 
 
+struct partnership_data
+{
+    quint16 id_partner1;
+    quint16 id_partner2;
+};
+
+
+struct descent_data
+{
+    quint16 id_child;
+    quint16 id_parent1;
+    quint16 id_parent2;
+};
+
+
 struct sheet
 {
     quint16 width;
@@ -48,6 +67,8 @@ struct load_data
 {
     sheet worksheet;
     QList<object_data *> objects;
+    QList<partnership_data *> partnerships;
+    QList<descent_data *> descents;
 };
 
 

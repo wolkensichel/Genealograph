@@ -29,7 +29,7 @@ void WorkSheet::setMode(Mode mode)
 
 void WorkSheet::createTreeCard(person new_person, quint16 id, QPointF pos)
 {
-    if (id == 0)
+    if (id == quint16(0))
     {
         TreeObject *treecard = new TreeObject(new_person, biography_editor, relations_editor, id_counter, this);
         tree_objects.append(treecard);
@@ -116,6 +116,57 @@ QList<Relation *> WorkSheet::getPartnershipRelationList()
 QList<Relation *> WorkSheet::getDescentRelationList()
 {
     return descent_relations;
+}
+
+
+void WorkSheet::createTreeFromFile(load_data &data)
+{
+    QListIterator<object_data *> it_od(data.objects);
+    while (it_od.hasNext())
+    {
+        object_data *current_object = it_od.next();
+        createTreeCard(current_object->bio, current_object->id, current_object->pos);
+    }
+
+    int reference_ids[2];
+    QListIterator<partnership_data *> it_ps(data.partnerships);
+    while (it_ps.hasNext())
+    {
+        partnership_data *current_object = it_ps.next();
+        reference_ids[0] = getTreeObjectListPosition(current_object->id_partner1);
+        reference_ids[1] = getTreeObjectListPosition(current_object->id_partner2);
+        createPartnershipRelation(reference_ids);
+    }
+
+    QListIterator<descent_data *> it_d(data.descents);
+    while (it_d.hasNext())
+    {
+        descent_data *current_object = it_d.next();
+        reference_ids[0] = getPartnershipRelationListPosition(
+                    current_object->id_parent1, current_object->id_parent2);
+        reference_ids[1] = getTreeObjectListPosition(current_object->id_child);
+        createDescentRelation(reference_ids);
+    }
+}
+
+
+int WorkSheet::getTreeObjectListPosition(quint16 id)
+{
+    auto predicate = [id](TreeObject *tree_object) { return tree_object->id == id; };
+    return std::find_if(std::begin(tree_objects), std::end(tree_objects), predicate)
+            - std::begin(tree_objects);
+
+}
+
+
+int WorkSheet::getPartnershipRelationListPosition(quint16 id_parent1, quint16 id_parent2)
+{
+    auto predicate = [id_parent1, id_parent2](Relation *partnership) {
+        return (partnership->tree_objects.first()->id == id_parent1
+                && partnership->tree_objects.last()->id == id_parent2);
+        };
+    return std::find_if(std::begin(partnership_relations), std::end(partnership_relations), predicate)
+            - std::begin(partnership_relations);
 }
 
 

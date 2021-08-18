@@ -6,6 +6,7 @@
 #include "data.h"
 
 class TreeObject;
+class Relation;
 
 class IOHandler : public QFileDialog
 {
@@ -13,12 +14,12 @@ class IOHandler : public QFileDialog
 
 public:
     IOHandler();
-    load_data* openFromFile();
-    void saveToFile(sheet, QList<TreeObject *>);
+    int openFromFile(load_data&);
+    void saveToFile(sheet, QList<TreeObject *>, QList<Relation *>, QList<Relation *>);
 
 private:
-    void store(QFile&, sheet, QList<TreeObject *>);
-    load_data* load(QFile&);
+    void store(QFile&, sheet, QList<TreeObject *>, QList<Relation *>, QList<Relation *>);
+    int load(QFile&, load_data&);
 };
 
 #endif // IOHANDLER_H
