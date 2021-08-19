@@ -67,14 +67,6 @@
         <source>Save File</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>No valid Generations file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The file you are attempting to open is not a valid file.</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>MainWindow</name>
@@ -106,6 +98,22 @@
         <source>&amp;File</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>&amp;New</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Save</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save current document</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Do you want to save the current document before opening a new one?</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>RelationsEditor</name>
@@ -123,6 +131,17 @@
     </message>
     <message>
         <source>Children:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>SetupSheetDialog</name>
+    <message>
+        <source>Width:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Height:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

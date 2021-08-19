@@ -1,5 +1,6 @@
 #include <QMessageBox>
 
+#include "mainwindow.h"
 #include "iohandler.h"
 #include <QTextStream>
 #include <iostream>
@@ -10,54 +11,76 @@
 
 IOHandler::IOHandler()
 {
-
+    //setDefaultSuffix("gen"); // not working on Linux
+    suffix = ".gen";
 }
 
 
-int IOHandler::openFromFile(load_data &file_data)
+bool IOHandler::openFromFile(load_data &file_data, QString &save_file)
 {
-    QString file_name = QFileDialog::getOpenFileName(this,
+    QString file_name = getOpenFileName(this,
         tr("Open File"), "/home/wolkensichel/",
         tr("Generations File (*.gen);;All Files (*)"));
 
     if (file_name.isEmpty())
-        return -1;
+        return false;
     else {
         QFile file(file_name);
 
         if (!file.open(QIODevice::ReadOnly)) {
             QMessageBox::information(this, tr("Unable to open file"),
                 file.errorString());
-            return -1;
+            return false;
         }
 
-        return load(file, file_data);
+        if(load(file, file_data))
+        {
+            save_file = file_name;
+            return true;
+        }
+        else
+            return false;
     }
 }
 
 
-void IOHandler::saveToFile(sheet sheet_size, QList<TreeObject *> tree_objects, QList<Relation *> partnerships, QList<Relation *> descents)
+void IOHandler::saveFile(QString &file_name, save_data &worksheet_data)
+{
+    if (file_name.length() > suffix.length()) {
+        if (!file_name.endsWith(suffix, Qt::CaseInsensitive))
+            file_name += suffix;
+    }
+    else if (file_name == suffix) {
+        return;
+    }
+    else {
+        file_name += suffix;
+    }
+
+    QFile file(file_name);
+     if (!file.open(QIODevice::WriteOnly)) {
+         QMessageBox::information(this, tr("Unable to open file"),
+             file.errorString());
+         return;
+     }
+     store(file, worksheet_data);
+}
+
+
+void IOHandler::saveToFile(save_data &worksheet_data, QString &save_file)
 {
     QString file_name = getSaveFileName(this,
         tr("Save File"), "/home/wolkensichel/",
         tr("Generations File (*.gen);;All Files (*)"));
 
-    if (file_name.isEmpty())
-        return;
-    else {
-        QFile file(file_name);
-        if (!file.open(QIODevice::WriteOnly)) {
-            QMessageBox::information(this, tr("Unable to open file"),
-                file.errorString());
-            return;
-        }
-
-        store(file, sheet_size, tree_objects, partnerships, descents);
+    if (!file_name.isEmpty() && !file_name.isNull()) {
+        saveFile(file_name, worksheet_data);
+        save_file = file_name;
     }
 }
 
 
-void IOHandler::store(QFile &file, sheet sheet_size, QList<TreeObject *> tree_objects, QList<Relation *> partnerships, QList<Relation *> descents)
+void IOHandler::store(QFile &file, save_data &worksheet_data)
 {
     //qRegisterMetaType<person>("person");
     //qRegisterMetaTypeStreamOperators<person>("person");
@@ -67,44 +90,38 @@ void IOHandler::store(QFile &file, sheet sheet_size, QList<TreeObject *> tree_ob
     out.setVersion(QDataStream::Qt_5_15);
 
     QString indicator = QString("<SHT>");
-    out << indicator << sheet_size.width << sheet_size.height;
+    out << indicator << worksheet_data.worksheet.width << worksheet_data.worksheet.height;
 
     indicator = QString("<TRBJ>");
-    QListIterator<TreeObject *> it_to(tree_objects);
-    while (it_to.hasNext()) {
+    QListIterator<TreeObject *> it_to(worksheet_data.tree_objects);
+    while (it_to.hasNext())
+    {
         TreeObject *current_object = it_to.next();
         out << indicator << current_object->id << current_object->pos() << current_object->bio;
-        cout << indicator << QString::number(current_object->id) << "\n";
     }
-    cout << "\n";
+
     indicator = QString("<PRTN>");
-    QListIterator<Relation *> it_ps(partnerships);
+    QListIterator<Relation *> it_ps(worksheet_data.partnerships);
     while (it_ps.hasNext())
     {
         Relation *current_relation = it_ps.next();
         out << indicator << current_relation->tree_objects.first()->id
                          << current_relation->tree_objects.last()->id;
-        cout << indicator << ", " << current_relation->tree_objects.first()->id << ", "
-                                  << current_relation->tree_objects.last()->id << "\n";
     }
-    cout << "\n";
+
     indicator = QString("<DSCN>");
-    QListIterator<Relation *> it_d(descents);
+    QListIterator<Relation *> it_d(worksheet_data.descents);
     while (it_d.hasNext())
     {
         Relation *current_relation = it_d.next();
         out << indicator << current_relation->tree_objects.last()->id
                          << current_relation->parents->tree_objects.first()->id
                          << current_relation->parents->tree_objects.last()->id;
-        cout << indicator << ", " << current_relation->tree_objects.last()->id << ", "
-             << current_relation->parents->tree_objects.first()->id << ", "
-             << current_relation->parents->tree_objects.last()->id << "\n";
     }
-    cout << "\n";
 }
 
 
-int IOHandler::load(QFile &file, load_data &file_data)
+bool IOHandler::load(QFile &file, load_data &file_data)
 {
     QTextStream cout(stdout);
 
@@ -117,11 +134,7 @@ int IOHandler::load(QFile &file, load_data &file_data)
     if (indicator == QString("<SHT>"))
         in >> file_data.worksheet.width >> file_data.worksheet.height;
     else
-    {
-        QMessageBox::information(this, tr("No valid Generations file"),
-                     tr("The file you are attempting to open is not a valid file."));
-        return -1;
-    }
+        return false;
 
     QList<object_data *> *objects = new QList<object_data *>();
     QList<partnership_data *> *partnerships = new QList<partnership_data *>();
@@ -130,7 +143,6 @@ int IOHandler::load(QFile &file, load_data &file_data)
     while(in.atEnd() == false)
     {
         in >> indicator;
-        cout << indicator << "\n";
         if (indicator == QString("<TRBJ>"))
         {
             object_data *set = new object_data();
@@ -155,5 +167,5 @@ int IOHandler::load(QFile &file, load_data &file_data)
     file_data.partnerships = *partnerships;
     file_data.descents= *descents;
 
-    return 0;
+    return true;
 }

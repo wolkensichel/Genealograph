@@ -14,12 +14,15 @@ class IOHandler : public QFileDialog
 
 public:
     IOHandler();
-    int openFromFile(load_data&);
-    void saveToFile(sheet, QList<TreeObject *>, QList<Relation *>, QList<Relation *>);
+    bool openFromFile(load_data&, QString&);
+    void saveFile(QString&, save_data&);
+    void saveToFile(save_data&, QString&);
 
 private:
-    void store(QFile&, sheet, QList<TreeObject *>, QList<Relation *>, QList<Relation *>);
-    int load(QFile&, load_data&);
+    void store(QFile&, save_data&);
+    bool load(QFile&, load_data&);
+
+    QString suffix;
 };
 
 #endif // IOHANDLER_H

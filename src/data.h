@@ -72,4 +72,12 @@ struct load_data
 };
 
 
+struct save_data
+{
+    sheet worksheet;
+    QList<TreeObject *> tree_objects;
+    QList<Relation *> partnerships;
+    QList<Relation *> descents;
+};
+
 #endif // DATA_H

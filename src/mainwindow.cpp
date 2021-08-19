@@ -3,6 +3,7 @@
 
 #include "mainwindow.h"
 #include "iohandler.h"
+#include "setupsheetdialog.h"
 #include "addpersondialog.h"
 #include "addpartnershipdialog.h"
 #include "adddescentdialog.h"
@@ -18,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent)
     createMenu();
     createDockWidgets();
     createWorkSheet();
+    save_file = "";
 }
 
 
@@ -28,8 +30,12 @@ MainWindow::~MainWindow()
 
 void MainWindow::createActions()
 {
+    actionNewFile = new QAction(tr("&New"), this);
+    connect(actionNewFile, &QAction::triggered, this, &MainWindow::newFile);
     actionOpenFile = new QAction(tr("&Open ..."), this);
     connect(actionOpenFile, &QAction::triggered, this, &MainWindow::openFile);
+    actionSaveFile = new QAction(tr("&Save"), this);
+    connect(actionSaveFile, &QAction::triggered, this, &MainWindow::saveFile);
     actionSaveAsFile = new QAction(tr("S&ave As ..."), this);
     connect(actionSaveAsFile, &QAction::triggered, this, &MainWindow::saveAsFile);
 
@@ -45,7 +51,9 @@ void MainWindow::createActions()
 void MainWindow::createMenu()
 {
     QMenu *menuFile = menuBar()->addMenu(tr("&File"));
+    menuFile->addAction(actionNewFile);
     menuFile->addAction(actionOpenFile);
+    menuFile->addAction(actionSaveFile);
     menuFile->addAction(actionSaveAsFile);
 
     QMenu *menuCreate = menuBar()->addMenu(tr("&Create"));
@@ -99,21 +107,102 @@ void MainWindow::createWorkSheet()
 }
 
 
+void MainWindow::replaceOldSheetByNewSheet(sheet size)
+{
+    worksheet->clean();
+    worksheet->setSceneRect(QRectF(0, 0, size.width, size.height));
+    view->destroyed();
+    view = new QGraphicsView(worksheet, scrollarea);
+    view->setFixedSize(size.width+2*view->frameWidth(), size.height+2*view->frameWidth());
+    scrollarea->setWidget(view);
+}
+
+
+void MainWindow::setupSheet()
+{
+    SetupSheetDialog worksheetSetup;
+    if (worksheetSetup.exec() == QDialog::Accepted)
+    {
+        sheet size = worksheetSetup.fetchFormInputs();
+        replaceOldSheetByNewSheet(size);
+    }
+}
+
+
+void MainWindow::newFile()
+{
+    QMessageBox msg_box;
+    msg_box.setText(tr("Save current document"));
+    msg_box.setInformativeText(tr("Do you want to save the current document before opening a new one?"));
+    msg_box.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+    msg_box.setDefaultButton(QMessageBox::Save);
+
+    switch (msg_box.exec()) {
+      case QMessageBox::Save:
+          save_file = "";
+          saveFile();
+          setupSheet();
+          break;
+      case QMessageBox::Discard:
+          save_file = "";
+          setupSheet();
+          break;
+      case QMessageBox::Cancel:
+          break;
+      default:
+          break;
+    }
+}
+
+
 void MainWindow::openFile()
 {
-    load_data file_data;
     IOHandler handler;
 
-    if (handler.openFromFile(file_data) == 0)
+    load_data file_data;
+    QList<object_data *> *objects = new QList<object_data *>();
+    QList<partnership_data *> *partnerships = new QList<partnership_data *>();
+    QList<descent_data *> *descents = new QList<descent_data *>();
+    file_data.worksheet = {0, 0};
+    file_data.objects = *objects;
+    file_data.partnerships = *partnerships;
+    file_data.descents = *descents;
+
+    if (handler.openFromFile(file_data, save_file))
     {
-        worksheet->clean();
-
-        worksheet->setSceneRect(QRectF(0, 0, file_data.worksheet.width, file_data.worksheet.height));
-        view->destroyed();
-        view = new QGraphicsView(worksheet, scrollarea);
-        scrollarea->setWidget(view);
-
+        replaceOldSheetByNewSheet(file_data.worksheet);
         worksheet->createTreeFromFile(file_data);
+    }
+}
+
+
+save_data MainWindow::collectWorksheetData()
+{
+    save_data worksheet_data;
+    worksheet_data.tree_objects = worksheet->getTreeObjectList();
+    worksheet_data.partnerships = worksheet->getPartnershipRelationList();
+    worksheet_data.descents = worksheet->getDescentRelationList();
+
+    sheet sheet_size;
+    sheet_size.width = worksheet->width();
+    sheet_size.height = worksheet->height();
+    worksheet_data.worksheet = sheet_size;
+
+    return worksheet_data;
+}
+
+
+void MainWindow::saveFile()
+{
+    QTextStream cout(stdout);
+    cout << save_file << "\n";
+    if (save_file.isEmpty())
+        saveAsFile();
+    else
+    {
+        IOHandler handler;
+        save_data worksheet_data = collectWorksheetData();
+        handler.saveFile(save_file, worksheet_data);
     }
 }
 
@@ -121,22 +210,8 @@ void MainWindow::openFile()
 void MainWindow::saveAsFile()
 {
     IOHandler handler;
-    // fetch data to save and put in as argument to saveToFile()
-    QList<TreeObject *> tree_objects = worksheet->getTreeObjectList();
-    QList<Relation *> partnerships = worksheet->getPartnershipRelationList();
-    QList<Relation *> descents = worksheet->getDescentRelationList();
-
-    if (!tree_objects.isEmpty())
-    {
-        sheet sheet_size;
-        sheet_size.width = worksheet->width();
-        sheet_size.height = worksheet->height();
-        handler.saveToFile(sheet_size, tree_objects, partnerships, descents);
-    }
-    else
-    {
-        // nothing to save message
-    }
+    save_data worksheet_data = collectWorksheetData();
+    handler.saveToFile(worksheet_data, save_file);
 }
 
 

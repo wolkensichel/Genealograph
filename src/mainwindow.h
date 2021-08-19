@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QScrollArea>
+#include "data.h"
 
 
 class WorkSheet;
@@ -25,9 +26,13 @@ private:
     void createDockWidgets();
     void createWorkSheet();
 
+    save_data collectWorksheetData();
+    void setupSheet();
+    void replaceOldSheetByNewSheet(sheet);
+    void newFile();
+    void openFile();
     void saveFile();
     void saveAsFile();
-    void openFile();
 
     void addPerson();
     void addPartnership();
@@ -36,8 +41,11 @@ private:
     QAction *actionAddPerson;
     QAction *actionAddPartnership;
     QAction *actionAddDescent;
-    QAction *actionSaveAsFile;
+
+    QAction *actionNewFile;
     QAction *actionOpenFile;
+    QAction *actionSaveFile;
+    QAction *actionSaveAsFile;
 
     QScrollArea *scrollarea;
     WorkSheet *worksheet;
@@ -50,6 +58,7 @@ private:
     //QMenu *menuFile;
     QMenu *menuCreate;
 
+    QString save_file;
 };
 
 
