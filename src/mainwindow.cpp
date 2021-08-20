@@ -50,13 +50,13 @@ void MainWindow::createActions()
     connect(actionPrint, &QAction::triggered, this, &MainWindow::print);
 
     actionAddPerson = new QAction(tr("Add Person"), this);
-    actionAddPerson->setShortcut(QKeySequence(Qt::ALT + Qt::Key_W));
+    actionAddPerson->setShortcut(QKeySequence(Qt::ALT | Qt::Key_W));
     connect(actionAddPerson, &QAction::triggered, this, &MainWindow::addPerson);
     actionAddPartnership = new QAction(tr("Add Partnership"), this);
-    actionAddPartnership->setShortcut(QKeySequence(Qt::ALT + Qt::Key_E));
+    actionAddPartnership->setShortcut(QKeySequence(Qt::ALT | Qt::Key_E));
     connect(actionAddPartnership, &QAction::triggered, this, &MainWindow::addPartnership);
     actionAddDescent = new QAction(tr("Add Descent"), this);
-    actionAddDescent->setShortcut(QKeySequence(Qt::ALT + Qt::Key_R));
+    actionAddDescent->setShortcut(QKeySequence(Qt::ALT | Qt::Key_R));
     connect(actionAddDescent, &QAction::triggered, this, &MainWindow::addDescent);
 }
 

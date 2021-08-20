@@ -43,8 +43,13 @@ private:
     BiographyEditor *biography_editor;
     RelationsEditor *relations_editor;
 
+    QGraphicsItem *item;
+
+    int grid_size;
+
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
 
 };

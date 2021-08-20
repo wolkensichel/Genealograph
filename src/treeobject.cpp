@@ -16,7 +16,7 @@ TreeObject::TreeObject(person new_person, BiographyEditor *biography_dock, Relat
     bio = new_person;
     id = current_id;
 
-    setFlags(QGraphicsItem::ItemIsMovable|QGraphicsItem::ItemSendsGeometryChanges); //QGraphicsItem::ItemIsSelectable
+    setFlags(QGraphicsItem::ItemIsMovable|QGraphicsItem::ItemSendsGeometryChanges|QGraphicsItem::ItemIsSelectable); //QGraphicsItem::ItemIsSelectable
     setRect(0, 0, 79, 99);
     setBrush(Qt::lightGray);
 

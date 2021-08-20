@@ -15,6 +15,7 @@ WorkSheet::WorkSheet(QMenu *menuCreate, BiographyEditor *biography_dock, Relatio
     : QGraphicsScene(parent)
 {
     id_counter = 1;
+    grid_size = 20;
     current_mode = MoveCard;
     biography_editor = biography_dock;
     relations_editor = relations_dock;
@@ -86,7 +87,39 @@ void WorkSheet::mousePressEvent(QGraphicsSceneMouseEvent *event)
         treecard->setZValue(0);
     }
 
+    item = mouseGrabberItem();
+    QTextStream cout(stdout);
+    cout << selectedItems().length() << "\n";
+
     QGraphicsScene::mousePressEvent(event);
+}
+
+
+void WorkSheet::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+{
+    if (selectedItems().length() > 0) {
+        item = selectedItems()[0];
+        int current_pos_x = static_cast<int>(item->pos().x());
+        int current_pos_y = static_cast<int>(item->pos().y());
+        int rest_x = current_pos_x % grid_size;
+        int rest_y = current_pos_y % grid_size;
+
+        if (rest_x <= grid_size/2)
+            item->setX(item->pos().x()-rest_x);
+        else if (rest_x > grid_size/2)
+            item->setX(item->pos().x()+grid_size-rest_x);
+
+        if (rest_y <= grid_size/2)
+            item->setY(item->pos().y()-rest_y);
+        else if (rest_y > grid_size/2)
+            item->setY(item->pos().y()+grid_size-rest_y);
+
+        foreach (Relation *partnership, partnership_relations)
+            partnership->updatePosition();
+        foreach (Relation *descent, descent_relations)
+            descent->updatePosition();
+    }
+    QGraphicsScene::mouseReleaseEvent(event);
 }
 
 
