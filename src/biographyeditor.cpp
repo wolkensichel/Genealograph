@@ -1,4 +1,5 @@
 #include <QCheckBox>
+#include <QLineEdit>
 #include <QSizePolicy>
 
 #include "biographyeditor.h"
@@ -37,7 +38,7 @@ void BiographyEditor::createBio()
 {
     widget_layout = new QVBoxLayout;
     widget_layout->setSizeConstraint(QLayout::SetMinAndMaxSize); // necessary to see labels
-    widget_layout->setContentsMargins(2, 2, 2, 2);
+    widget_layout->setContentsMargins(0, 0, 0, 0);
 
     QWidget *widget = new QWidget;
     widget->setLayout(widget_layout);
@@ -45,52 +46,23 @@ void BiographyEditor::createBio()
     area = new QScrollArea;
     area->setWidget(widget);
     area->setWidgetResizable(true);
-
-    palette.setColor(QPalette::Window, Qt::white);
-
-    QLabel *field = new QLabel("some\ntext");
-    field->setContentsMargins(10,4,4,4);
-    field->setAutoFillBackground(true);
-    field->setPalette(palette);
-    field->setFixedHeight(40);
-    widget_layout->addWidget(field);
-
-    QLabel *field2 = new QLabel("some text");
-    field2->setAutoFillBackground(true);
-    field2->setPalette(palette);
-    field2->setFixedHeight(40);
-    widget_layout->addWidget(field2);
-
-    //QCheckBox *checkbox_field = new QCheckBox;
-    //widget_layout->addWidget(checkbox_field, 0, 30, 1, 1, Qt::AlignRight);
-
-    //for (int i = 0; i < 25; ++i) {
-        /*fields[i] = new QLabel(tr("Info %1").arg(i + 1));
-        fields[i]->setFixedWidth(200);
-        fields[i]->setAutoFillBackground(true);
-        fields[i]->setPalette(palette);
-        checkbox_fields[i] = new QCheckBox;
-        widget_layout->addWidget(fields[i], i, 0, 1, 9, Qt::AlignLeft);
-        widget_layout->addWidget(checkbox_fields[i], i, 10, 1, 1, Qt::AlignRight);*/
-    //}
 }
 
 
 void BiographyEditor::populateGroupBox(QLayout *layout, person bio)
 {
-    QLabel *first_name = new QLabel;
-    first_name->setText(bio.first_name);
-    first_name->setAutoFillBackground(true);
-    first_name->setPalette(palette);
-    first_name->setFixedHeight(40);
-    layout->addWidget(first_name);
+    ListLabel *label = new ListLabel(bio.first_name, QString("First Name:"));
+    layout->addWidget(label);
 
-    QLabel *last_name = new QLabel;
-    last_name->setText(bio.last_name);
-    last_name->setAutoFillBackground(true);
-    last_name->setPalette(palette);
-    last_name->setFixedHeight(40);
-    layout->addWidget(last_name);
+    //ListLabel *label2 = new ListLabel(bio.last_name);
+    //layout->addWidget(label2);
+
+    QLineEdit *first_name = new QLineEdit;
+    first_name->setText(bio.first_name);
+    first_name->setDisabled(true);
+    first_name->setStyleSheet("background: white; color: #565656; padding: 0 5 0 5");
+    //first_name->setFixedHeight(20);
+    //layout->addWidget(first_name);
 }
 
 

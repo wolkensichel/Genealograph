@@ -26,8 +26,6 @@ private:
     void populateGroupBox(QLayout*, person);
     void cleanGroupBox(QLayout*);
 
-    QPalette palette;
-
     QVBoxLayout *widget_layout;
     QScrollArea *area;
 };

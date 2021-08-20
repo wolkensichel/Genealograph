@@ -23,6 +23,7 @@ public:
     QString getName();
     void addPartnershipRelation(Relation*);
     void setDescentRelation(Relation*);
+    void addLines();
     person bio;
     quint16 id;
 
@@ -31,6 +32,7 @@ private:
     QList<Relation *> mergeRelations(QList<Relation *>, Relation*);
 
     QGraphicsProxyWidget* proxy;
+    QWidget *widget;
     QVBoxLayout *layout;
 
     QLabel* first_name;

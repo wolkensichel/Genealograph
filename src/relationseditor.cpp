@@ -60,6 +60,7 @@ void RelationsEditor::createGroupBox(QGroupBox *box, int id)
     widget_layout[id] = new QVBoxLayout;
     widget_layout[id]->setContentsMargins(0, 0, 0, 0);
     widget_layout[id]->setAlignment(Qt::AlignTop);
+
     widget->setLayout(widget_layout[id]);
 
     palette.setColor(QPalette::Window, Qt::white);

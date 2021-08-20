@@ -9,9 +9,13 @@ SetupSheetDialog::SetupSheetDialog(QWidget *parent) : QDialog(parent)
     form_width = new QSpinBox;
     form_width->setRange(1, 65535);
     form_width->setSuffix("px");
+    form_width->setSingleStep(100);
+    form_width->setValue(800);
     form_height = new QSpinBox;
     form_height->setRange(1, 65535);
     form_height->setSuffix("px");
+    form_height->setSingleStep(100);
+    form_height->setValue(600);
 
     buttonbox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     connect(buttonbox, SIGNAL(accepted()), this, SLOT(accept()));

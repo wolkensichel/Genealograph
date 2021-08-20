@@ -33,6 +33,7 @@ private:
     void openFile();
     void saveFile();
     void saveAsFile();
+    void print();
 
     void addPerson();
     void addPartnership();
@@ -46,6 +47,7 @@ private:
     QAction *actionOpenFile;
     QAction *actionSaveFile;
     QAction *actionSaveAsFile;
+    QAction *actionPrint;
 
     QScrollArea *scrollarea;
     WorkSheet *worksheet;

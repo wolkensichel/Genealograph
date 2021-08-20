@@ -75,23 +75,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Add &amp;Person</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Add &amp;Descent</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&amp;Open ...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>S&amp;ave As ...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Add Pa&amp;rtnership</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -112,6 +96,26 @@
     </message>
     <message>
         <source>Do you want to save the current document before opening a new one?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save As ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Print</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add Person</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add Partnership</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add Descent</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

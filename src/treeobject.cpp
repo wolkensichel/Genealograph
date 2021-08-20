@@ -1,4 +1,5 @@
 #include <QPen>
+#include <QGraphicsSceneMouseEvent>
 
 #include "treeobject.h"
 #include "relation.h"
@@ -22,7 +23,7 @@ TreeObject::TreeObject(person new_person, BiographyEditor *biography_dock, Relat
     proxy = new QGraphicsProxyWidget(this);
     //proxy->setFlags(QGraphicsItem::ItemIsMovable|QGraphicsItem::ItemIsSelectable);
 
-    QWidget *widget = new QWidget();
+    widget = new QWidget();
     layout = new QVBoxLayout;
     widget->setLayout(layout);
 

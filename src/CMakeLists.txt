@@ -11,6 +11,7 @@ set(PROJECT_SOURCES
     addpartnershipdialog.cpp
     adddescentdialog.cpp
     setupsheetdialog.cpp
+    printsheetdialog.cpp
     iohandler.cpp
     listlabel.cpp
     ${TS_FILES}

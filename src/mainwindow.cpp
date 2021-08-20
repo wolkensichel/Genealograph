@@ -1,5 +1,7 @@
 #include <QtWidgets>
-#include <iostream>
+#include <QtPrintSupport/QPrinter>
+//#include <QtPrintSupport/QtPrintSupport>
+//#include <QtPrintSupport/QPrintDialog>
 
 #include "mainwindow.h"
 #include "iohandler.h"
@@ -7,6 +9,7 @@
 #include "addpersondialog.h"
 #include "addpartnershipdialog.h"
 #include "adddescentdialog.h"
+#include "printsheetdialog.h"
 #include "worksheet.h"
 #include "biographyeditor.h"
 #include "relationseditor.h"
@@ -31,19 +34,29 @@ MainWindow::~MainWindow()
 void MainWindow::createActions()
 {
     actionNewFile = new QAction(tr("&New"), this);
+    actionNewFile->setShortcut(QKeySequence(QKeySequence::New));
     connect(actionNewFile, &QAction::triggered, this, &MainWindow::newFile);
     actionOpenFile = new QAction(tr("&Open ..."), this);
+    actionOpenFile->setShortcut(QKeySequence(QKeySequence::Open));
     connect(actionOpenFile, &QAction::triggered, this, &MainWindow::openFile);
     actionSaveFile = new QAction(tr("&Save"), this);
+    actionSaveFile->setShortcut(QKeySequence(QKeySequence::Save));
     connect(actionSaveFile, &QAction::triggered, this, &MainWindow::saveFile);
-    actionSaveAsFile = new QAction(tr("S&ave As ..."), this);
+    actionSaveAsFile = new QAction(tr("Save As ..."), this);
+    actionSaveAsFile->setShortcut(QKeySequence(QKeySequence::SaveAs));
     connect(actionSaveAsFile, &QAction::triggered, this, &MainWindow::saveAsFile);
+    actionPrint = new QAction(tr("&Print"), this);
+    actionPrint->setShortcut(QKeySequence(QKeySequence::Print));
+    connect(actionPrint, &QAction::triggered, this, &MainWindow::print);
 
-    actionAddPerson = new QAction(tr("Add &Person"), this);
+    actionAddPerson = new QAction(tr("Add Person"), this);
+    actionAddPerson->setShortcut(QKeySequence(Qt::ALT + Qt::Key_W));
     connect(actionAddPerson, &QAction::triggered, this, &MainWindow::addPerson);
-    actionAddPartnership = new QAction(tr("Add Pa&rtnership"), this);
+    actionAddPartnership = new QAction(tr("Add Partnership"), this);
+    actionAddPartnership->setShortcut(QKeySequence(Qt::ALT + Qt::Key_E));
     connect(actionAddPartnership, &QAction::triggered, this, &MainWindow::addPartnership);
-    actionAddDescent = new QAction(tr("Add &Descent"), this);
+    actionAddDescent = new QAction(tr("Add Descent"), this);
+    actionAddDescent->setShortcut(QKeySequence(Qt::ALT + Qt::Key_R));
     connect(actionAddDescent, &QAction::triggered, this, &MainWindow::addDescent);
 }
 
@@ -55,6 +68,7 @@ void MainWindow::createMenu()
     menuFile->addAction(actionOpenFile);
     menuFile->addAction(actionSaveFile);
     menuFile->addAction(actionSaveAsFile);
+    menuFile->addAction(actionPrint);
 
     QMenu *menuCreate = menuBar()->addMenu(tr("&Create"));
     menuCreate->addAction(actionAddPerson);
@@ -212,6 +226,16 @@ void MainWindow::saveAsFile()
     IOHandler handler;
     save_data worksheet_data = collectWorksheetData();
     handler.saveToFile(worksheet_data, save_file);
+}
+
+
+void MainWindow::print()
+{
+    QPrinter printer(QPrinter::HighResolution);
+    printer.setPrintRange(QPrinter::CurrentPage);
+
+    PrintSheetDialog printDialog(printer);
+    printDialog.print(view);
 }
 
 
