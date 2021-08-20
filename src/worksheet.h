@@ -18,7 +18,7 @@ class WorkSheet : public QGraphicsScene
     Q_OBJECT
 
 public:
-    enum Mode {AddCard, MoveCard};
+    enum Mode {Default, NewCard};
     quint16 id_counter;
     explicit WorkSheet(QMenu*, BiographyEditor*, RelationsEditor*, QObject *parent = nullptr);
     void setMode(Mode mode);
@@ -35,6 +35,8 @@ public:
 private:
     int getTreeObjectListPosition(quint16);
     int getPartnershipRelationListPosition(quint16, quint16);
+    void outOfScopeCorrection();
+    void snapToGrid();
 
     QList<TreeObject *> tree_objects;
     QList<Relation *> partnership_relations;
@@ -46,6 +48,10 @@ private:
     QGraphicsItem *item;
 
     int grid_size;
+    int current_pos_x;
+    int current_pos_y;
+    int rest_x;
+    int rest_y;
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;

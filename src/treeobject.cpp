@@ -9,19 +9,12 @@
 #include <QTextStream>
 
 
-TreeObject::TreeObject(person new_person, BiographyEditor *biography_dock, RelationsEditor *relations_dock, quint16 current_id, QGraphicsScene *scene)
+TreeObject::TreeObject(person new_person, BiographyEditor *biography_dock, RelationsEditor *relations_dock, quint16 current_id)
 {
     biography_editor = biography_dock;
     relations_editor = relations_dock;
     bio = new_person;
     id = current_id;
-
-    setFlags(QGraphicsItem::ItemIsMovable|QGraphicsItem::ItemSendsGeometryChanges|QGraphicsItem::ItemIsSelectable); //QGraphicsItem::ItemIsSelectable
-    setRect(0, 0, 79, 99);
-    setBrush(Qt::lightGray);
-
-    proxy = new QGraphicsProxyWidget(this);
-    //proxy->setFlags(QGraphicsItem::ItemIsMovable|QGraphicsItem::ItemIsSelectable);
 
     widget = new QWidget();
     layout = new QVBoxLayout;
@@ -29,20 +22,22 @@ TreeObject::TreeObject(person new_person, BiographyEditor *biography_dock, Relat
 
     fillFields(bio);
 
+    proxy = new QGraphicsProxyWidget(this);
     proxy->setWidget(widget);
 
-    setPos(scene->width()/2-40, scene->height()/2-50);
-    scene->addItem(this);
+    setRect(2, 2, widget->width()-4, widget->height()-4);
+    setBrush(Qt::lightGray);
+    setFlags(QGraphicsItem::ItemIsMovable|QGraphicsItem::ItemSendsGeometryChanges|QGraphicsItem::ItemIsSelectable);
 }
 
 
 void TreeObject::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    QColor highlight_color;
+    /*QColor highlight_color;
     highlight_color.setRgb(30, 200, 255, 255);
     QPen pen(highlight_color);
     pen.setWidth(2);
-    setPen(pen);
+    setPen(pen);*/
     setZValue(1);
 
     biography_editor->clear();
@@ -50,7 +45,7 @@ void TreeObject::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
     relations_editor->clear();
     QList<Relation *> relations = mergeRelations(partnerships, descent);
-    if (relations.isEmpty() == false)
+    if (!relations.isEmpty())
         relations_editor->update(this, relations);
 
     QGraphicsItem::mousePressEvent(event);
@@ -61,12 +56,14 @@ void TreeObject::fillFields(person person)
 {
     first_name = new QLabel;
     first_name->setText(person.first_name);
-    //first_name->setGeometry(0, 0, 80, 25);
+    //first_name->setGeometry(0, 0, 100, 20);
+    first_name->setFixedSize(100,20);
     layout->addWidget(first_name);
 
     last_name = new QLabel;
     last_name->setText(person.last_name);
-    //last_name->setGeometry(0, 0, 80, 25);
+    //last_name->setGeometry(0, 0, 100, 20);
+    last_name->setFixedSize(100,20);
     layout->addWidget(last_name);
 }
 

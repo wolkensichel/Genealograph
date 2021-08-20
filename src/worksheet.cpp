@@ -3,6 +3,7 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsProxyWidget>
 #include <QGraphicsItem>
+#include <QWidget>
 #include <QTextStream>
 #include <iostream>
 
@@ -16,7 +17,7 @@ WorkSheet::WorkSheet(QMenu *menuCreate, BiographyEditor *biography_dock, Relatio
 {
     id_counter = 1;
     grid_size = 20;
-    current_mode = MoveCard;
+    current_mode = Default;
     biography_editor = biography_dock;
     relations_editor = relations_dock;
 }
@@ -32,19 +33,21 @@ void WorkSheet::createTreeCard(person new_person, quint16 id, QPointF pos)
 {
     if (id == quint16(0))
     {
-        TreeObject *treecard = new TreeObject(new_person, biography_editor, relations_editor, id_counter, this);
+        TreeObject *treecard = new TreeObject(new_person, biography_editor, relations_editor, id_counter);
         tree_objects.append(treecard);
+        addItem(treecard);
         id_counter++;
+        setMode(NewCard);
     }
     else
     {
-        TreeObject *treecard = new TreeObject(new_person, biography_editor, relations_editor, id, this);
+        TreeObject *treecard = new TreeObject(new_person, biography_editor, relations_editor, id);
         tree_objects.append(treecard);
+        addItem(treecard);
         treecard->setPos(pos);
         if (id_counter < id)
             id_counter = ++id;
     }
-    //setMode(MoveCard);
 }
 
 
@@ -57,7 +60,6 @@ void WorkSheet::createPartnershipRelation(int* partnership)
 
         Relation *relation = new Relation(partner1, partner2, this);
         partnership_relations.append(relation);
-        //setMode(MoveCard);
     }
 }
 
@@ -71,7 +73,6 @@ void WorkSheet::createDescentRelation(int* descent)
 
         Relation *relation = new Relation(partnership, child, this);
         descent_relations.append(relation);
-        //setMode(MoveCard);
     }
 }
 
@@ -87,32 +88,53 @@ void WorkSheet::mousePressEvent(QGraphicsSceneMouseEvent *event)
         treecard->setZValue(0);
     }
 
-    item = mouseGrabberItem();
-    QTextStream cout(stdout);
-    cout << selectedItems().length() << "\n";
-
     QGraphicsScene::mousePressEvent(event);
+}
+
+
+void WorkSheet::outOfScopeCorrection()
+{
+    if (current_pos_x < 0)
+        current_pos_x = 0;
+    else if (current_pos_x > width()-item->boundingRect().width())
+        current_pos_x = width()-item->boundingRect().width();
+
+    if (current_pos_y < 0)
+        current_pos_y = 0;
+    else if (current_pos_y > height()-item->boundingRect().height())
+        current_pos_y = height()-item->boundingRect().height();
+}
+
+
+void WorkSheet::snapToGrid()
+{
+    rest_x = current_pos_x % grid_size;
+    rest_y = current_pos_y % grid_size;
+
+    if (rest_x <= grid_size/2)
+        item->setX(current_pos_x-rest_x);
+    else if (rest_x > grid_size/2)
+        item->setX(current_pos_x+grid_size-rest_x);
+
+    if (rest_y <= grid_size/2)
+        item->setY(current_pos_y-rest_y);
+    else if (rest_y > grid_size/2)
+        item->setY(current_pos_y+grid_size-rest_y);
 }
 
 
 void WorkSheet::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-    if (selectedItems().length() > 0) {
+    setMode(Default);
+
+    if (!selectedItems().isEmpty()) {
         item = selectedItems()[0];
-        int current_pos_x = static_cast<int>(item->pos().x());
-        int current_pos_y = static_cast<int>(item->pos().y());
-        int rest_x = current_pos_x % grid_size;
-        int rest_y = current_pos_y % grid_size;
 
-        if (rest_x <= grid_size/2)
-            item->setX(item->pos().x()-rest_x);
-        else if (rest_x > grid_size/2)
-            item->setX(item->pos().x()+grid_size-rest_x);
+        current_pos_x = static_cast<int>(item->pos().x());
+        current_pos_y = static_cast<int>(item->pos().y());
 
-        if (rest_y <= grid_size/2)
-            item->setY(item->pos().y()-rest_y);
-        else if (rest_y > grid_size/2)
-            item->setY(item->pos().y()+grid_size-rest_y);
+        outOfScopeCorrection();
+        snapToGrid();
 
         foreach (Relation *partnership, partnership_relations)
             partnership->updatePosition();
@@ -125,12 +147,10 @@ void WorkSheet::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 
 void WorkSheet::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-    if (current_mode == AddCard) {
-        //QLineF newLine(line->line().p1(), mouseEvent->scenePos());
-        //line->setLine(newLine);
-    } else if (current_mode == MoveCard) {
-        QGraphicsScene::mouseMoveEvent(event);
-    }
+    if (current_mode == NewCard)
+        tree_objects.last()->setPos(event->scenePos()-QPointF(tree_objects.last()->boundingRect().width()/2,
+                                                              tree_objects.last()->boundingRect().height()/2));
+    QGraphicsScene::mouseMoveEvent(event);
 }
 
 
