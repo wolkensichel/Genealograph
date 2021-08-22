@@ -18,7 +18,7 @@ class WorkSheet : public QGraphicsScene
     Q_OBJECT
 
 public:
-    enum Mode {Default, NewCard};
+    enum Mode {Default, MoveCard};
     quint16 id_counter;
     explicit WorkSheet(QMenu*, BiographyEditor*, RelationsEditor*, QObject *parent = nullptr);
     void setMode(Mode mode);
@@ -41,11 +41,13 @@ private:
     QList<TreeObject *> tree_objects;
     QList<Relation *> partnership_relations;
     QList<Relation *> descent_relations;
-    Mode current_mode;
+
     BiographyEditor *biography_editor;
     RelationsEditor *relations_editor;
 
     QGraphicsItem *item;
+
+    Mode active_mode;
 
     int grid_size;
     int current_pos_x;
@@ -57,7 +59,7 @@ protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
-
+    void keyPressEvent(QKeyEvent *event) override;
 };
 
 #endif // WORKSHEET_H

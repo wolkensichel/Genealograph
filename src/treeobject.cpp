@@ -25,9 +25,10 @@ TreeObject::TreeObject(person new_person, BiographyEditor *biography_dock, Relat
     proxy = new QGraphicsProxyWidget(this);
     proxy->setWidget(widget);
 
-    setRect(2, 2, widget->width()-4, widget->height()-4);
+    setRect(-1, -1, widget->width()+1, widget->height()+1);
     setBrush(Qt::lightGray);
-    setFlags(QGraphicsItem::ItemIsMovable|QGraphicsItem::ItemSendsGeometryChanges|QGraphicsItem::ItemIsSelectable);
+    setFlags(QGraphicsItem::ItemIsMovable|QGraphicsItem::ItemSendsGeometryChanges|
+             QGraphicsItem::ItemIsSelectable|QGraphicsItem::ItemIsFocusable);
 }
 
 

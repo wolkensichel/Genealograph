@@ -3,6 +3,7 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsProxyWidget>
 #include <QGraphicsItem>
+#include <QMessageBox>
 #include <QWidget>
 #include <QTextStream>
 #include <iostream>
@@ -17,7 +18,7 @@ WorkSheet::WorkSheet(QMenu *menuCreate, BiographyEditor *biography_dock, Relatio
 {
     id_counter = 1;
     grid_size = 20;
-    current_mode = Default;
+    active_mode = Default;
     biography_editor = biography_dock;
     relations_editor = relations_dock;
 }
@@ -25,28 +26,30 @@ WorkSheet::WorkSheet(QMenu *menuCreate, BiographyEditor *biography_dock, Relatio
 
 void WorkSheet::setMode(Mode mode)
 {
-    current_mode = mode;
+    active_mode = mode;
 }
 
 
 void WorkSheet::createTreeCard(person new_person, quint16 id, QPointF pos)
 {
+    clearSelection();
     if (id == quint16(0))
     {
         TreeObject *treecard = new TreeObject(new_person, biography_editor, relations_editor, id_counter);
         tree_objects.append(treecard);
         addItem(treecard);
         id_counter++;
-        setMode(NewCard);
+        treecard->setSelected(true);
+        setMode(MoveCard);
     }
     else
     {
         TreeObject *treecard = new TreeObject(new_person, biography_editor, relations_editor, id);
         tree_objects.append(treecard);
         addItem(treecard);
-        treecard->setPos(pos);
         if (id_counter < id)
             id_counter = ++id;
+        treecard->setPos(pos);
     }
 }
 
@@ -81,6 +84,8 @@ void WorkSheet::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     if (event->button() != Qt::LeftButton)
         return;
+
+    setMode(MoveCard);
 
     foreach (TreeObject *treecard, tree_objects)
     {
@@ -126,9 +131,11 @@ void WorkSheet::snapToGrid()
 void WorkSheet::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     setMode(Default);
+    QTextStream cout(stdout);
+    cout << "\n\n\n";
 
     if (!selectedItems().isEmpty()) {
-        item = selectedItems()[0];
+        item = selectedItems().first();
 
         current_pos_x = static_cast<int>(item->pos().x());
         current_pos_y = static_cast<int>(item->pos().y());
@@ -147,10 +154,47 @@ void WorkSheet::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 
 void WorkSheet::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-    if (current_mode == NewCard)
-        tree_objects.last()->setPos(event->scenePos()-QPointF(tree_objects.last()->boundingRect().width()/2,
-                                                              tree_objects.last()->boundingRect().height()/2));
+    if (!selectedItems().isEmpty() && active_mode == MoveCard)
+    {
+        item = selectedItems().first();
+
+        if (event->scenePos().x() > width()-item->boundingRect().width()/2)
+            item->setX(width()-item->boundingRect().width());
+        else if (event->scenePos().x() < item->boundingRect().width()/2)
+            item->setX(0);
+        else
+            item->setX(event->scenePos().x()-item->boundingRect().width()/2);
+
+        if (event->scenePos().y() > height()-item->boundingRect().height()/2)
+            item->setY(height()-item->boundingRect().height());
+        else if (event->scenePos().y() < item->boundingRect().height()/2)
+            item->setY(0);
+        else
+            item->setY(event->scenePos().y()-item->boundingRect().height()/2);
+    }
+
     QGraphicsScene::mouseMoveEvent(event);
+}
+
+
+void WorkSheet::keyPressEvent(QKeyEvent *event)
+{
+    QTextStream cout(stdout);
+    if (event->key() == Qt::Key_Escape && !selectedItems().isEmpty()) {
+        QMessageBox msg_box;
+        msg_box.setText(tr("Delete Tree Card"));
+        msg_box.setInformativeText(tr("Are you sure that you want to remove this card?"));
+        msg_box.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+        msg_box.setDefaultButton(QMessageBox::Cancel);
+
+        if (msg_box.exec() == QMessageBox::Ok) {
+            item = selectedItems().first();
+            //TreeObject *treeitem = qgraphicsitem_cast<TreeObject *>(item);
+            //treeitem->getName();
+            removeItem(item);
+        }
+    }
+    QGraphicsScene::keyPressEvent(event);
 }
 
 
@@ -186,8 +230,9 @@ void WorkSheet::createTreeFromFile(load_data &data)
     while (it_ps.hasNext())
     {
         partnership_data *current_object = it_ps.next();
-        reference_ids[0] = getTreeObjectListPosition(current_object->id_partner1);
-        reference_ids[1] = getTreeObjectListPosition(current_object->id_partner2);
+        //reference_ids[0] = getTreeObjectListPosition(current_object->id_partner1);
+        //reference_ids[1] = getTreeObjectListPosition(current_object->id_partner2);
+
         createPartnershipRelation(reference_ids);
     }
 

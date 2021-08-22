@@ -243,10 +243,7 @@ void MainWindow::addPerson()
 {
     AddPersonDialog addPerson;
     if (addPerson.exec() == QDialog::Accepted)
-    {
-        //worksheet->setMode(WorkSheet::AddCard);
         worksheet->createTreeCard(addPerson.fetchFormInputs());
-    }
 }
 
 
@@ -256,9 +253,7 @@ void MainWindow::addPartnership()
     addPartnership.populateDropDownMenus(worksheet->getTreeObjectList());
 
     if (addPartnership.exec() == QDialog::Accepted)
-    {
         worksheet->createPartnershipRelation(addPartnership.fetchFormInputs());
-    }
 }
 
 
@@ -268,7 +263,5 @@ void MainWindow::addDescent()
     addDescent.populateDropDownMenus(worksheet->getTreeObjectList(), worksheet->getPartnershipRelationList());
 
     if (addDescent.exec() == QDialog::Accepted)
-    {
         worksheet->createDescentRelation(addDescent.fetchFormInputs());
-    }
 }

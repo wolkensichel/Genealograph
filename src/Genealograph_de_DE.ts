@@ -149,4 +149,15 @@
         <translation type="unfinished"></translation>
     </message>
 </context>
+<context>
+    <name>WorkSheet</name>
+    <message>
+        <source>Delete Tree Card</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Are you sure that you want to remove this card?</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
 </TS>
