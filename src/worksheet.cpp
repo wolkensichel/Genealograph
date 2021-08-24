@@ -62,6 +62,7 @@ void WorkSheet::createPartnershipRelation(int* partnership)
         TreeObject* partner2 = tree_objects.at(*(partnership+1));
 
         Relation *relation = new Relation(partner1, partner2, this);
+        addItem(relation);
         partnership_relations.append(relation);
     }
 }
@@ -75,6 +76,7 @@ void WorkSheet::createDescentRelation(int* descent)
         TreeObject* child = tree_objects.at(*(descent+1));
 
         Relation *relation = new Relation(partnership, child, this);
+        addItem(relation);
         descent_relations.append(relation);
     }
 }
@@ -131,8 +133,6 @@ void WorkSheet::snapToGrid()
 void WorkSheet::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     setMode(Default);
-    QTextStream cout(stdout);
-    cout << "\n\n\n";
 
     if (!selectedItems().isEmpty()) {
         item = selectedItems().first();
@@ -177,23 +177,84 @@ void WorkSheet::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 }
 
 
+void WorkSheet::removeTreeObjectDialog()
+{
+    QMessageBox msg_box;
+    msg_box.setText(tr("Delete Tree Card"));
+    msg_box.setInformativeText(tr("Are you sure that you want to remove this card and all of its relations?"));
+    msg_box.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+    msg_box.setDefaultButton(QMessageBox::Cancel);
+
+    if (msg_box.exec() == QMessageBox::Ok)
+        removeTreeObject();
+}
+
+
+void WorkSheet::removeTreeObject()
+{
+    TreeObject *item = qgraphicsitem_cast<TreeObject *>(selectedItems().first());
+    removePartnershipRelations(item->partnerships);
+    removeParentsRelation(item->descent);
+
+    // remove tree object from tree_objects list
+    tree_objects.removeOne(qgraphicsitem_cast<TreeObject *>(item));
+    // remove tree object from scene
+    removeItem(item);
+}
+
+
+void WorkSheet::removeParentsRelation(Relation* descent)
+{
+    if (descent != nullptr) {
+        // remove descent relation from parents partnership relation
+        descent->parents->descents.removeOne(descent);
+        // remove descent relation from descent_relations list
+        descent_relations.removeOne(descent);
+        // remove descent relation from scene
+        removeItem(descent);
+    }
+}
+
+
+void WorkSheet::removePartnershipRelations(QList<Relation *> partnerships)
+{
+    foreach (Relation *partnership, partnerships) {
+        if (!partnership->descents.isEmpty())
+            removeChildRelations(partnership->descents);
+
+        // remove partnership relation from partner tree object
+        if (partnership->tree_objects.first() == item)
+            partnership->tree_objects.last()->partnerships.removeOne(partnership);
+        else
+            partnership->tree_objects.first()->partnerships.removeOne(partnership);
+
+        // remove partnership relation from partnership_relations list
+        partnership_relations.removeOne(partnership);
+        // remove partnership relation from scene
+        removeItem(partnership);
+    }
+}
+
+
+void WorkSheet::removeChildRelations(QList<Relation *> descents)
+{
+    foreach (Relation *descent, descents) {
+        // remove descent relation from child tree object
+        descent->tree_objects.first()->descent = nullptr;
+        // remove descent relation from descent_relations list
+        descent_relations.removeOne(descent);
+        // remove descent relation from scene
+        removeItem(descent);
+    }
+}
+
+
 void WorkSheet::keyPressEvent(QKeyEvent *event)
 {
-    QTextStream cout(stdout);
-    if (event->key() == Qt::Key_Escape && !selectedItems().isEmpty()) {
-        QMessageBox msg_box;
-        msg_box.setText(tr("Delete Tree Card"));
-        msg_box.setInformativeText(tr("Are you sure that you want to remove this card?"));
-        msg_box.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
-        msg_box.setDefaultButton(QMessageBox::Cancel);
+    if (event->key() == Qt::Key_Delete && !selectedItems().isEmpty())
+        if (selectedItems().first()->type() == TreeObject::Type)
+            removeTreeObjectDialog();
 
-        if (msg_box.exec() == QMessageBox::Ok) {
-            item = selectedItems().first();
-            //TreeObject *treeitem = qgraphicsitem_cast<TreeObject *>(item);
-            //treeitem->getName();
-            removeItem(item);
-        }
-    }
     QGraphicsScene::keyPressEvent(event);
 }
 
@@ -230,8 +291,8 @@ void WorkSheet::createTreeFromFile(load_data &data)
     while (it_ps.hasNext())
     {
         partnership_data *current_object = it_ps.next();
-        //reference_ids[0] = getTreeObjectListPosition(current_object->id_partner1);
-        //reference_ids[1] = getTreeObjectListPosition(current_object->id_partner2);
+        reference_ids[0] = getTreeObjectListPosition(current_object->id_partner1);
+        reference_ids[1] = getTreeObjectListPosition(current_object->id_partner2);
 
         createPartnershipRelation(reference_ids);
     }
@@ -240,8 +301,8 @@ void WorkSheet::createTreeFromFile(load_data &data)
     while (it_d.hasNext())
     {
         descent_data *current_object = it_d.next();
-        reference_ids[0] = getPartnershipRelationListPosition(
-                    current_object->id_parent1, current_object->id_parent2);
+        reference_ids[0] = getPartnershipRelationListPosition(current_object->id_parent1,
+                                                              current_object->id_parent2);
         reference_ids[1] = getTreeObjectListPosition(current_object->id_child);
         createDescentRelation(reference_ids);
     }
@@ -251,9 +312,8 @@ void WorkSheet::createTreeFromFile(load_data &data)
 int WorkSheet::getTreeObjectListPosition(quint16 id)
 {
     auto predicate = [id](TreeObject *tree_object) { return tree_object->id == id; };
-    return std::find_if(std::begin(tree_objects), std::end(tree_objects), predicate)
-            - std::begin(tree_objects);
-
+    return std::find_if(tree_objects.begin(), tree_objects.end(), predicate)
+            - tree_objects.begin();
 }
 
 
@@ -263,8 +323,8 @@ int WorkSheet::getPartnershipRelationListPosition(quint16 id_parent1, quint16 id
         return (partnership->tree_objects.first()->id == id_parent1
                 && partnership->tree_objects.last()->id == id_parent2);
         };
-    return std::find_if(std::begin(partnership_relations), std::end(partnership_relations), predicate)
-            - std::begin(partnership_relations);
+    return std::find_if(partnership_relations.begin(), partnership_relations.end(), predicate)
+            - partnership_relations.begin();
 }
 
 

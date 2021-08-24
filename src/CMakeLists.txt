@@ -14,6 +14,7 @@ set(PROJECT_SOURCES
     printsheetdialog.cpp
     iohandler.cpp
     listlabel.cpp
+    relationslistitem.cpp
     ${TS_FILES}
 )
 

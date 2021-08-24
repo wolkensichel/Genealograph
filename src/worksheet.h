@@ -38,14 +38,20 @@ private:
     void outOfScopeCorrection();
     void snapToGrid();
 
-    QList<TreeObject *> tree_objects;
-    QList<Relation *> partnership_relations;
-    QList<Relation *> descent_relations;
+    void removeTreeObjectDialog();
+    void removeTreeObject();
+    void removeParentsRelation(Relation*);
+    void removePartnershipRelations(QList<Relation *>);
+    void removeChildRelations(QList<Relation *>);
 
     BiographyEditor *biography_editor;
     RelationsEditor *relations_editor;
 
     QGraphicsItem *item;
+    QList<QGraphicsItem *> item_list;
+    QList<TreeObject *> tree_objects;
+    QList<Relation *> partnership_relations;
+    QList<Relation *> descent_relations;
 
     Mode active_mode;
 

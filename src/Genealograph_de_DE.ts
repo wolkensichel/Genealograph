@@ -156,7 +156,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Are you sure that you want to remove this card?</source>
+        <source>Are you sure that you want to remove this card and all of its relations?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

@@ -5,6 +5,7 @@
 
 #include "relationseditor.h"
 #include "relation.h"
+#include "relationslistitem.h"
 #include "treeobject.h"
 
 RelationsEditor::RelationsEditor(QDockWidget *dock)
@@ -46,22 +47,22 @@ RelationsEditor::RelationsEditor(QDockWidget *dock)
 
 void RelationsEditor::createGroupBox(QGroupBox *box, int id)
 {
-    QVBoxLayout *box_layout = new QVBoxLayout;
-    box_layout->setContentsMargins(0, 0, 0, 0);
-    box->setLayout(box_layout);
+    box_layout[id] = new QVBoxLayout;
+    box_layout[id]->setContentsMargins(0, 0, 0, 0);
+    box->setLayout(box_layout[id]);
 
-    QScrollArea *scrollarea = new QScrollArea;
-    scrollarea->setWidgetResizable(true);
-    box_layout->addWidget(scrollarea);
-
-    QWidget *widget = new QWidget;
-    scrollarea->setWidget(widget);
+    scrollarea[id] = new QScrollArea;
+    scrollarea[id]->setWidgetResizable(true);
+    box_layout[id]->addWidget(scrollarea[id]);
 
     widget_layout[id] = new QVBoxLayout;
+    widget_layout[id]->setSizeConstraint(QLayout::SetMinAndMaxSize);
     widget_layout[id]->setContentsMargins(0, 0, 0, 0);
     widget_layout[id]->setAlignment(Qt::AlignTop);
 
-    widget->setLayout(widget_layout[id]);
+    widget[id] = new QWidget;
+    widget[id]->setLayout(widget_layout[id]);
+    scrollarea[id]->setWidget(widget[id]);
 
     palette.setColor(QPalette::Window, Qt::white);
 }
@@ -69,15 +70,12 @@ void RelationsEditor::createGroupBox(QGroupBox *box, int id)
 
 void RelationsEditor::populateGroupBox(QLayout* layout, QList<TreeObject *> treecards)
 {
-    QLabel *labels[treecards.size()];
+    RelationsListItem *items[treecards.size()];
 
     for(int i = 0; i < treecards.size(); i++)
     {
-        labels[i] = new QLabel(treecards[i]->getName());
-        labels[i]->setAutoFillBackground(true);
-        labels[i]->setPalette(palette);
-        labels[i]->setFixedHeight(40);
-        layout->addWidget(labels[i]);
+        items[i] = new RelationsListItem(treecards[i]->getName());
+        layout->addWidget(items[i]);
     }
 }
 
@@ -96,7 +94,7 @@ void RelationsEditor::cleanGroupBox(QLayout* layout)
 void RelationsEditor::clear()
 {
     for (int i = 0; i <= 2; i++)
-        cleanGroupBox(widget_layout[i]->layout());
+        cleanGroupBox(widget_layout[i]);
 }
 
 
@@ -105,7 +103,7 @@ void RelationsEditor::update(TreeObject* treecard, QList<Relation *> relations)
     // set parents
     if(relations.last()->parents != nullptr)
     {
-        populateGroupBox(widget_layout[0]->layout(), relations.last()->parents->getTreeObjects());
+        populateGroupBox(widget_layout[0], relations.last()->parents->getTreeObjects());
         relations.removeLast();
     }
 
@@ -125,6 +123,6 @@ void RelationsEditor::update(TreeObject* treecard, QList<Relation *> relations)
             children.append(child->tree_objects[0]);
     }
 
-    populateGroupBox(widget_layout[1]->layout(), partners);
-    populateGroupBox(widget_layout[2]->layout(), children);
+    populateGroupBox(widget_layout[1], partners);
+    populateGroupBox(widget_layout[2], children);
 }

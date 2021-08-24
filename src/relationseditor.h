@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QGroupBox>
 #include <QVBoxLayout>
+#include <QScrollArea>
 
 class Relation;
 class TreeObject;
@@ -29,6 +30,9 @@ private:
     QGroupBox *groupbox_children;
 
     QVBoxLayout *widget_layout[3];
+    QVBoxLayout *box_layout[3];
+    QScrollArea *scrollarea[3];
+    QWidget *widget[3];
 
     QDockWidget *parent;
 

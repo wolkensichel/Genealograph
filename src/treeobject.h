@@ -23,9 +23,14 @@ public:
     QString getName();
     void addPartnershipRelation(Relation*);
     void setDescentRelation(Relation*);
+    QList<Relation *> getPartnershipRelations();
+    Relation* getDescentRelation();
     void addLines();
     person bio;
     quint16 id;
+
+    QList<Relation *> partnerships;
+    Relation* descent = nullptr;
 
 private:
     void fillFields(person);
@@ -37,9 +42,6 @@ private:
 
     QLabel* first_name;
     QLabel* last_name;
-
-    QList<Relation *> partnerships;
-    Relation* descent = nullptr;
 
     BiographyEditor *biography_editor;
     RelationsEditor *relations_editor;

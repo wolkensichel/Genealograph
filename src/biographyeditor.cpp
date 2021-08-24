@@ -37,7 +37,7 @@ BiographyEditor::BiographyEditor()
 void BiographyEditor::createBio()
 {
     widget_layout = new QVBoxLayout;
-    widget_layout->setSizeConstraint(QLayout::SetMinAndMaxSize); // necessary to see labels
+    widget_layout->setSizeConstraint(QLayout::SetMinAndMaxSize);
     widget_layout->setContentsMargins(0, 0, 0, 0);
 
     QWidget *widget = new QWidget;
@@ -56,13 +56,6 @@ void BiographyEditor::populateGroupBox(QLayout *layout, person bio)
 
     //ListLabel *label2 = new ListLabel(bio.last_name);
     //layout->addWidget(label2);
-
-    QLineEdit *first_name = new QLineEdit;
-    first_name->setText(bio.first_name);
-    first_name->setDisabled(true);
-    first_name->setStyleSheet("background: white; color: #565656; padding: 0 5 0 5");
-    //first_name->setFixedHeight(20);
-    //layout->addWidget(first_name);
 }
 
 
@@ -79,11 +72,11 @@ void BiographyEditor::cleanGroupBox(QLayout* layout)
 void BiographyEditor::clear()
 {
     for (int i = 0; i <= 2; i++)
-        cleanGroupBox(widget_layout->layout());
+        cleanGroupBox(widget_layout);
 }
 
 
 void BiographyEditor::update(person bio)
 {
-    populateGroupBox(widget_layout->layout(), bio);
+    populateGroupBox(widget_layout, bio);
 }

@@ -12,12 +12,12 @@ Relation::Relation(TreeObject* treecard1, TreeObject* treecard2, QGraphicsScene 
     tree_objects.append(treecard1);
     tree_objects.append(treecard2);
 
+    treecard1->addPartnershipRelation(this);
+    treecard2->addPartnershipRelation(this);
+
     setPen(QPen(Qt::black, 1));
     setZValue(-1);
     updatePosition();
-
-    treecard1->addPartnershipRelation(this);
-    treecard2->addPartnershipRelation(this);
 
     scene->addItem(this);
 }
