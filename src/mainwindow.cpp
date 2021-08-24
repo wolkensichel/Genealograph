@@ -109,7 +109,7 @@ void MainWindow::createWorkSheet()
     //scrollarea->setBackgroundRole(QPalette::Midlight);
     //scrollarea->setWidgetResizable(true);
 
-    worksheet = new WorkSheet(menuCreate, biography_editor, relations_editor, scrollarea);
+    worksheet = new WorkSheet(menuCreate, this);
     worksheet->setSceneRect(QRectF(0,0,800,600));
 
     view = new QGraphicsView(worksheet, scrollarea);

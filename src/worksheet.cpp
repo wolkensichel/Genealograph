@@ -13,14 +13,12 @@
 #include "relation.h"
 
 
-WorkSheet::WorkSheet(QMenu *menuCreate, BiographyEditor *biography_dock, RelationsEditor *relations_dock, QObject *parent)
+WorkSheet::WorkSheet(QMenu *menuCreate, QObject *parent)
     : QGraphicsScene(parent)
 {
     id_counter = 1;
     grid_size = 20;
     active_mode = Default;
-    biography_editor = biography_dock;
-    relations_editor = relations_dock;
 }
 
 
@@ -35,7 +33,7 @@ void WorkSheet::createTreeCard(person new_person, quint16 id, QPointF pos)
     clearSelection();
     if (id == quint16(0))
     {
-        TreeObject *treecard = new TreeObject(new_person, biography_editor, relations_editor, id_counter);
+        TreeObject *treecard = new TreeObject(new_person, id_counter);
         tree_objects.append(treecard);
         addItem(treecard);
         id_counter++;
@@ -44,7 +42,7 @@ void WorkSheet::createTreeCard(person new_person, quint16 id, QPointF pos)
     }
     else
     {
-        TreeObject *treecard = new TreeObject(new_person, biography_editor, relations_editor, id);
+        TreeObject *treecard = new TreeObject(new_person, id);
         tree_objects.append(treecard);
         addItem(treecard);
         if (id_counter < id)
@@ -177,6 +175,16 @@ void WorkSheet::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 }
 
 
+void WorkSheet::keyPressEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_Delete && !selectedItems().isEmpty())
+        if (selectedItems().first()->type() == TreeObject::Type)
+            removeTreeObjectDialog();
+
+    QGraphicsScene::keyPressEvent(event);
+}
+
+
 void WorkSheet::removeTreeObjectDialog()
 {
     QMessageBox msg_box;
@@ -246,16 +254,6 @@ void WorkSheet::removeChildRelations(QList<Relation *> descents)
         // remove descent relation from scene
         removeItem(descent);
     }
-}
-
-
-void WorkSheet::keyPressEvent(QKeyEvent *event)
-{
-    if (event->key() == Qt::Key_Delete && !selectedItems().isEmpty())
-        if (selectedItems().first()->type() == TreeObject::Type)
-            removeTreeObjectDialog();
-
-    QGraphicsScene::keyPressEvent(event);
 }
 
 

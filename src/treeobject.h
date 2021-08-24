@@ -11,21 +11,20 @@
 
 
 class Relation;
-class DescentRelation;
-class RelationsEditor;
-class BiographyEditor;
 
 
 class TreeObject : public QGraphicsRectItem
 {
 public:
-    TreeObject(person, BiographyEditor*, RelationsEditor*, quint16);
+    TreeObject(person, quint16);
     QString getName();
     void addPartnershipRelation(Relation*);
     void setDescentRelation(Relation*);
     QList<Relation *> getPartnershipRelations();
     Relation* getDescentRelation();
     void addLines();
+    void updateBiographyEditor();
+    void updateRelationsEditor();
     person bio;
     quint16 id;
 
@@ -42,9 +41,6 @@ private:
 
     QLabel* first_name;
     QLabel* last_name;
-
-    BiographyEditor *biography_editor;
-    RelationsEditor *relations_editor;
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;

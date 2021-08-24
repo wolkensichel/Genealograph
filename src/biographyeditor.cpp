@@ -3,7 +3,7 @@
 #include <QSizePolicy>
 
 #include "biographyeditor.h"
-#include "listlabel.h"
+#include "biographylistitem.h"
 
 
 BiographyEditor::BiographyEditor()
@@ -51,7 +51,7 @@ void BiographyEditor::createBio()
 
 void BiographyEditor::populateGroupBox(QLayout *layout, person bio)
 {
-    ListLabel *label = new ListLabel(bio.first_name, QString("First Name:"));
+    BiographyListItem *label = new BiographyListItem(bio.first_name, QString("First Name:"));
     layout->addWidget(label);
 
     //ListLabel *label2 = new ListLabel(bio.last_name);
@@ -71,8 +71,7 @@ void BiographyEditor::cleanGroupBox(QLayout* layout)
 
 void BiographyEditor::clear()
 {
-    for (int i = 0; i <= 2; i++)
-        cleanGroupBox(widget_layout);
+    cleanGroupBox(widget_layout);
 }
 
 

@@ -13,8 +13,9 @@ set(PROJECT_SOURCES
     setupsheetdialog.cpp
     printsheetdialog.cpp
     iohandler.cpp
-    listlabel.cpp
+    biographylistitem.cpp
     relationslistitem.cpp
+    clicklabel.cpp
     ${TS_FILES}
 )
 

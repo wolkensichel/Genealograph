@@ -18,6 +18,10 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow(QWidget *parent = nullptr);
+    QDockWidget *dock_biography;
+    QDockWidget *dock_relations;
+    RelationsEditor *relations_editor;
+    BiographyEditor *biography_editor;
     ~MainWindow();
 
 private:
@@ -52,10 +56,6 @@ private:
     QScrollArea *scrollarea;
     WorkSheet *worksheet;
     QGraphicsView *view;
-    QDockWidget *dock_biography;
-    QDockWidget *dock_relations;
-    RelationsEditor *relations_editor;
-    BiographyEditor *biography_editor;
 
     //QMenu *menuFile;
     QMenu *menuCreate;

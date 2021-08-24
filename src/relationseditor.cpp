@@ -68,13 +68,13 @@ void RelationsEditor::createGroupBox(QGroupBox *box, int id)
 }
 
 
-void RelationsEditor::populateGroupBox(QLayout* layout, QList<TreeObject *> treecards)
+void RelationsEditor::populateGroupBox(QLayout* layout, TreeObject* person, QList<TreeObject *> treecards, Relationship type)
 {
     RelationsListItem *items[treecards.size()];
 
     for(int i = 0; i < treecards.size(); i++)
     {
-        items[i] = new RelationsListItem(treecards[i]->getName());
+        items[i] = new RelationsListItem(person, treecards[i], type);
         layout->addWidget(items[i]);
     }
 }
@@ -103,7 +103,7 @@ void RelationsEditor::update(TreeObject* treecard, QList<Relation *> relations)
     // set parents
     if(relations.last()->parents != nullptr)
     {
-        populateGroupBox(widget_layout[0], relations.last()->parents->getTreeObjects());
+        populateGroupBox(widget_layout[0], treecard, relations.last()->parents->getTreeObjects(), Parents);
         relations.removeLast();
     }
 
@@ -123,6 +123,6 @@ void RelationsEditor::update(TreeObject* treecard, QList<Relation *> relations)
             children.append(child->tree_objects[0]);
     }
 
-    populateGroupBox(widget_layout[1], partners);
-    populateGroupBox(widget_layout[2], children);
+    populateGroupBox(widget_layout[1], treecard, partners, Partner);
+    populateGroupBox(widget_layout[2], treecard, children, Child);
 }

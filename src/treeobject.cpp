@@ -5,14 +5,13 @@
 #include "relation.h"
 #include "relationseditor.h"
 #include "biographyeditor.h"
+#include "mainwindow.h"
 
 #include <QTextStream>
 
 
-TreeObject::TreeObject(person new_person, BiographyEditor *biography_dock, RelationsEditor *relations_dock, quint16 current_id)
+TreeObject::TreeObject(person new_person, quint16 current_id)
 {
-    biography_editor = biography_dock;
-    relations_editor = relations_dock;
     bio = new_person;
     id = current_id;
 
@@ -41,15 +40,30 @@ void TreeObject::mousePressEvent(QGraphicsSceneMouseEvent *event)
     setPen(pen);*/
     setZValue(1);
 
+    updateBiographyEditor();
+    updateRelationsEditor();
+
+    QGraphicsItem::mousePressEvent(event);
+}
+
+
+void TreeObject::updateBiographyEditor()
+{
+    BiographyEditor *biography_editor =
+            qobject_cast<BiographyEditor *>(scene()->parent()->findChild<BiographyEditor *>());
     biography_editor->clear();
     biography_editor->update(bio);
+}
 
+
+void TreeObject::updateRelationsEditor()
+{
+    RelationsEditor *relations_editor =
+            qobject_cast<RelationsEditor *>(scene()->parent()->findChild<RelationsEditor *>());
     relations_editor->clear();
     QList<Relation *> relations = mergeRelations(partnerships, descent);
     if (!relations.isEmpty())
         relations_editor->update(this, relations);
-
-    QGraphicsItem::mousePressEvent(event);
 }
 
 

@@ -20,13 +20,16 @@ class WorkSheet : public QGraphicsScene
 public:
     enum Mode {Default, MoveCard};
     quint16 id_counter;
-    explicit WorkSheet(QMenu*, BiographyEditor*, RelationsEditor*, QObject *parent = nullptr);
+    explicit WorkSheet(QMenu*, QObject *parent = nullptr);
     void setMode(Mode mode);
     void createTreeCard(person, quint16 = 0, QPointF = QPointF(0, 0));
     void createPartnershipRelation(int*);
     void createDescentRelation(int*);
     void createTreeFromFile(load_data&);
     void clean();
+    void removeParentsRelation(Relation*);
+    void removePartnershipRelations(QList<Relation *>);
+    void removeChildRelations(QList<Relation *>);
 
     QList<TreeObject *> getTreeObjectList();
     QList<Relation *> getPartnershipRelationList();
@@ -40,12 +43,6 @@ private:
 
     void removeTreeObjectDialog();
     void removeTreeObject();
-    void removeParentsRelation(Relation*);
-    void removePartnershipRelations(QList<Relation *>);
-    void removeChildRelations(QList<Relation *>);
-
-    BiographyEditor *biography_editor;
-    RelationsEditor *relations_editor;
 
     QGraphicsItem *item;
     QList<QGraphicsItem *> item_list;

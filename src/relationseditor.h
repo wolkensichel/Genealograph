@@ -16,13 +16,14 @@ class RelationsEditor : public QWidget
     Q_OBJECT
 
 public:
+    enum Relationship {Parents, Partner, Child};
     RelationsEditor(QDockWidget*);
     void update(TreeObject*, QList<Relation *>);
     void clear();
 
 private:
     void createGroupBox(QGroupBox*, int);
-    void populateGroupBox(QLayout*, QList<TreeObject *>);
+    void populateGroupBox(QLayout*, TreeObject*, QList<TreeObject *>, Relationship);
     void cleanGroupBox(QLayout*);
 
     QGroupBox *groupbox_parents;

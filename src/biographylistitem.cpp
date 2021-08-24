@@ -2,10 +2,10 @@
 #include <QTextStream>
 #include <iostream>
 
-#include "listlabel.h"
+#include "biographylistitem.h"
 
 
-ListLabel::ListLabel(QString &text, QString caption)
+BiographyListItem::BiographyListItem(QString &text, QString caption)
 {
     layout = new QHBoxLayout();
     layout->setSizeConstraint(QLayout::SetMaximumSize);
@@ -24,11 +24,4 @@ ListLabel::ListLabel(QString &text, QString caption)
 
     checkbox = new QCheckBox;
     layout->addWidget(checkbox);
-}
-
-
-void ListLabel::mouseDoubleClickEvent(QMouseEvent *event)
-{
-    QTextStream cout(stdout);
-    cout << "this is some text\n";
 }
