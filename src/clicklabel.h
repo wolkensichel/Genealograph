@@ -8,9 +8,11 @@ class TreeObject;
 
 class ClickLabel : public QLabel
 {
+    Q_OBJECT
+
 public:
-    enum Mode {Reference, Remover};
-    ClickLabel(TreeObject*, TreeObject*, Mode, RelationsEditor::Relationship);
+    ClickLabel(TreeObject*, TreeObject*, RelationsEditor::Relationship);
+    ClickLabel(TreeObject*);
 
 private:
     int label_mode;

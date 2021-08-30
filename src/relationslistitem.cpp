@@ -13,11 +13,12 @@ RelationsListItem::RelationsListItem(TreeObject *person, TreeObject *referenced_
     layout->setContentsMargins(2, 2, 2, 2);
     setLayout(layout);
 
-    label = new ClickLabel(person, referenced_person, ClickLabel::Reference, type);
+    label = new ClickLabel(referenced_person);
     label->setText(referenced_person->getName());
     layout->addWidget(label);
 
-    remover = new QLabel("x");
+    remover = new ClickLabel(person, referenced_person, type);
+    remover->setText("x");
     remover->setStyleSheet("color: red");
     remover->setFixedWidth(20);
     layout->addWidget(remover);

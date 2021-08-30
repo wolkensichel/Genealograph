@@ -9,6 +9,8 @@
 
 class BiographyListItem : public QWidget// : public QLabel
 {
+    Q_OBJECT
+
 public:
     BiographyListItem(QString&, QString);
 

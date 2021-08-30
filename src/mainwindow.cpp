@@ -118,6 +118,7 @@ void MainWindow::createWorkSheet()
 
     scrollarea->setWidget(view);
     setCentralWidget(scrollarea);
+    connect(worksheet, SIGNAL(selectionChanged()), this, SLOT(scrollToItem()));
 }
 
 
@@ -264,4 +265,20 @@ void MainWindow::addDescent()
 
     if (addDescent.exec() == QDialog::Accepted)
         worksheet->createDescentRelation(addDescent.fetchFormInputs());
+}
+
+
+void MainWindow::scrollToItem()
+{
+    if (!worksheet->selectedItems().isEmpty()) {
+        QGraphicsItem *item = worksheet->selectedItems().first();
+        scrollarea->ensureVisible(item->pos().x(), item->pos().y(),
+                                  item->boundingRect().width(), item->boundingRect().height());
+    }
+}
+
+
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+
 }

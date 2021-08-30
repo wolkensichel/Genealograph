@@ -61,6 +61,12 @@ private:
     QMenu *menuCreate;
 
     QString save_file;
+
+public slots:
+    void scrollToItem();
+
+protected:
+    void keyPressEvent(QKeyEvent *event) override;
 };
 
 
