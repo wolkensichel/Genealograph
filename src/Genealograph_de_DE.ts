@@ -156,7 +156,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Are you sure that you want to remove this card and all of its relations?</source>
+        <source>Are you sure that you want to remove
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>and all connected relations?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

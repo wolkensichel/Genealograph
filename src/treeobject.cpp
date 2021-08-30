@@ -6,9 +6,6 @@
 #include "worksheet.h"
 #include "relationseditor.h"
 #include "biographyeditor.h"
-#include "mainwindow.h"
-
-#include <QTextStream>
 
 
 TreeObject::TreeObject(person new_person, quint16 current_id)
