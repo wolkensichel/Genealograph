@@ -13,7 +13,7 @@ class SetupSheetDialog : public QDialog
     Q_OBJECT
 
 public:
-    SetupSheetDialog(QWidget *parent = nullptr);
+    SetupSheetDialog(quint16 min_width, quint16 min_height, QString title, QWidget *parent = nullptr);
     sheet fetchFormInputs();
 
 private:

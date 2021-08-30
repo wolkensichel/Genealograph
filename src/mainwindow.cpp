@@ -1,7 +1,5 @@
 #include <QtWidgets>
-#include <QtPrintSupport/QPrinter>
-//#include <QtPrintSupport/QtPrintSupport>
-//#include <QtPrintSupport/QPrintDialog>
+#include <QPrinter>
 
 #include "mainwindow.h"
 #include "iohandler.h"
@@ -23,6 +21,8 @@ MainWindow::MainWindow(QWidget *parent)
     createDockWidgets();
     createWorkSheet();
     save_file = "";
+    zoom_in_factor = 1.25;
+    zoom_out_factor = 0.8;
 }
 
 
@@ -58,22 +58,29 @@ void MainWindow::createActions()
     actionAddDescent = new QAction(tr("Add Descent"), this);
     actionAddDescent->setShortcut(QKeySequence(Qt::ALT | Qt::Key_R));
     connect(actionAddDescent, &QAction::triggered, this, &MainWindow::addDescent);
+
+    actionSheetResize = new QAction(tr("Resize"), this);
+    actionSheetResize->setShortcut(QKeySequence(Qt::ALT | Qt::Key_M));
+    connect(actionSheetResize, &QAction::triggered, this, &MainWindow::resizeSheet);
 }
 
 
 void MainWindow::createMenu()
 {
-    QMenu *menuFile = menuBar()->addMenu(tr("&File"));
+    menuFile = menuBar()->addMenu(tr("&File"));
     menuFile->addAction(actionNewFile);
     menuFile->addAction(actionOpenFile);
     menuFile->addAction(actionSaveFile);
     menuFile->addAction(actionSaveAsFile);
     menuFile->addAction(actionPrint);
 
-    QMenu *menuCreate = menuBar()->addMenu(tr("&Create"));
+    menuCreate = menuBar()->addMenu(tr("&Create"));
     menuCreate->addAction(actionAddPerson);
     menuCreate->addAction(actionAddPartnership);
     menuCreate->addAction(actionAddDescent);
+
+    menuWorksheet = menuBar()->addMenu(tr("&Worksheet"));
+    menuWorksheet->addAction(actionSheetResize);
 }
 
 
@@ -106,40 +113,37 @@ void MainWindow::createWorkSheet()
     scrollarea = new QScrollArea;
     scrollarea->setAlignment(Qt::AlignCenter);
     scrollarea->setFrameStyle(QFrame::Panel|QFrame::Sunken);
-    //scrollarea->setBackgroundRole(QPalette::Midlight);
-    //scrollarea->setWidgetResizable(true);
+    setCentralWidget(scrollarea);
 
     worksheet = new WorkSheet(menuCreate, this);
-    worksheet->setSceneRect(QRectF(0,0,800,600));
-
-    view = new QGraphicsView(worksheet, scrollarea);
-    view->setStyleSheet("border: 1px solid lightgrey");
-    //view->setRenderHints(QPainter::Antialiasing);
-
-    scrollarea->setWidget(view);
-    setCentralWidget(scrollarea);
     connect(worksheet, SIGNAL(selectionChanged()), this, SLOT(scrollToItem()));
+    sheet size = {800, 600};
+    prepareNewSheet(size);
 }
 
 
-void MainWindow::replaceOldSheetByNewSheet(sheet size)
+void MainWindow::prepareNewSheet(sheet size)
 {
     worksheet->clean();
     worksheet->setSceneRect(QRectF(0, 0, size.width, size.height));
-    view->destroyed();
+
+    if (view != nullptr)
+        view->destroyed();
     view = new QGraphicsView(worksheet, scrollarea);
-    view->setFixedSize(size.width+2*view->frameWidth(), size.height+2*view->frameWidth());
+    view->setStyleSheet("border: 1px solid lightgrey");
+    view->resize(worksheet->width()+2*view->frameWidth(), worksheet->height()+2*view->frameWidth());
+    //view->setRenderHints(QPainter::Antialiasing);
     scrollarea->setWidget(view);
 }
 
 
 void MainWindow::setupSheet()
 {
-    SetupSheetDialog worksheetSetup;
+    SetupSheetDialog worksheetSetup(1, 1, "Setup Worksheet");
     if (worksheetSetup.exec() == QDialog::Accepted)
     {
         sheet size = worksheetSetup.fetchFormInputs();
-        replaceOldSheetByNewSheet(size);
+        prepareNewSheet(size);
     }
 }
 
@@ -156,10 +160,7 @@ void MainWindow::newFile()
       case QMessageBox::Save:
           save_file = "";
           saveFile();
-          setupSheet();
-          break;
       case QMessageBox::Discard:
-          save_file = "";
           setupSheet();
           break;
       case QMessageBox::Cancel:
@@ -185,7 +186,7 @@ void MainWindow::openFile()
 
     if (handler.openFromFile(file_data, save_file))
     {
-        replaceOldSheetByNewSheet(file_data.worksheet);
+        prepareNewSheet(file_data.worksheet);
         worksheet->createTreeFromFile(file_data);
     }
 }
@@ -265,6 +266,21 @@ void MainWindow::addDescent()
 
     if (addDescent.exec() == QDialog::Accepted)
         worksheet->createDescentRelation(addDescent.fetchFormInputs());
+}
+
+
+void MainWindow::resizeSheet()
+{
+    quint16 min_width = worksheet->itemsBoundingRect().x() + worksheet->itemsBoundingRect().width();
+    quint16 min_height = worksheet->itemsBoundingRect().y() + worksheet->itemsBoundingRect().height();
+
+    SetupSheetDialog worksheetResize(min_width, min_height, "Resize Worksheet");
+    if (worksheetResize.exec() == QDialog::Accepted)
+    {
+        sheet size = worksheetResize.fetchFormInputs();
+        worksheet->setSceneRect(0, 0, size.width, size.height);
+        view->resize(worksheet->width()+2*view->frameWidth(), worksheet->height()+2*view->frameWidth());
+    }
 }
 
 

@@ -118,6 +118,14 @@
         <source>Add Descent</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Resize</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Worksheet</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>RelationsEditor</name>

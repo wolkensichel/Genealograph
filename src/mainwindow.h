@@ -10,6 +10,7 @@ class WorkSheet;
 class QGraphicsView;
 class RelationsEditor;
 class BiographyEditor;
+class QGraphicsItem;
 
 
 class MainWindow : public QMainWindow
@@ -18,11 +19,13 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow(QWidget *parent = nullptr);
+    ~MainWindow();
+
     QDockWidget *dock_biography;
     QDockWidget *dock_relations;
     RelationsEditor *relations_editor;
     BiographyEditor *biography_editor;
-    ~MainWindow();
+    QScrollArea *scrollarea;
 
 private:
     void createActions();
@@ -32,7 +35,7 @@ private:
 
     save_data collectWorksheetData();
     void setupSheet();
-    void replaceOldSheetByNewSheet(sheet);
+    void prepareNewSheet(sheet);
     void newFile();
     void openFile();
     void saveFile();
@@ -42,6 +45,8 @@ private:
     void addPerson();
     void addPartnership();
     void addDescent();
+
+    void resizeSheet();
 
     QAction *actionAddPerson;
     QAction *actionAddPartnership;
@@ -53,14 +58,19 @@ private:
     QAction *actionSaveAsFile;
     QAction *actionPrint;
 
-    QScrollArea *scrollarea;
-    WorkSheet *worksheet;
-    QGraphicsView *view;
+    QAction *actionSheetResize;
 
-    //QMenu *menuFile;
+    WorkSheet *worksheet;
+    QGraphicsView *view = nullptr;
+
+    QMenu *menuFile;
     QMenu *menuCreate;
+    QMenu *menuWorksheet;
 
     QString save_file;
+
+    qreal zoom_in_factor;
+    qreal zoom_out_factor;
 
 public slots:
     void scrollToItem();
