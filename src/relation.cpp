@@ -3,6 +3,7 @@
 
 #include "relation.h"
 #include "treeobject.h"
+#include "worksheet.h"
 
 
 Relation::Relation(TreeObject* treecard1, TreeObject* treecard2, QGraphicsScene *scene)
@@ -78,4 +79,26 @@ Relation* Relation::getParentsRelation()
 QList<Relation *> Relation::getDescentRelations()
 {
     return descents;
+}
+
+
+void Relation::removeDescentRelation()
+{
+    tree_objects.first()->descent = nullptr;
+    parents->descents.removeOne(this);
+    qobject_cast<WorkSheet *>(scene())->removeDescentRelationFromList(this);
+    scene()->removeItem(this);
+    delete this;
+}
+
+
+void Relation::removePartnershipRelation()
+{
+    tree_objects.first()->partnerships.removeOne(this);
+    tree_objects.last()->partnerships.removeOne(this);
+    foreach (Relation *descent, descents)
+        descent->removeDescentRelation();
+    qobject_cast<WorkSheet *>(scene())->removePartnershipRelationFromList(this);
+    scene()->removeItem(this);
+    delete this;
 }

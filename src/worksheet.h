@@ -27,9 +27,10 @@ public:
     void createDescentRelation(int*);
     void createTreeFromFile(load_data&);
     void clean();
-    void removeParentsRelation(Relation*);
-    void removePartnershipRelations(QList<Relation *>);
-    void removeChildRelations(QList<Relation *>);
+
+    void removeTreeObjectFromList(TreeObject*);
+    void removePartnershipRelationFromList(Relation*);
+    void removeDescentRelationFromList(Relation*);
 
     QList<TreeObject *> getTreeObjectList();
     QList<Relation *> getPartnershipRelationList();
@@ -41,8 +42,9 @@ private:
     void outOfScopeCorrection();
     void snapToGrid();
 
-    void removeTreeObjectDialog();
-    void removeTreeObject();
+    void keepItemOnScene(QGraphicsSceneMouseEvent*);
+    void removeTreeObjectDialog(int);
+    void removeTreeObject(int);
 
     QGraphicsItem *item;
     QList<QGraphicsItem *> item_list;

@@ -153,39 +153,45 @@ void WorkSheet::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 void WorkSheet::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
     if (!selectedItems().isEmpty() && active_mode == MoveCard)
-    {
-        item = selectedItems().first();
-
-        if (event->scenePos().x() > width()-item->boundingRect().width()/2)
-            item->setX(width()-item->boundingRect().width());
-        else if (event->scenePos().x() < item->boundingRect().width()/2)
-            item->setX(0);
-        else
-            item->setX(event->scenePos().x()-item->boundingRect().width()/2);
-
-        if (event->scenePos().y() > height()-item->boundingRect().height()/2)
-            item->setY(height()-item->boundingRect().height());
-        else if (event->scenePos().y() < item->boundingRect().height()/2)
-            item->setY(0);
-        else
-            item->setY(event->scenePos().y()-item->boundingRect().height()/2);
-    }
+        keepItemOnScene(event);
 
     QGraphicsScene::mouseMoveEvent(event);
 }
 
 
+void WorkSheet::keepItemOnScene(QGraphicsSceneMouseEvent *event)
+{
+    item = selectedItems().first();
+
+    if (event->scenePos().x() > width()-item->boundingRect().width()/2)
+        item->setX(width()-item->boundingRect().width());
+    else if (event->scenePos().x() < item->boundingRect().width()/2)
+        item->setX(0);
+    else
+        item->setX(event->scenePos().x()-item->boundingRect().width()/2);
+
+    if (event->scenePos().y() > height()-item->boundingRect().height()/2)
+        item->setY(height()-item->boundingRect().height());
+    else if (event->scenePos().y() < item->boundingRect().height()/2)
+        item->setY(0);
+    else
+        item->setY(event->scenePos().y()-item->boundingRect().height()/2);
+}
+
+
 void WorkSheet::keyPressEvent(QKeyEvent *event)
 {
-    if (event->key() == Qt::Key_Delete && !selectedItems().isEmpty())
-        if (selectedItems().first()->type() == TreeObject::Type)
-            removeTreeObjectDialog();
+    if (event->key() == Qt::Key_Delete && !selectedItems().isEmpty()) {
+        item = selectedItems().first();
+        if (item->type() == TreeObject::Type)
+            removeTreeObjectDialog(tree_objects.indexOf(qgraphicsitem_cast<TreeObject *>(item)));
+    }
 
     QGraphicsScene::keyPressEvent(event);
 }
 
 
-void WorkSheet::removeTreeObjectDialog()
+void WorkSheet::removeTreeObjectDialog(int tree_object_pos)
 {
     QMessageBox msg_box;
     msg_box.setText(tr("Delete Tree Card"));
@@ -194,66 +200,37 @@ void WorkSheet::removeTreeObjectDialog()
     msg_box.setDefaultButton(QMessageBox::Cancel);
 
     if (msg_box.exec() == QMessageBox::Ok)
-        removeTreeObject();
+        removeTreeObject(tree_object_pos);
 }
 
 
-void WorkSheet::removeTreeObject()
+void WorkSheet::removeTreeObject(int tree_object_pos)
 {
-    TreeObject *item = qgraphicsitem_cast<TreeObject *>(selectedItems().first());
-    removePartnershipRelations(item->partnerships);
-    removeParentsRelation(item->descent);
-
-    // remove tree object from tree_objects list
-    tree_objects.removeOne(qgraphicsitem_cast<TreeObject *>(item));
-    // remove tree object from scene
-    removeItem(item);
+    //TreeObject *tree_object = qgraphicsitem_cast<TreeObject *>(item);
+    TreeObject *tree_object = tree_objects.at(tree_object_pos);
+    if (tree_object->descent != nullptr)
+        tree_object->descent->removeDescentRelation();
+    foreach(Relation *partnership, tree_object->partnerships)
+        partnership->removePartnershipRelation();
+    tree_object->removeTreeObject();
 }
 
 
-void WorkSheet::removeParentsRelation(Relation* descent)
+void WorkSheet::removeTreeObjectFromList(TreeObject *tree_object)
 {
-    if (descent != nullptr) {
-        // remove descent relation from parents partnership relation
-        descent->parents->descents.removeOne(descent);
-        // remove descent relation from descent_relations list
-        descent_relations.removeOne(descent);
-        // remove descent relation from scene
-        removeItem(descent);
-    }
+    tree_objects.removeOne(tree_object);
 }
 
 
-void WorkSheet::removePartnershipRelations(QList<Relation *> partnerships)
+void WorkSheet::removePartnershipRelationFromList(Relation *partnership)
 {
-    foreach (Relation *partnership, partnerships) {
-        if (!partnership->descents.isEmpty())
-            removeChildRelations(partnership->descents);
-
-        // remove partnership relation from partner tree object
-        if (partnership->tree_objects.first() == item)
-            partnership->tree_objects.last()->partnerships.removeOne(partnership);
-        else
-            partnership->tree_objects.first()->partnerships.removeOne(partnership);
-
-        // remove partnership relation from partnership_relations list
-        partnership_relations.removeOne(partnership);
-        // remove partnership relation from scene
-        removeItem(partnership);
-    }
+    partnership_relations.removeOne(partnership);
 }
 
 
-void WorkSheet::removeChildRelations(QList<Relation *> descents)
+void WorkSheet::removeDescentRelationFromList(Relation *descent)
 {
-    foreach (Relation *descent, descents) {
-        // remove descent relation from child tree object
-        descent->tree_objects.first()->descent = nullptr;
-        // remove descent relation from descent_relations list
-        descent_relations.removeOne(descent);
-        // remove descent relation from scene
-        removeItem(descent);
-    }
+    descent_relations.removeOne(descent);
 }
 
 
@@ -328,8 +305,6 @@ int WorkSheet::getPartnershipRelationListPosition(quint16 id_parent1, quint16 id
 
 void WorkSheet::clean()
 {
-    tree_objects.clear();
-    partnership_relations.clear();
-    descent_relations.clear();
-    this->clear();
+    while (!tree_objects.isEmpty())
+        removeTreeObject(tree_objects.length()-1);
 }

@@ -25,6 +25,7 @@ public:
     void addLines();
     void updateBiographyEditor();
     void updateRelationsEditor();
+    void removeTreeObject();
     person bio;
     quint16 id;
 

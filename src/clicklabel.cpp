@@ -1,5 +1,6 @@
 #include "clicklabel.h"
 #include "treeobject.h"
+#include "relation.h"
 #include "worksheet.h"
 
 #include <QTextStream>
@@ -24,24 +25,18 @@ void ClickLabel::mousePressEvent(QMouseEvent *event)
     if (label_mode == Reference) {
         switch(relationship) {
             case RelationsEditor::RelationsEditor::Parents:
-                qobject_cast<WorkSheet *>(tree_objects[0]->scene())->removeParentsRelation(tree_objects[0]->descent);
-                tree_objects[0]->descent = nullptr;
+                tree_objects[0]->descent->removeDescentRelation();
                 break;
             case RelationsEditor::RelationsEditor::Partner:
-                foreach (Relation* partnership, tree_objects[0]->partnerships) {
+                foreach (Relation *partnership, tree_objects[0]->partnerships)
+                {
                     if (partnership->tree_objects[0] == tree_objects[1] ||
-                        partnership->tree_objects[1] == tree_objects[1]) {
-                        tree_objects[0]->partnerships.removeOne(partnership);
-                        QList<Relation *> relation_list = {partnership};
-                        qobject_cast<WorkSheet *>(tree_objects[0]->scene())->removePartnershipRelations(relation_list);
-                    }
+                        partnership->tree_objects[1] == tree_objects[1])
+                        partnership->removePartnershipRelation();
                 }
                 break;
             case RelationsEditor::RelationsEditor::Child:
-                Relation *descent = tree_objects[1]->descent;
-                descent->parents->descents.removeOne(tree_objects[1]->descent);
-                QList<Relation *> relation_list = {descent};
-                qobject_cast<WorkSheet *>(tree_objects[0]->scene())->removeChildRelations(relation_list);
+                tree_objects[1]->descent->removeDescentRelation();
                 break;
         }
     }

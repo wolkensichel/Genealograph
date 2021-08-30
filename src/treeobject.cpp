@@ -3,6 +3,7 @@
 
 #include "treeobject.h"
 #include "relation.h"
+#include "worksheet.h"
 #include "relationseditor.h"
 #include "biographyeditor.h"
 #include "mainwindow.h"
@@ -127,4 +128,12 @@ QVariant TreeObject::itemChange(GraphicsItemChange change, const QVariant &value
     }
 
     return value;
+}
+
+
+void TreeObject::removeTreeObject()
+{
+    qobject_cast<WorkSheet *>(scene())->removeTreeObjectFromList(this);
+    scene()->removeItem(this);
+    delete this;
 }

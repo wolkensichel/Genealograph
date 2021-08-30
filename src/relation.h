@@ -6,6 +6,7 @@
 
 
 class TreeObject;
+class WorkSheet;
 
 class Relation : public QGraphicsPathItem
 {
@@ -16,6 +17,8 @@ public:
     QList<TreeObject *>getTreeObjects();
     Relation* getParentsRelation();
     QList<Relation *>getDescentRelations();
+    void removeDescentRelation();
+    void removePartnershipRelation();
 
     QList<TreeObject *> tree_objects;
     Relation* parents = nullptr;
