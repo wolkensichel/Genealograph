@@ -5,6 +5,7 @@
 #include <QGroupBox>
 #include <QScrollArea>
 #include <QVBoxLayout>
+#include <QCheckBox>
 
 #include "data.h"
 
@@ -18,7 +19,7 @@ class BiographyEditor : public QWidget
 
 public:
     BiographyEditor();
-    void update(person);
+    void update(TreeObject*, person, bool);
     void clear();
 
 private:
@@ -26,8 +27,15 @@ private:
     void populateGroupBox(QLayout*, person);
     void cleanGroupBox(QLayout*);
 
+    QWidget *widget;
     QVBoxLayout *widget_layout;
     QScrollArea *area;
+
+    TreeObject *current_owner;
+    QCheckBox *checkbox_enable_edit;
+
+public slots:
+    void changeLockStatus(bool);
 };
 
 #endif // BIOGRAPHYEDITOR_H

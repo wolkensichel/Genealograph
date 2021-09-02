@@ -12,6 +12,8 @@ TreeObject::TreeObject(person new_person, quint16 current_id)
 {
     bio = new_person;
     id = current_id;
+    relations_dock_lock = true;
+    biography_dock_lock = true;
 
     widget = new QWidget();
     layout = new QVBoxLayout;
@@ -50,7 +52,7 @@ void TreeObject::updateBiographyEditor()
     BiographyEditor *biography_editor =
             qobject_cast<BiographyEditor *>(scene()->parent()->findChild<BiographyEditor *>());
     biography_editor->clear();
-    biography_editor->update(bio);
+    biography_editor->update(this, bio, biography_dock_lock);
 }
 
 
@@ -59,9 +61,7 @@ void TreeObject::updateRelationsEditor()
     RelationsEditor *relations_editor =
             qobject_cast<RelationsEditor *>(scene()->parent()->findChild<RelationsEditor *>());
     relations_editor->clear();
-    QList<Relation *> relations = mergeRelations(partnerships, descent);
-    if (!relations.isEmpty())
-        relations_editor->update(this, relations);
+    relations_editor->update(this, partnerships, descent, relations_dock_lock);
 }
 
 
@@ -133,4 +133,16 @@ void TreeObject::removeTreeObject()
     qobject_cast<WorkSheet *>(scene())->removeTreeObjectFromList(this);
     scene()->removeItem(this);
     delete this;
+}
+
+
+void TreeObject::updateRelationLockStatus(bool status)
+{
+    relations_dock_lock = status;
+}
+
+
+void TreeObject::updateBiographyLockStatus(bool status)
+{
+    biography_dock_lock = status;
 }

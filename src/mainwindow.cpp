@@ -97,7 +97,7 @@ void MainWindow::createDockWidgets()
     dock_relations->setAllowedAreas(Qt::RightDockWidgetArea|Qt::LeftDockWidgetArea);
     addDockWidget(Qt::RightDockWidgetArea, dock_relations);
 
-    relations_editor = new RelationsEditor(dock_relations);
+    relations_editor = new RelationsEditor;
     dock_relations->setWidget(relations_editor);
 
     tabifyDockWidget(dock_biography, dock_relations);

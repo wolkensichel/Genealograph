@@ -5,6 +5,7 @@
 #include <QGroupBox>
 #include <QVBoxLayout>
 #include <QScrollArea>
+#include <QCheckBox>
 
 class Relation;
 class TreeObject;
@@ -17,13 +18,13 @@ class RelationsEditor : public QWidget
 
 public:
     enum Relationship {Parents, Partner, Child};
-    RelationsEditor(QDockWidget*);
-    void update(TreeObject*, QList<Relation *>);
+    RelationsEditor();
+    void update(TreeObject*, QList<Relation *>, Relation*, bool);
     void clear();
 
 private:
     void createGroupBox(QGroupBox*, int);
-    void populateGroupBox(QLayout*, TreeObject*, QList<TreeObject *>, Relationship);
+    void populateGroupBox(QLayout*, QList<TreeObject *>, Relationship);
     void cleanGroupBox(QLayout*);
 
     QGroupBox *groupbox_parents;
@@ -35,9 +36,13 @@ private:
     QScrollArea *scrollarea[3];
     QWidget *widget[3];
 
-    QDockWidget *parent;
+    TreeObject *current_owner = nullptr;
+    QCheckBox *checkbox_enable_edit;
 
     QPalette palette;
+
+public slots:
+    void changeLockStatus(bool);
 };
 
 #endif // RELATIONSEDITOR_H

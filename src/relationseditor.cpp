@@ -6,12 +6,12 @@
 #include "relationseditor.h"
 #include "relation.h"
 #include "relationslistitem.h"
+#include "clicklabel.h"
 #include "treeobject.h"
+#include "worksheet.h"
 
-RelationsEditor::RelationsEditor(QDockWidget *dock)
+RelationsEditor::RelationsEditor()
 {
-    parent = dock;
-
     QVBoxLayout *layout = new QVBoxLayout;
     layout->setContentsMargins(4, 4, 4, 4);
 
@@ -21,7 +21,9 @@ RelationsEditor::RelationsEditor(QDockWidget *dock)
     QWidget *enable_edit = new QWidget;
     enable_edit->setFixedHeight(20);
     QLabel *label_enable_edit = new QLabel(tr("Lock Relations"));
-    QCheckBox *checkbox_enable_edit = new QCheckBox;
+    checkbox_enable_edit = new QCheckBox;
+    checkbox_enable_edit->setChecked(true);
+    connect(checkbox_enable_edit, SIGNAL(clicked(bool)), this, SLOT(changeLockStatus(bool)));
 
     hlayout->addStretch();
     hlayout->addWidget(label_enable_edit);
@@ -68,13 +70,13 @@ void RelationsEditor::createGroupBox(QGroupBox *box, int id)
 }
 
 
-void RelationsEditor::populateGroupBox(QLayout* layout, TreeObject* person, QList<TreeObject *> treecards, Relationship type)
+void RelationsEditor::populateGroupBox(QLayout* layout, QList<TreeObject *> treecards, Relationship type)
 {
     RelationsListItem *items[treecards.size()];
 
     for(int i = 0; i < treecards.size(); i++)
     {
-        items[i] = new RelationsListItem(person, treecards[i], type);
+        items[i] = new RelationsListItem(current_owner, treecards[i], type, checkbox_enable_edit->isChecked());
         layout->addWidget(items[i]);
     }
 }
@@ -98,31 +100,41 @@ void RelationsEditor::clear()
 }
 
 
-void RelationsEditor::update(TreeObject* treecard, QList<Relation *> relations)
+void RelationsEditor::update(TreeObject* treecard, QList<Relation *> partnerships, Relation *descent, bool lock_status)
 {
+    current_owner = treecard;
+    checkbox_enable_edit->setChecked(lock_status);
+
     // set parents
-    if(relations.last()->parents != nullptr)
-    {
-        populateGroupBox(widget_layout[0], treecard, relations.last()->parents->getTreeObjects(), Parents);
-        relations.removeLast();
-    }
+    if(descent != nullptr)
+        populateGroupBox(widget_layout[0], descent->parents->getTreeObjects(), Parents);
 
     QList<TreeObject *> partners = QList<TreeObject *>();
     QList<TreeObject *> children = QList<TreeObject *>();
 
-    foreach(Relation *relation, relations)
+    foreach(Relation *partnership, partnerships)
     {
         // set partners
-        if (relation->tree_objects[0] == treecard)
-            partners.append(relation->tree_objects[1]);
+        if (partnership->tree_objects[0] == current_owner)
+            partners.append(partnership->tree_objects[1]);
         else
-            partners.append(relation->tree_objects[0]);
+            partners.append(partnership->tree_objects[0]);
 
         // set children
-        foreach(Relation* child, relation->descents)
+        foreach(Relation* child, partnership->descents)
             children.append(child->tree_objects[0]);
     }
 
-    populateGroupBox(widget_layout[1], treecard, partners, Partner);
-    populateGroupBox(widget_layout[2], treecard, children, Child);
+    populateGroupBox(widget_layout[1], partners, Partner);
+    populateGroupBox(widget_layout[2], children, Child);
+}
+
+
+void RelationsEditor::changeLockStatus(bool status)
+{
+    for (int i = 0; i <= 2; i++)
+        foreach (RelationsListItem *item, widget[i]->findChildren<RelationsListItem *>())
+            item->enableRemover(status);
+
+    current_owner->updateRelationLockStatus(status);
 }

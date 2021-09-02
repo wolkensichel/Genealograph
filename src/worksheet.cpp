@@ -322,6 +322,12 @@ int WorkSheet::getPartnershipRelationListPosition(quint16 id_parent1, quint16 id
 }
 
 
+void WorkSheet::changeLockStatus(bool status)
+{
+
+}
+
+
 void WorkSheet::clean()
 {
     QList<TreeObject *> tree_objects_for_removal = tree_objects;

@@ -17,7 +17,8 @@ class RelationsListItem : public QWidget
     Q_OBJECT
 
 public:
-    RelationsListItem(TreeObject*, TreeObject*, RelationsEditor::Relationship);
+    RelationsListItem(TreeObject*, TreeObject*, RelationsEditor::Relationship, bool);
+    void enableRemover(bool);
 
 private:
     QHBoxLayout *layout;

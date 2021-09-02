@@ -5,7 +5,8 @@
 #include "biographylistitem.h"
 
 
-BiographyListItem::BiographyListItem(QString &text, QString caption)
+BiographyListItem::BiographyListItem(QString &text, QString caption, bool lock_status)
+    : enabled(!lock_status)
 {
     layout = new QHBoxLayout();
     layout->setSizeConstraint(QLayout::SetMaximumSize);
@@ -18,10 +19,27 @@ BiographyListItem::BiographyListItem(QString &text, QString caption)
 
     form = new QLineEdit;
     form->setText(text);
-    form->setDisabled(true);
-    form->setStyleSheet("background: white; color: #565656");
     layout->addWidget(form);
+
+    adjustStyle();
 
     checkbox = new QCheckBox;
     layout->addWidget(checkbox);
+}
+
+
+void BiographyListItem::adjustStyle()
+{
+    form->setEnabled(enabled);
+    if (enabled)
+        form->setStyleSheet(styleSheet());
+    else
+        form->setStyleSheet("background: white; color: #565656");
+}
+
+
+void BiographyListItem::enableEditing(bool lock_status)
+{
+    enabled = !lock_status;
+    adjustStyle();
 }

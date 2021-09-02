@@ -12,9 +12,12 @@ class BiographyListItem : public QWidget// : public QLabel
     Q_OBJECT
 
 public:
-    BiographyListItem(QString&, QString);
+    BiographyListItem(QString&, QString, bool);
+    void enableEditing(bool);
 
 private:
+    void adjustStyle();
+    bool enabled;
     QHBoxLayout *layout;
     QLabel *label;
     QLineEdit *form;

@@ -26,8 +26,12 @@ public:
     void updateBiographyEditor();
     void updateRelationsEditor();
     void removeTreeObject();
+    void updateRelationLockStatus(bool);
+    void updateBiographyLockStatus(bool);
     person bio;
     quint16 id;
+    bool relations_dock_lock;
+    bool biography_dock_lock;
 
     QList<Relation *> partnerships;
     Relation* descent = nullptr;

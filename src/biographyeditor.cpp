@@ -4,6 +4,7 @@
 
 #include "biographyeditor.h"
 #include "biographylistitem.h"
+#include "treeobject.h"
 
 
 BiographyEditor::BiographyEditor()
@@ -17,7 +18,9 @@ BiographyEditor::BiographyEditor()
     QWidget *enable_edit = new QWidget;
     enable_edit->setFixedHeight(20);
     QLabel *label_enable_edit = new QLabel(tr("Lock Biography"));
-    QCheckBox *checkbox_enable_edit = new QCheckBox;
+    checkbox_enable_edit = new QCheckBox;
+    checkbox_enable_edit->setChecked(true);
+    connect(checkbox_enable_edit, SIGNAL(clicked(bool)), this, SLOT(changeLockStatus(bool)));
 
     hlayout->addStretch();
     hlayout->addWidget(label_enable_edit);
@@ -40,7 +43,7 @@ void BiographyEditor::createBio()
     widget_layout->setSizeConstraint(QLayout::SetMinAndMaxSize);
     widget_layout->setContentsMargins(0, 0, 0, 0);
 
-    QWidget *widget = new QWidget;
+    widget = new QWidget;
     widget->setLayout(widget_layout);
 
     area = new QScrollArea;
@@ -51,7 +54,8 @@ void BiographyEditor::createBio()
 
 void BiographyEditor::populateGroupBox(QLayout *layout, person bio)
 {
-    BiographyListItem *label = new BiographyListItem(bio.first_name, QString("First Name:"));
+    BiographyListItem *label = new BiographyListItem(bio.first_name, QString("First Name:"),
+                                                     checkbox_enable_edit->isChecked());
     layout->addWidget(label);
 
     //ListLabel *label2 = new ListLabel(bio.last_name);
@@ -75,7 +79,19 @@ void BiographyEditor::clear()
 }
 
 
-void BiographyEditor::update(person bio)
+void BiographyEditor::update(TreeObject* treecard, person bio, bool lock_status)
 {
+    current_owner = treecard;
+    checkbox_enable_edit->setChecked(lock_status);
+
     populateGroupBox(widget_layout, bio);
+}
+
+
+void BiographyEditor::changeLockStatus(bool status)
+{
+    foreach (BiographyListItem *item, widget->findChildren<BiographyListItem *>())
+        item->enableEditing(status);
+
+    current_owner->updateBiographyLockStatus(status);
 }

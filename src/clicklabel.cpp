@@ -4,29 +4,46 @@
 #include "worksheet.h"
 #include "mainwindow.h"
 
-#include <QTextStream>
-#include <iostream>
 
-
-ClickLabel::ClickLabel(TreeObject *person, TreeObject *referenced_person, RelationsEditor::Relationship type)
+ClickLabel::ClickLabel(TreeObject *person, TreeObject *referenced_person, RelationsEditor::Relationship type, bool status = false)
+    : enabled(status)
 {
     tree_objects = QList<TreeObject *>();
     tree_objects.append(person);
     tree_objects.append(referenced_person);
     relationship = type;
+
+    adjustColor();
 }
 
 
-ClickLabel::ClickLabel(TreeObject *referenced_person)
+ClickLabel::ClickLabel(TreeObject *referenced_person, bool active = false)
+    : enabled(active)
 {
     tree_objects = QList<TreeObject *>();
     tree_objects.append(referenced_person);
 }
 
 
+void ClickLabel::adjustColor()
+{
+    if (enabled)
+        setStyleSheet("color: red");
+    else
+        setStyleSheet("color: grey");
+}
+
+
+void ClickLabel::enable(bool status)
+{
+    enabled = status;
+    adjustColor();
+}
+
+
 void ClickLabel::mousePressEvent(QMouseEvent *event)
 {
-    if (event->button() != Qt::LeftButton)
+    if (event->button() != Qt::LeftButton || !enabled)
         return;
 
     if (tree_objects.length() == 2)
