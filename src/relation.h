@@ -25,6 +25,11 @@ public:
     QList<Relation *> descents;
 
 private:
+    enum Mode {Upper, Lower};
+    quint32 computePartnershipYOffset(Relation*);
+    quint32 computeCombinedEdgeParents(Relation*, Mode);
+    quint32 computeHoriztonalBranchYPos(quint32, Mode);
+
     QPainterPath path;
 };
 

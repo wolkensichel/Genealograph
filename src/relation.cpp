@@ -47,20 +47,83 @@ void Relation::updatePosition()
     path.clear();
     if (parents == nullptr)
     {
-        path.moveTo(tree_objects[0]->pos()+tree_objects[0]->boundingRect().center());
-        path.lineTo(tree_objects[1]->pos()+tree_objects[1]->boundingRect().center());
+        qint32 y_off = computePartnershipYOffset(this);
+
+        path.moveTo(tree_objects[0]->pos().x() + tree_objects[0]->rect().center().x(),
+                    tree_objects[0]->pos().y() + y_off);
+        path.lineTo(tree_objects[1]->pos().x() + tree_objects[1]->rect().center().x(),
+                    tree_objects[1]->pos().y() + y_off);
     }
     else
     {
-        qreal y_diff = tree_objects[0]->pos().y() + tree_objects[0]->boundingRect().center().y() - parents->boundingRect().center().y();
-        qreal x_offset = tree_objects[0]->pos().x() + tree_objects[0]->boundingRect().center().x();
+        qint32 x_offset = tree_objects[0]->pos().x() + tree_objects[0]->boundingRect().center().x();
+        qint32 y_offset = tree_objects[0]->pos().y() + tree_objects[0]->boundingRect().center().y();
+
+        qint32 parents_edge = 0;
+        qint32 y_hrz = 0;
+        if (y_offset >= parents->boundingRect().center().y())
+        {
+            parents_edge = computeCombinedEdgeParents(parents, Lower);
+            y_hrz = computeHoriztonalBranchYPos(parents_edge, Lower);
+        }
+        else
+        {
+            parents_edge = computeCombinedEdgeParents(parents, Upper);
+            y_hrz = computeHoriztonalBranchYPos(parents_edge, Upper);
+        }
 
         path.moveTo(parents->boundingRect().center());
-        path.lineTo(parents->boundingRect().center() + QPointF(0, y_diff/2));
-        path.lineTo(QPointF(x_offset, parents->boundingRect().center().y() + y_diff/2));
-        path.lineTo(QPointF(x_offset, parents->boundingRect().center().y() + y_diff));
+        path.lineTo(QPointF(parents->boundingRect().center().x(), y_hrz));
+        path.lineTo(QPointF(x_offset, y_hrz));
+        path.lineTo(QPointF(x_offset, y_offset));
     }
     setPath(path);
+}
+
+
+quint32 Relation::computePartnershipYOffset(Relation* partnership)
+{
+    if (partnership->tree_objects[0]->widget->height() <= partnership->tree_objects[1]->widget->height())
+        return partnership->tree_objects[0]->widget->height()/2;
+    else
+        return partnership->tree_objects[1]->widget->height()/2;
+}
+
+
+quint32 Relation::computeCombinedEdgeParents(Relation *partnership, Mode mode)
+{
+    quint32 edge = 0;
+    if (mode == Lower) {
+        int parent1_lower_edge = partnership->tree_objects[0]->pos().y()
+                + partnership->tree_objects[0]->boundingRect().height();
+        int parent2_lower_edge = partnership->tree_objects[1]->pos().y()
+                + partnership->tree_objects[1]->boundingRect().height();
+
+        if (parent1_lower_edge >= parent2_lower_edge)
+            edge = parent1_lower_edge;
+        else
+            edge = parent2_lower_edge;
+    }
+    else {
+        int parent1_upper_edge = partnership->tree_objects[0]->pos().y();
+        int parent2_upper_edge = partnership->tree_objects[1]->pos().y();
+
+        if (parent1_upper_edge <= parent2_upper_edge)
+            edge = parent1_upper_edge;
+        else
+            edge = parent2_upper_edge;
+    }
+    return edge;
+}
+
+
+quint32 Relation::computeHoriztonalBranchYPos(quint32 edge, Mode mode)
+{
+    if (mode == Lower)
+        edge += 40;
+    else if (mode == Upper)
+        edge -= 40;
+    return edge;
 }
 
 
