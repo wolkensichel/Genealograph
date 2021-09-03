@@ -11,7 +11,6 @@
 #include "worksheet.h"
 #include "biographyeditor.h"
 #include "relationseditor.h"
-#include "data.h"
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -139,7 +138,7 @@ void MainWindow::prepareNewSheet(sheet size)
 
 void MainWindow::setupSheet()
 {
-    SetupSheetDialog worksheetSetup(1, 1, "Setup Worksheet");
+    SetupSheetDialog worksheetSetup(worksheet, "Setup Worksheet");
     if (worksheetSetup.exec() == QDialog::Accepted)
     {
         sheet size = worksheetSetup.fetchFormInputs();
@@ -271,10 +270,7 @@ void MainWindow::addDescent()
 
 void MainWindow::resizeSheet()
 {
-    quint16 min_width = worksheet->itemsBoundingRect().x() + worksheet->itemsBoundingRect().width();
-    quint16 min_height = worksheet->itemsBoundingRect().y() + worksheet->itemsBoundingRect().height();
-
-    SetupSheetDialog worksheetResize(min_width, min_height, "Resize Worksheet");
+    SetupSheetDialog worksheetResize(worksheet, "Resize Worksheet");
     if (worksheetResize.exec() == QDialog::Accepted)
     {
         sheet size = worksheetResize.fetchFormInputs();

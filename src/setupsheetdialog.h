@@ -8,12 +8,16 @@
 
 #include "data.h"
 
+
+class WorkSheet;
+
+
 class SetupSheetDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    SetupSheetDialog(quint16 min_width, quint16 min_height, QString title, QWidget *parent = nullptr);
+    SetupSheetDialog(WorkSheet*, QString title, QWidget *parent = nullptr);
     sheet fetchFormInputs();
 
 private:

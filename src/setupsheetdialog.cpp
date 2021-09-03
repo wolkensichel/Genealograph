@@ -2,20 +2,26 @@
 
 #include "setupsheetdialog.h"
 #include "mainwindow.h"
+#include "worksheet.h"
 
 
-SetupSheetDialog::SetupSheetDialog(quint16 min_width, quint16 min_height, QString title, QWidget *parent) : QDialog(parent)
+SetupSheetDialog::SetupSheetDialog(WorkSheet *sheet, QString title, QWidget *parent) : QDialog(parent)
 {
+    quint16 min_width = sheet->itemsBoundingRect().x() + sheet->itemsBoundingRect().width();
+    quint16 min_height = sheet->itemsBoundingRect().y() + sheet->itemsBoundingRect().height();
+    quint16 current_width = sheet->width();
+    quint16 current_height = sheet->height();
+
     form_width = new QSpinBox;
     form_width->setRange(min_width, 65535);
     form_width->setSuffix("px");
     form_width->setSingleStep(10);
-    form_width->setValue(min_width);
+    form_width->setValue(current_width);
     form_height = new QSpinBox;
     form_height->setRange(min_height, 65535);
     form_height->setSuffix("px");
     form_height->setSingleStep(10);
-    form_height->setValue(min_height);
+    form_height->setValue(current_height);
 
     buttonbox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     connect(buttonbox, SIGNAL(accepted()), this, SLOT(accept()));
