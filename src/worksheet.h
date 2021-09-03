@@ -64,9 +64,6 @@ protected:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
-
-public slots:
-    void changeLockStatus(bool);
 };
 
 #endif // WORKSHEET_H

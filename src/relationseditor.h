@@ -16,6 +16,8 @@ class RelationsEditor : public QWidget
 {
     Q_OBJECT
 
+    QList<QString> keys = {"First Name", "Last Name"};
+
 public:
     enum Relationship {Parents, Partner, Child};
     RelationsEditor();
@@ -41,7 +43,7 @@ private:
 
     QPalette palette;
 
-public slots:
+private slots:
     void changeLockStatus(bool);
 };
 

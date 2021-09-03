@@ -10,7 +10,7 @@
 
 TreeObject::TreeObject(person new_person, quint16 current_id)
 {
-    bio = new_person;
+    individual = new_person;
     id = current_id;
     relations_dock_lock = true;
     biography_dock_lock = true;
@@ -19,10 +19,10 @@ TreeObject::TreeObject(person new_person, quint16 current_id)
     layout = new QVBoxLayout;
     widget->setLayout(layout);
 
-    fillFields(bio);
-
     proxy = new QGraphicsProxyWidget(this);
     proxy->setWidget(widget);
+
+    fillFields(individual);
 
     setRect(-1, -1, widget->width()+1, widget->height()+1);
     setBrush(Qt::lightGray);
@@ -52,7 +52,7 @@ void TreeObject::updateBiographyEditor()
     BiographyEditor *biography_editor =
             qobject_cast<BiographyEditor *>(scene()->parent()->findChild<BiographyEditor *>());
     biography_editor->clear();
-    biography_editor->update(this, bio, biography_dock_lock);
+    biography_editor->update(this, individual, biography_dock_lock, labels_map);
 }
 
 
@@ -65,36 +65,35 @@ void TreeObject::updateRelationsEditor()
 }
 
 
-void TreeObject::fillFields(person person)
+void TreeObject::fillFields(person individual)
 {
-    first_name = new QLabel;
-    first_name->setText(person.first_name);
-    //first_name->setGeometry(0, 0, 100, 20);
-    first_name->setFixedSize(100,20);
-    layout->addWidget(first_name);
+    foreach (QString key, keys) {
+        QLabel *label = new QLabel(individual.bio[key].toString());
+        label->setFixedSize(100,20);
+        layout->addWidget(label);
 
-    last_name = new QLabel;
-    last_name->setText(person.last_name);
-    //last_name->setGeometry(0, 0, 100, 20);
-    last_name->setFixedSize(100,20);
-    layout->addWidget(last_name);
+        label_config label_param;
+        label_param.object = label;
+        if (default_show_status.contains(key)) {
+            bool status = default_show_status[key];
+            label_param.show = status;
+            if (status)
+               label->show();
+            else
+               label->hide();
+        }
+        else {
+            label_param.show = false;
+            label->hide();
+        }
+        labels_map.insert(key, label_param);
+    }
 }
 
 
 QString TreeObject::getName()
 {
-    return last_name->text() + ", " + first_name->text();
-}
-
-
-QList<Relation *> TreeObject::mergeRelations(QList<Relation *> partners, Relation *child)
-{
-    QList<Relation *> relations = QList<Relation *>();
-    relations = partners;
-    if (child != nullptr)
-        relations.append(child);
-
-    return relations;
+    return individual.bio["Last Name"].toString() + ", " + individual.bio["First Name"].toString();
 }
 
 
@@ -112,19 +111,23 @@ void TreeObject::setDescentRelation(Relation* child)
 
 QVariant TreeObject::itemChange(GraphicsItemChange change, const QVariant &value)
 {
-    QList<Relation *> relations = mergeRelations(partnerships, descent);
-
-    if (change == QGraphicsItem::ItemPositionChange && relations.isEmpty() == false)
-    {
-        for (Relation *relation : qAsConst(relations))
-        {
-            relation->updatePosition();
-            for (Relation *child : relation->getDescentRelations())
-                child->updatePosition();
-        }
-    }
+    if (change == QGraphicsItem::ItemPositionChange)
+        updateRelations();
 
     return value;
+}
+
+
+void TreeObject::updateRelations()
+{
+    if (descent != nullptr)
+        descent->updatePosition();
+
+    for (Relation *partnership : qAsConst(partnerships)) {
+        partnership->updatePosition();
+        for (Relation *child : partnership->getDescentRelations())
+            child->updatePosition();
+    }
 }
 
 
@@ -145,4 +148,27 @@ void TreeObject::updateRelationLockStatus(bool status)
 void TreeObject::updateBiographyLockStatus(bool status)
 {
     biography_dock_lock = status;
+}
+
+
+void TreeObject::updateBiography(QString key, QVariant value)
+{
+    individual.bio[key] = value;
+    QLabel *label = labels_map[key].object;
+    label->setText(individual.bio[key].toString());
+}
+
+
+void TreeObject::changeBioShowStatus(QString key, bool status)
+{
+    labels_map[key].show = status;
+    if (status)
+        labels_map[key].object->show();
+    else
+        labels_map[key].object->hide();
+
+    widget->adjustSize();
+    setRect(-1, -1, widget->width()+1, widget->height()+1);
+
+    updateRelations();
 }

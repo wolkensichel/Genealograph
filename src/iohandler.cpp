@@ -82,10 +82,6 @@ void IOHandler::saveToFile(save_data &worksheet_data, QString &save_file)
 
 void IOHandler::store(QFile &file, save_data &worksheet_data)
 {
-    //qRegisterMetaType<person>("person");
-    //qRegisterMetaTypeStreamOperators<person>("person");
-    QTextStream cout(stdout);
-
     QDataStream out(&file);
     out.setVersion(QDataStream::Qt_5_15);
 
@@ -97,7 +93,7 @@ void IOHandler::store(QFile &file, save_data &worksheet_data)
     while (it_to.hasNext())
     {
         TreeObject *current_object = it_to.next();
-        out << indicator << current_object->id << current_object->pos() << current_object->bio;
+        out << indicator << current_object->id << current_object->pos() << current_object->individual;
     }
 
     indicator = QString("<PRTN>");
@@ -123,8 +119,6 @@ void IOHandler::store(QFile &file, save_data &worksheet_data)
 
 bool IOHandler::load(QFile &file, load_data &file_data)
 {
-    QTextStream cout(stdout);
-
     QDataStream in(&file);
     in.setVersion(QDataStream::Qt_5_15);
 
@@ -146,7 +140,7 @@ bool IOHandler::load(QFile &file, load_data &file_data)
         if (indicator == QString("<TRBJ>"))
         {
             object_data *set = new object_data();
-            in >> set->id >> set->pos >> set->bio;
+            in >> set->id >> set->pos >> set->individual;
             objects->append(set);
         }
         else if (indicator == QString("<PRTN>"))

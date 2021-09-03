@@ -15,6 +15,13 @@ class Relation;
 
 class TreeObject : public QGraphicsRectItem
 {
+    QList<QString> keys = {"First Name", "Last Name"};
+
+    QMap<QString, bool> default_show_status = {
+        {"First Name", true},
+        {"Last Name", true}
+    };
+
 public:
     TreeObject(person, quint16);
     QString getName();
@@ -22,13 +29,17 @@ public:
     void setDescentRelation(Relation*);
     QList<Relation *> getPartnershipRelations();
     Relation* getDescentRelation();
+    void updateRelations();
     void addLines();
     void updateBiographyEditor();
     void updateRelationsEditor();
     void removeTreeObject();
     void updateRelationLockStatus(bool);
     void updateBiographyLockStatus(bool);
-    person bio;
+    void updateBiography(QString, QVariant);
+    void changeBioShowStatus(QString, bool);
+
+    person individual;
     quint16 id;
     bool relations_dock_lock;
     bool biography_dock_lock;
@@ -36,16 +47,15 @@ public:
     QList<Relation *> partnerships;
     Relation* descent = nullptr;
 
+    QWidget *widget;
+
 private:
     void fillFields(person);
-    QList<Relation *> mergeRelations(QList<Relation *>, Relation*);
 
     QGraphicsProxyWidget* proxy;
-    QWidget *widget;
     QVBoxLayout *layout;
 
-    QLabel* first_name;
-    QLabel* last_name;
+    QMap<QString, label_config> labels_map;
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;

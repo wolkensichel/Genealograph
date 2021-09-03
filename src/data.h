@@ -3,6 +3,7 @@
 
 #include <QApplication>
 #include <QDate>
+#include <QLabel>
 
 
 class TreeObject;
@@ -10,34 +11,24 @@ class Relation;
 
 
 struct person {
-    QString first_name;
-    QString last_name;
-    QString birth_name;
-    QString birth_place;
-    QDate birth_date;
-    friend QDataStream & operator << (QDataStream &stream, const person& bio)
-    {
-        stream << bio.first_name;
-        stream << bio.last_name;
+    QMap<QString, QVariant> bio;
+    friend QDataStream & operator << (QDataStream &stream, const person& individual) {
+        stream << individual.bio;
         return stream;
     }
 
-    friend QDataStream & operator >> (QDataStream &stream, person& bio)
-    {
-        QString id;
-        stream >> bio.first_name;
-        stream >> bio.last_name;
+    friend QDataStream & operator >> (QDataStream &stream, person& individual) {
+        stream >> individual.bio;
         return stream;
     }
 };
-//Q_DECLARE_METATYPE(person);
 
 
 struct object_data
 {
     quint16 id;
     QPointF pos;
-    person bio;
+    person individual;
 };
 
 
@@ -78,6 +69,13 @@ struct save_data
     QList<TreeObject *> tree_objects;
     QList<Relation *> partnerships;
     QList<Relation *> descents;
+};
+
+
+struct label_config
+{
+    QLabel *object;
+    bool show;
 };
 
 #endif // DATA_H

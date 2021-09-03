@@ -8,6 +8,7 @@
 
 #include "data.h"
 
+
 class AddPersonDialog : public QDialog
 {
     Q_OBJECT

@@ -277,7 +277,7 @@ void WorkSheet::createTreeFromFile(load_data &data)
     while (it_od.hasNext())
     {
         object_data *current_object = it_od.next();
-        createTreeCard(current_object->bio, current_object->id, current_object->pos);
+        createTreeCard(current_object->individual, current_object->id, current_object->pos);
     }
 
     int reference_ids[2];
@@ -319,12 +319,6 @@ int WorkSheet::getPartnershipRelationListPosition(quint16 id_parent1, quint16 id
         };
     return std::find_if(partnership_relations.begin(), partnership_relations.end(), predicate)
             - partnership_relations.begin();
-}
-
-
-void WorkSheet::changeLockStatus(bool status)
-{
-
 }
 
 

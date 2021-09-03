@@ -52,14 +52,14 @@ void BiographyEditor::createBio()
 }
 
 
-void BiographyEditor::populateGroupBox(QLayout *layout, person bio)
+void BiographyEditor::populateGroupBox(QLayout *layout, person individual, QMap<QString, label_config> &labels_map)
 {
-    BiographyListItem *label = new BiographyListItem(bio.first_name, QString("First Name:"),
-                                                     checkbox_enable_edit->isChecked());
-    layout->addWidget(label);
-
-    //ListLabel *label2 = new ListLabel(bio.last_name);
-    //layout->addWidget(label2);
+    foreach (QString key, keys) {
+        bool show_status = labels_map[key].show;
+        BiographyListItem *label = new BiographyListItem(individual.bio[key], key,
+                            checkbox_enable_edit->isChecked(), show_status, current_owner);
+        layout->addWidget(label);
+    }
 }
 
 
@@ -79,12 +79,12 @@ void BiographyEditor::clear()
 }
 
 
-void BiographyEditor::update(TreeObject* treecard, person bio, bool lock_status)
+void BiographyEditor::update(TreeObject* treecard, person bio, bool lock_status, QMap<QString, label_config> &labels_map)
 {
     current_owner = treecard;
     checkbox_enable_edit->setChecked(lock_status);
 
-    populateGroupBox(widget_layout, bio);
+    populateGroupBox(widget_layout, bio, labels_map);
 }
 
 
