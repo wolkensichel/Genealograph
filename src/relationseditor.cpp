@@ -22,7 +22,8 @@ RelationsEditor::RelationsEditor()
     enable_edit->setFixedHeight(20);
     QLabel *label_enable_edit = new QLabel(tr("Lock Relations"));
     checkbox_enable_edit = new QCheckBox;
-    checkbox_enable_edit->setChecked(true);
+    checkbox_enable_edit->setEnabled(false);
+    checkbox_enable_edit->setChecked(false);
     connect(checkbox_enable_edit, SIGNAL(clicked(bool)), this, SLOT(changeLockStatus(bool)));
 
     hlayout->addStretch();
@@ -97,12 +98,15 @@ void RelationsEditor::clear()
 {
     for (int i = 0; i <= 2; i++)
         cleanGroupBox(widget_layout[i]);
+    checkbox_enable_edit->setEnabled(false);
+    checkbox_enable_edit->setChecked(false);
 }
 
 
 void RelationsEditor::update(TreeObject* treecard, QList<Relation *> partnerships, Relation *descent, bool lock_status)
 {
     current_owner = treecard;
+    checkbox_enable_edit->setEnabled(true);
     checkbox_enable_edit->setChecked(lock_status);
 
     // set parents

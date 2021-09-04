@@ -11,6 +11,11 @@ class Relation;
 
 
 struct person {
+    bool relations_dock_lock;
+    bool biography_dock_lock;
+    bool placeholder;
+    QMap<QString, bool> labels_show_status;
+
     QMap<QString, QVariant> bio;
     friend QDataStream & operator << (QDataStream &stream, const person& individual) {
         stream << individual.bio;

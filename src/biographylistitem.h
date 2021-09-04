@@ -17,12 +17,15 @@ class BiographyListItem : public QWidget// : public QLabel
     Q_OBJECT
 
 public:
-    BiographyListItem(QVariant&, QString, bool, bool, TreeObject*);
+    BiographyListItem(QVariant&, QString, bool, bool, bool, TreeObject*);
+    void enableTextEditing(bool);
     void enableEditing(bool);
 
 private:
     void adjustStyle();
-    bool enabled;
+
+    bool enable_text_editing;
+
     TreeObject *current_owner;
     QHBoxLayout *layout;
     QLabel *label;

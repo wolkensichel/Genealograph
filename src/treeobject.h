@@ -38,6 +38,7 @@ public:
     void updateBiographyLockStatus(bool);
     void updateBiography(QString, QVariant);
     void changeBioShowStatus(QString, bool);
+    void updateBiographyPlaceholderStatus(bool);
 
     person individual;
     quint16 id;
@@ -55,7 +56,7 @@ private:
     QGraphicsProxyWidget* proxy;
     QVBoxLayout *layout;
 
-    QMap<QString, label_config> labels_map;
+    QMap<QString, QLabel*> labels_map;
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;

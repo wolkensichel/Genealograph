@@ -21,12 +21,12 @@ class BiographyEditor : public QWidget
 
 public:
     BiographyEditor();
-    void update(TreeObject*, person, bool, QMap<QString, label_config>&);
+    void update(TreeObject*, person);
     void clear();
 
 private:
     void createBio();
-    void populateGroupBox(QLayout*, person, QMap<QString, label_config>&);
+    void populateGroupBox(QLayout*, person);
     void cleanGroupBox(QLayout*);
 
     QWidget *widget;
@@ -35,9 +35,11 @@ private:
 
     TreeObject *current_owner;
     QCheckBox *checkbox_enable_edit;
+    QCheckBox *checkbox_placeholder_mode;
 
 private slots:
     void changeLockStatus(bool);
+    void changePlaceholderStatus(bool);
 };
 
 #endif // BIOGRAPHYEDITOR_H

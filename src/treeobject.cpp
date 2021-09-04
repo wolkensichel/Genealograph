@@ -52,7 +52,7 @@ void TreeObject::updateBiographyEditor()
     BiographyEditor *biography_editor =
             qobject_cast<BiographyEditor *>(scene()->parent()->findChild<BiographyEditor *>());
     biography_editor->clear();
-    biography_editor->update(this, individual, biography_dock_lock, labels_map);
+    biography_editor->update(this, individual);
 }
 
 
@@ -61,7 +61,7 @@ void TreeObject::updateRelationsEditor()
     RelationsEditor *relations_editor =
             qobject_cast<RelationsEditor *>(scene()->parent()->findChild<RelationsEditor *>());
     relations_editor->clear();
-    relations_editor->update(this, partnerships, descent, relations_dock_lock);
+    relations_editor->update(this, partnerships, descent, individual.relations_dock_lock);
 }
 
 
@@ -72,22 +72,17 @@ void TreeObject::fillFields(person individual)
         label->setFixedSize(100,20);
         layout->addWidget(label);
 
-        label_config label_param;
-        label_param.object = label;
-        if (default_show_status.contains(key)) {
-            bool status = default_show_status[key];
-            label_param.show = status;
-            if (status)
-               label->show();
-            else
-               label->hide();
-        }
-        else {
-            label_param.show = false;
-            label->hide();
-        }
-        labels_map.insert(key, label_param);
+        if (!individual.labels_show_status.contains(key))
+            individual.labels_show_status.insert(key, default_show_status[key]);
+
+        if (individual.labels_show_status[key])
+           label->show();
+        else
+           label->hide();
+
+        labels_map.insert(key, label);
     }
+    updateBiographyPlaceholderStatus(individual.placeholder);
 }
 
 
@@ -141,34 +136,50 @@ void TreeObject::removeTreeObject()
 
 void TreeObject::updateRelationLockStatus(bool status)
 {
-    relations_dock_lock = status;
+    individual.relations_dock_lock = status;
 }
 
 
 void TreeObject::updateBiographyLockStatus(bool status)
 {
-    biography_dock_lock = status;
+    individual.biography_dock_lock = status;
 }
 
 
 void TreeObject::updateBiography(QString key, QVariant value)
 {
     individual.bio[key] = value;
-    QLabel *label = labels_map[key].object;
-    label->setText(individual.bio[key].toString());
+    labels_map[key]->setText(individual.bio[key].toString());
 }
 
 
 void TreeObject::changeBioShowStatus(QString key, bool status)
 {
-    labels_map[key].show = status;
+    individual.labels_show_status[key] = status;
     if (status)
-        labels_map[key].object->show();
+        labels_map[key]->show();
     else
-        labels_map[key].object->hide();
+        labels_map[key]->hide();
 
     widget->adjustSize();
     setRect(-1, -1, widget->width()+1, widget->height()+1);
 
     updateRelations();
+}
+
+
+void TreeObject::updateBiographyPlaceholderStatus(bool status)
+{
+    individual.placeholder = status;
+
+    QMap<QString, QLabel*>::const_iterator it;
+    if (status)
+        for (it = labels_map.cbegin(); it != labels_map.cend(); ++it)
+            it.value()->hide();
+    else
+        for (it = labels_map.cbegin(); it != labels_map.cend(); ++it)
+            if (individual.labels_show_status[it.key()])
+                it.value()->show();
+            else
+                it.value()->hide();
 }

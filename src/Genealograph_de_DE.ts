@@ -48,6 +48,10 @@
         <source>Lock Biography</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Placeholder</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>IOHandler</name>

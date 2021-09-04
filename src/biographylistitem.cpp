@@ -6,8 +6,8 @@
 #include "treeobject.h"
 
 
-BiographyListItem::BiographyListItem(QVariant &text, QString caption, bool lock_status, bool show_status, TreeObject *owner)
-    : enabled(!lock_status), current_owner(owner)
+BiographyListItem::BiographyListItem(QVariant &text, QString caption, bool lock_status, bool show_status, bool ph_status, TreeObject *owner)
+    : enable_text_editing(!lock_status), current_owner(owner)
 {
     layout = new QHBoxLayout();
     layout->setSizeConstraint(QLayout::SetMaximumSize);
@@ -27,6 +27,7 @@ BiographyListItem::BiographyListItem(QVariant &text, QString caption, bool lock_
 
     checkbox = new QCheckBox;
     checkbox->setChecked(show_status);
+    checkbox->setEnabled(!ph_status);
     layout->addWidget(checkbox);
     connect(checkbox, SIGNAL(clicked(bool)), this, SLOT(changeBioShowStatus(bool)));
 }
@@ -34,18 +35,24 @@ BiographyListItem::BiographyListItem(QVariant &text, QString caption, bool lock_
 
 void BiographyListItem::adjustStyle()
 {
-    form->setEnabled(enabled);
-    if (enabled)
+    form->setEnabled(enable_text_editing);
+    if (enable_text_editing)
         form->setStyleSheet(styleSheet());
     else
         form->setStyleSheet("background: white; color: #565656");
 }
 
 
-void BiographyListItem::enableEditing(bool lock_status)
+void BiographyListItem::enableTextEditing(bool lock_status)
 {
-    enabled = !lock_status;
+    enable_text_editing = !lock_status;
     adjustStyle();
+}
+
+
+void BiographyListItem::enableEditing(bool ph_status)
+{
+    checkbox->setEnabled(!ph_status);
 }
 
 
