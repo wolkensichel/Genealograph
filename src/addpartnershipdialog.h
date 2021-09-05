@@ -22,11 +22,19 @@ private:
     QLabel *label_partner1;
     QLabel *label_partner2;
 
+    QLabel *info;
+
     QComboBox *form_partner1;
     QComboBox *form_partner2;
 
     QDialogButtonBox *buttonbox;
 
+    QList<TreeObject *> treecards;
+
+    QMap<QString, int> persons_in_dropdown = {};
+
+private slots:
+    void analyzeInputPairs();
 };
 
 #endif // ADDPARTNERSHIPDIALOG_H

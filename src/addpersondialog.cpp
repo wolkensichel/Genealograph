@@ -26,8 +26,6 @@ AddPersonDialog::AddPersonDialog(QWidget *parent) : QDialog(parent)
 person AddPersonDialog::fetchFormInputs()
 {
     person new_person;
-    //new_person.first_name = form_firstname->text();
-    //new_person.last_name = form_lastname->text();
 
     QString key = "First Name";
     new_person.bio.insert(key, form_firstname->text());

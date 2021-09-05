@@ -61,29 +61,23 @@ void WorkSheet::createTreeCardFromFile(person new_person) {
 
 void WorkSheet::createPartnershipRelation(int* partnership)
 {
-    if (*partnership != -1 and *(partnership+1) != -1) // 3rd parameter for marriage/open partnership ...
-    {
-        TreeObject* partner1 = tree_objects.at(*partnership);
-        TreeObject* partner2 = tree_objects.at(*(partnership+1));
+    TreeObject* partner1 = tree_objects.at(*partnership);
+    TreeObject* partner2 = tree_objects.at(*(partnership+1));
 
-        Relation *relation = new Relation(partner1, partner2, this);
-        addItem(relation);
-        partnership_relations.append(relation);
-    }
+    Relation *relation = new Relation(partner1, partner2, this);
+    addItem(relation);
+    partnership_relations.append(relation);
 }
 
 
 void WorkSheet::createDescentRelation(int* descent)
 {
-    if (*descent != -1 and *(descent+1) != -1)
-    {
-        Relation* partnership = partnership_relations.at(*descent);
-        TreeObject* child = tree_objects.at(*(descent+1));
+    Relation* partnership = partnership_relations.at(*descent);
+    TreeObject* child = tree_objects.at(*(descent+1));
 
-        Relation *relation = new Relation(partnership, child, this);
-        addItem(relation);
-        descent_relations.append(relation);
-    }
+    Relation *relation = new Relation(partnership, child, this);
+    addItem(relation);
+    descent_relations.append(relation);
 }
 
 
