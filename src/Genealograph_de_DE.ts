@@ -95,10 +95,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Save current document</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Do you want to save the current document before opening a new one?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -128,6 +124,14 @@
     </message>
     <message>
         <source>&amp;Worksheet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Quit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Do you want to save the current document before you quit?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

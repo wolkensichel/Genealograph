@@ -47,6 +47,9 @@ void MainWindow::createActions()
     actionPrint = new QAction(tr("&Print"), this);
     actionPrint->setShortcut(QKeySequence(QKeySequence::Print));
     connect(actionPrint, &QAction::triggered, this, &MainWindow::print);
+    actionQuit = new QAction(tr("&Quit"), this);
+    actionQuit->setShortcut(QKeySequence(QKeySequence::Quit));
+    connect(actionQuit, &QAction::triggered, this, &MainWindow::quit);
 
     actionAddPerson = new QAction(tr("Add Person"), this);
     actionAddPerson->setShortcut(QKeySequence(Qt::ALT | Qt::Key_W));
@@ -72,6 +75,7 @@ void MainWindow::createMenu()
     menuFile->addAction(actionSaveFile);
     menuFile->addAction(actionSaveAsFile);
     menuFile->addAction(actionPrint);
+    menuFile->addAction(actionQuit);
 
     menuCreate = menuBar()->addMenu(tr("&Create"));
     menuCreate->addAction(actionAddPerson);
@@ -150,8 +154,7 @@ void MainWindow::setupSheet()
 void MainWindow::newFile()
 {
     QMessageBox msg_box;
-    msg_box.setText(tr("Save current document"));
-    msg_box.setInformativeText(tr("Do you want to save the current document before opening a new one?"));
+    msg_box.setText(tr("Do you want to save the current document before opening a new one?"));
     msg_box.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
     msg_box.setDefaultButton(QMessageBox::Save);
 
@@ -163,8 +166,6 @@ void MainWindow::newFile()
           setupSheet();
           break;
       case QMessageBox::Cancel:
-          break;
-      default:
           break;
     }
 }
@@ -209,8 +210,6 @@ save_data MainWindow::collectWorksheetData()
 
 void MainWindow::saveFile()
 {
-    QTextStream cout(stdout);
-    cout << save_file << "\n";
     if (save_file.isEmpty())
         saveAsFile();
     else
@@ -237,6 +236,26 @@ void MainWindow::print()
 
     PrintSheetDialog printDialog(printer);
     printDialog.print(view);
+}
+
+
+void MainWindow::quit()
+{
+    QMessageBox msg_box;
+    msg_box.setText(tr("Do you want to save the current document before you quit?"));
+    msg_box.setStandardButtons(QMessageBox::Save | QMessageBox::Close);
+    QAbstractButton *close_button = msg_box.button(QMessageBox::Close);
+    close_button->setText("Quit");
+    msg_box.setDefaultButton(QMessageBox::Save);
+
+    switch (msg_box.exec()) {
+      case QMessageBox::Save:
+          save_file = "";
+          saveFile();
+      case QMessageBox::Close:
+          QCoreApplication::quit();
+          break;
+    }
 }
 
 
@@ -292,5 +311,13 @@ void MainWindow::scrollToItem()
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
+    event->ignore();
+    // arrow-keys navigation in scrollarea, zooming
+}
 
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    event->ignore();
+    quit();
 }

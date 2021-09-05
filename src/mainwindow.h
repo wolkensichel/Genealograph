@@ -41,6 +41,7 @@ private:
     void saveFile();
     void saveAsFile();
     void print();
+    void quit();
 
     void addPerson();
     void addPartnership();
@@ -48,15 +49,16 @@ private:
 
     void resizeSheet();
 
-    QAction *actionAddPerson;
-    QAction *actionAddPartnership;
-    QAction *actionAddDescent;
-
     QAction *actionNewFile;
     QAction *actionOpenFile;
     QAction *actionSaveFile;
     QAction *actionSaveAsFile;
     QAction *actionPrint;
+    QAction *actionQuit;
+
+    QAction *actionAddPerson;
+    QAction *actionAddPartnership;
+    QAction *actionAddDescent;
 
     QAction *actionSheetResize;
 
@@ -77,6 +79,7 @@ public slots:
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;
+    void closeEvent(QCloseEvent *event) override;
 };
 
 
