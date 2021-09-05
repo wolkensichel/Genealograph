@@ -8,12 +8,9 @@
 #include "biographyeditor.h"
 
 
-TreeObject::TreeObject(person new_person, quint16 current_id)
+TreeObject::TreeObject(person new_person)
 {
     individual = new_person;
-    id = current_id;
-    relations_dock_lock = true;
-    biography_dock_lock = true;
 
     widget = new QWidget();
     layout = new QVBoxLayout;
@@ -22,7 +19,7 @@ TreeObject::TreeObject(person new_person, quint16 current_id)
     proxy = new QGraphicsProxyWidget(this);
     proxy->setWidget(widget);
 
-    fillFields(individual);
+    fillFields();
 
     setRect(-1, -1, widget->width()+1, widget->height()+1);
     setBrush(Qt::lightGray);
@@ -65,7 +62,7 @@ void TreeObject::updateRelationsEditor()
 }
 
 
-void TreeObject::fillFields(person individual)
+void TreeObject::fillFields()
 {
     foreach (QString key, keys) {
         QLabel *label = new QLabel(individual.bio[key].toString());

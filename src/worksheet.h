@@ -22,7 +22,8 @@ public:
     quint16 id_counter;
     explicit WorkSheet(QMenu*, QObject *parent = nullptr);
     void setMode(Mode mode);
-    void createTreeCard(person, quint16 = 0, QPointF = QPointF(0, 0));
+    void createTreeCard(person);
+    void createTreeCardFromFile(person);
     void createPartnershipRelation(int*);
     void createDescentRelation(int*);
     void createTreeFromFile(load_data&);

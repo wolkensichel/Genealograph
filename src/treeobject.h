@@ -23,7 +23,7 @@ class TreeObject : public QGraphicsRectItem
     };
 
 public:
-    TreeObject(person, quint16);
+    TreeObject(person);
     QString getName();
     void addPartnershipRelation(Relation*);
     void setDescentRelation(Relation*);
@@ -41,9 +41,6 @@ public:
     void updateBiographyPlaceholderStatus(bool);
 
     person individual;
-    quint16 id;
-    bool relations_dock_lock;
-    bool biography_dock_lock;
 
     QList<Relation *> partnerships;
     Relation* descent = nullptr;
@@ -51,7 +48,7 @@ public:
     QWidget *widget;
 
 private:
-    void fillFields(person);
+    void fillFields();
 
     QGraphicsProxyWidget* proxy;
     QVBoxLayout *layout;

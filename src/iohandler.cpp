@@ -2,9 +2,6 @@
 
 #include "mainwindow.h"
 #include "iohandler.h"
-#include <QTextStream>
-#include <iostream>
-
 #include "treeobject.h"
 #include "relation.h"
 
@@ -93,7 +90,8 @@ void IOHandler::store(QFile &file, save_data &worksheet_data)
     while (it_to.hasNext())
     {
         TreeObject *current_object = it_to.next();
-        out << indicator << current_object->id << current_object->pos() << current_object->individual;
+        current_object->individual.pos = current_object->pos();
+        out << indicator << current_object->individual;
     }
 
     indicator = QString("<PRTN>");
@@ -101,8 +99,8 @@ void IOHandler::store(QFile &file, save_data &worksheet_data)
     while (it_ps.hasNext())
     {
         Relation *current_relation = it_ps.next();
-        out << indicator << current_relation->tree_objects.first()->id
-                         << current_relation->tree_objects.last()->id;
+        out << indicator << current_relation->tree_objects.first()->individual.id
+                         << current_relation->tree_objects.last()->individual.id;
     }
 
     indicator = QString("<DSCN>");
@@ -110,9 +108,9 @@ void IOHandler::store(QFile &file, save_data &worksheet_data)
     while (it_d.hasNext())
     {
         Relation *current_relation = it_d.next();
-        out << indicator << current_relation->tree_objects.last()->id
-                         << current_relation->parents->tree_objects.first()->id
-                         << current_relation->parents->tree_objects.last()->id;
+        out << indicator << current_relation->tree_objects.last()->individual.id
+                         << current_relation->parents->tree_objects.first()->individual.id
+                         << current_relation->parents->tree_objects.last()->individual.id;
     }
 }
 
@@ -130,7 +128,7 @@ bool IOHandler::load(QFile &file, load_data &file_data)
     else
         return false;
 
-    QList<object_data *> *objects = new QList<object_data *>();
+    QList<person *> *persons = new QList<person *>();
     QList<partnership_data *> *partnerships = new QList<partnership_data *>();
     QList<descent_data *> *descents = new QList<descent_data *>();
 
@@ -139,9 +137,9 @@ bool IOHandler::load(QFile &file, load_data &file_data)
         in >> indicator;
         if (indicator == QString("<TRBJ>"))
         {
-            object_data *set = new object_data();
-            in >> set->id >> set->pos >> set->individual;
-            objects->append(set);
+            person *individual = new person();
+            in >> individual;
+            persons->append(individual);
         }
         else if (indicator == QString("<PRTN>"))
         {
@@ -157,7 +155,7 @@ bool IOHandler::load(QFile &file, load_data &file_data)
         }
     }
 
-    file_data.objects = *objects;
+    file_data.persons = *persons;
     file_data.partnerships = *partnerships;
     file_data.descents= *descents;
 

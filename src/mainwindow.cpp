@@ -175,11 +175,11 @@ void MainWindow::openFile()
     IOHandler handler;
 
     load_data file_data;
-    QList<object_data *> *objects = new QList<object_data *>();
+    QList<person *> *persons = new QList<person *>();
     QList<partnership_data *> *partnerships = new QList<partnership_data *>();
     QList<descent_data *> *descents = new QList<descent_data *>();
     file_data.worksheet = {0, 0};
-    file_data.objects = *objects;
+    file_data.persons = *persons;
     file_data.partnerships = *partnerships;
     file_data.descents = *descents;
 

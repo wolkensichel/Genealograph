@@ -11,6 +11,8 @@ class Relation;
 
 
 struct person {
+    quint16 id;
+    QPointF pos;
     bool relations_dock_lock;
     bool biography_dock_lock;
     bool placeholder;
@@ -18,22 +20,26 @@ struct person {
 
     QMap<QString, QVariant> bio;
     friend QDataStream & operator << (QDataStream &stream, const person& individual) {
+        stream << individual.id;
+        stream << individual.pos;
+        stream << individual.relations_dock_lock;
+        stream << individual.biography_dock_lock;
+        stream << individual.placeholder;
+        stream << individual.labels_show_status;
         stream << individual.bio;
         return stream;
     }
 
-    friend QDataStream & operator >> (QDataStream &stream, person& individual) {
-        stream >> individual.bio;
+    friend QDataStream & operator >> (QDataStream &stream, person *individual) {
+        stream >> individual->id;
+        stream >> individual->pos;
+        stream >> individual->relations_dock_lock;
+        stream >> individual->biography_dock_lock;
+        stream >> individual->placeholder;
+        stream >> individual->labels_show_status;
+        stream >> individual->bio;
         return stream;
     }
-};
-
-
-struct object_data
-{
-    quint16 id;
-    QPointF pos;
-    person individual;
 };
 
 
@@ -62,7 +68,7 @@ struct sheet
 struct load_data
 {
     sheet worksheet;
-    QList<object_data *> objects;
+    QList<person *> persons;
     QList<partnership_data *> partnerships;
     QList<descent_data *> descents;
 };
@@ -74,13 +80,6 @@ struct save_data
     QList<TreeObject *> tree_objects;
     QList<Relation *> partnerships;
     QList<Relation *> descents;
-};
-
-
-struct label_config
-{
-    QLabel *object;
-    bool show;
 };
 
 #endif // DATA_H

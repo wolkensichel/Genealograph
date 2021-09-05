@@ -5,13 +5,13 @@
 #include <QGraphicsItem>
 #include <QMessageBox>
 #include <QWidget>
-#include <QTextStream>
-#include <iostream>
 
 #include "worksheet.h"
 #include "treeobject.h"
 #include "relation.h"
 #include "mainwindow.h"
+#include "biographyeditor.h"
+#include "relationseditor.h"
 
 
 WorkSheet::WorkSheet(QMenu *menuCreate, QObject *parent)
@@ -29,27 +29,33 @@ void WorkSheet::setMode(Mode mode)
 }
 
 
-void WorkSheet::createTreeCard(person new_person, quint16 id, QPointF pos)
+void WorkSheet::createTreeCard(person new_person)
 {
     clearSelection();
-    if (id == quint16(0))
-    {
-        TreeObject *treecard = new TreeObject(new_person, id_counter);
-        tree_objects.append(treecard);
-        addItem(treecard);
-        id_counter++;
-        treecard->setSelected(true);
-        setMode(InsertCard);
-    }
-    else
-    {
-        TreeObject *treecard = new TreeObject(new_person, id);
-        tree_objects.append(treecard);
-        addItem(treecard);
-        if (id_counter < id)
-            id_counter = ++id;
-        treecard->setPos(pos);
-    }
+    new_person.id = id_counter;
+    new_person.biography_dock_lock = false;
+    new_person.relations_dock_lock = true;
+    new_person.placeholder = false;
+
+    TreeObject *treecard = new TreeObject(new_person);
+    tree_objects.append(treecard);
+    addItem(treecard);
+    id_counter++;
+    treecard->setSelected(true);
+    setMode(InsertCard);
+}
+
+
+void WorkSheet::createTreeCardFromFile(person new_person) {
+
+    clearSelection();
+
+    TreeObject *treecard = new TreeObject(new_person);
+    tree_objects.append(treecard);
+    addItem(treecard);
+    if (id_counter < new_person.id)
+        id_counter = new_person.id+1;
+    treecard->setPos(new_person.pos);
 }
 
 
@@ -90,6 +96,11 @@ void WorkSheet::mousePressEvent(QGraphicsSceneMouseEvent *event)
     {
         treecard->setPen(QPen(Qt::black, 1));
         treecard->setZValue(0);
+    }
+
+    if (mouseGrabberItem() == nullptr) {
+        parent()->findChild<BiographyEditor *>()->clear();
+        parent()->findChild<RelationsEditor *>()->clear();
     }
 
     QGraphicsScene::mousePressEvent(event);
@@ -198,7 +209,6 @@ void WorkSheet::keyPressEvent(QKeyEvent *event)
     else if (event->key() == Qt::Key_Escape)
     {
         clearSelection();
-        // send signal to break removeTreeObjectDialog loop
     }
 
     QGraphicsScene::keyPressEvent(event);
@@ -273,12 +283,9 @@ QList<Relation *> WorkSheet::getDescentRelationList()
 
 void WorkSheet::createTreeFromFile(load_data &data)
 {
-    QListIterator<object_data *> it_od(data.objects);
+    QListIterator<person *> it_od(data.persons);
     while (it_od.hasNext())
-    {
-        object_data *current_object = it_od.next();
-        createTreeCard(current_object->individual, current_object->id, current_object->pos);
-    }
+        createTreeCardFromFile(*it_od.next());
 
     int reference_ids[2];
     QListIterator<partnership_data *> it_ps(data.partnerships);
@@ -305,7 +312,7 @@ void WorkSheet::createTreeFromFile(load_data &data)
 
 int WorkSheet::getTreeObjectListPosition(quint16 id)
 {
-    auto predicate = [id](TreeObject *tree_object) { return tree_object->id == id; };
+    auto predicate = [id](TreeObject *tree_object) { return tree_object->individual.id == id; };
     return std::find_if(tree_objects.begin(), tree_objects.end(), predicate)
             - tree_objects.begin();
 }
@@ -314,8 +321,8 @@ int WorkSheet::getTreeObjectListPosition(quint16 id)
 int WorkSheet::getPartnershipRelationListPosition(quint16 id_parent1, quint16 id_parent2)
 {
     auto predicate = [id_parent1, id_parent2](Relation *partnership) {
-        return (partnership->tree_objects.first()->id == id_parent1
-                && partnership->tree_objects.last()->id == id_parent2);
+        return (partnership->tree_objects.first()->individual.id == id_parent1
+                && partnership->tree_objects.last()->individual.id == id_parent2);
         };
     return std::find_if(partnership_relations.begin(), partnership_relations.end(), predicate)
             - partnership_relations.begin();
