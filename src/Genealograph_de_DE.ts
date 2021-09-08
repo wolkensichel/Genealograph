@@ -32,17 +32,6 @@
     </message>
 </context>
 <context>
-    <name>AddPersonDialog</name>
-    <message>
-        <source>First Name:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Last Name:</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>BiographyEditor</name>
     <message>
         <source>Lock Biography</source>

@@ -22,11 +22,11 @@ public:
     quint16 id_counter;
     explicit WorkSheet(QMenu*, QObject *parent = nullptr);
     void setMode(Mode mode);
-    void createTreeCard(person);
-    void createTreeCardFromFile(person);
+    void createTreeCard(person, QList<std::tuple<QString, QString, bool>>);
+    void createTreeCardFromFile(person, QList<std::tuple<QString, QString, bool>>);
     void createPartnershipRelation(int*);
     void createDescentRelation(int*);
-    void createTreeFromFile(load_data&);
+    void createTreeFromFile(load_data&, QList<std::tuple<QString, QString, bool>>);
     void clean();
 
     void removeTreeObjectFromList(TreeObject*);

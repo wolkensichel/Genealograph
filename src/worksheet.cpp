@@ -29,7 +29,7 @@ void WorkSheet::setMode(Mode mode)
 }
 
 
-void WorkSheet::createTreeCard(person new_person)
+void WorkSheet::createTreeCard(person new_person, QList<std::tuple<QString, QString, bool>> data_types)
 {
     clearSelection();
     new_person.id = id_counter;
@@ -37,7 +37,7 @@ void WorkSheet::createTreeCard(person new_person)
     new_person.relations_dock_lock = true;
     new_person.placeholder = false;
 
-    TreeObject *treecard = new TreeObject(new_person);
+    TreeObject *treecard = new TreeObject(new_person, data_types);
     tree_objects.append(treecard);
     addItem(treecard);
     id_counter++;
@@ -46,11 +46,11 @@ void WorkSheet::createTreeCard(person new_person)
 }
 
 
-void WorkSheet::createTreeCardFromFile(person new_person) {
+void WorkSheet::createTreeCardFromFile(person new_person, QList<std::tuple<QString, QString, bool>> data_types) {
 
     clearSelection();
 
-    TreeObject *treecard = new TreeObject(new_person);
+    TreeObject *treecard = new TreeObject(new_person, data_types);
     tree_objects.append(treecard);
     addItem(treecard);
     if (id_counter < new_person.id)
@@ -275,11 +275,11 @@ QList<Relation *> WorkSheet::getDescentRelationList()
 }
 
 
-void WorkSheet::createTreeFromFile(load_data &data)
+void WorkSheet::createTreeFromFile(load_data &data, QList<std::tuple<QString, QString, bool>> data_types)
 {
     QListIterator<person *> it_od(data.persons);
     while (it_od.hasNext())
-        createTreeCardFromFile(*it_od.next());
+        createTreeCardFromFile(*it_od.next(), data_types);
 
     int reference_ids[2];
     QListIterator<partnership_data *> it_ps(data.partnerships);

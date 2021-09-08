@@ -73,7 +73,7 @@ void BiographyEditor::createBio()
 void BiographyEditor::populateGroupBox(QLayout *layout, person individual)
 {
     foreach (QString key, keys) {
-        bool show_status = individual.labels_show_status[key];
+        bool show_status = true; //individual.bio[key].show;
         BiographyListItem *label = new BiographyListItem(individual.bio[key], key,
                                                          checkbox_enable_edit->isChecked(), show_status,
                                                          checkbox_placeholder_mode->isChecked(), current_owner);

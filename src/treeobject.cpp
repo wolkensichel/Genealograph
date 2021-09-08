@@ -8,7 +8,8 @@
 #include "biographyeditor.h"
 
 
-TreeObject::TreeObject(person new_person)
+TreeObject::TreeObject(person new_person, QList<std::tuple<QString, QString, bool>> data_types)
+    : form_types(data_types))
 {
     individual = new_person;
 
@@ -64,28 +65,44 @@ void TreeObject::updateRelationsEditor()
 
 void TreeObject::fillFields()
 {
-    foreach (QString key, keys) {
-        QLabel *label = new QLabel(individual.bio[key].toString());
-        label->setFixedSize(100,20);
+    QList<std::tuple<QString, QString, bool>>::iterator iter;
+    for (iter = form_types.begin(); iter != form_types.end(); ++iter) {
+        QString key = std::get<0>(*iter);
+
+        QString value;
+        if (individual.bio[key].form_type == "QDateEdit")
+            value = convertDateFormatForDisplay(individual.bio[key].value.toString());
+        else
+            value = individual.bio[key].value.toString();
+
+        QLabel *label = new QLabel(value);
+        label->setFixedSize(100, 20);
         layout->addWidget(label);
 
-        if (!individual.labels_show_status.contains(key))
-            individual.labels_show_status.insert(key, default_show_status[key]);
-
-        if (individual.labels_show_status[key])
-           label->show();
+        if (individual.bio[key].show)
+            label->show();
         else
-           label->hide();
+            label->hide();
 
-        labels_map.insert(key, label);
+        labels.insert(key, label);
     }
     updateBiographyPlaceholderStatus(individual.placeholder);
 }
 
 
+QString TreeObject::convertDateFormatForDisplay(QString value)
+{
+    QList<QString> value_components = value.split("-");
+    value = value_components[2].remove(QRegularExpression("^[0]*")) + "." +
+            value_components[1].remove(QRegularExpression("^[0]*")) + "." +
+            value_components[0].remove(QRegularExpression("^[0]*"));
+    return value;
+}
+
+
 QString TreeObject::getName()
 {
-    return individual.bio["Last Name"].toString() + ", " + individual.bio["First Name"].toString();
+    return individual.bio["Last Name"].value.toString() + ", " + individual.bio["First Name"].value.toString();
 }
 
 
@@ -143,20 +160,27 @@ void TreeObject::updateBiographyLockStatus(bool status)
 }
 
 
-void TreeObject::updateBiography(QString key, QVariant value)
+void TreeObject::updateBiography(QString key, QVariant datum)
 {
-    individual.bio[key] = value;
-    labels_map[key]->setText(individual.bio[key].toString());
+    individual.bio[key].value = datum;
+
+    QString value;
+    if (individual.bio[key].form_type == "QDateEdit")
+        value = convertDateFormatForDisplay(individual.bio[key].value.toString());
+    else
+        value = individual.bio[key].value.toString();
+
+    labels[key]->setText(value);
 }
 
 
 void TreeObject::changeBioShowStatus(QString key, bool status)
 {
-    individual.labels_show_status[key] = status;
+    individual.bio[key].show = status;
     if (status)
-        labels_map[key]->show();
+        labels[key]->show();
     else
-        labels_map[key]->hide();
+        labels[key]->hide();
 
     widget->adjustSize();
     setRect(-1, -1, widget->width()+1, widget->height()+1);
@@ -171,11 +195,11 @@ void TreeObject::updateBiographyPlaceholderStatus(bool status)
 
     QMap<QString, QLabel*>::const_iterator it;
     if (status)
-        for (it = labels_map.cbegin(); it != labels_map.cend(); ++it)
+        for (it = labels.cbegin(); it != labels.cend(); ++it)
             it.value()->hide();
     else
-        for (it = labels_map.cbegin(); it != labels_map.cend(); ++it)
-            if (individual.labels_show_status[it.key()])
+        for (it = labels.cbegin(); it != labels.cend(); ++it)
+            if (individual.bio[it.key()].show)
                 it.value()->show();
             else
                 it.value()->hide();

@@ -49,6 +49,8 @@ private:
 
     void resizeSheet();
 
+    void defineDataItems();
+
     QAction *actionNewFile;
     QAction *actionOpenFile;
     QAction *actionSaveFile;
@@ -62,17 +64,19 @@ private:
 
     QAction *actionSheetResize;
 
-    WorkSheet *worksheet;
-    QGraphicsView *view = nullptr;
-
     QMenu *menuFile;
     QMenu *menuCreate;
     QMenu *menuWorksheet;
+
+    WorkSheet *worksheet;
+    QGraphicsView *view = nullptr;
 
     QString save_file;
 
     qreal zoom_in_factor;
     qreal zoom_out_factor;
+
+    QList<std::tuple<QString, QString, bool>> data_types;
 
 public slots:
     void scrollToItem();

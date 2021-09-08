@@ -15,15 +15,9 @@ class Relation;
 
 class TreeObject : public QGraphicsRectItem
 {
-    QList<QString> keys = {"First Name", "Last Name"};
-
-    QMap<QString, bool> default_show_status = {
-        {"First Name", true},
-        {"Last Name", true}
-    };
 
 public:
-    TreeObject(person);
+    TreeObject(person, QList<std::tuple<QString, QString, bool>>);
     QString getName();
     void addPartnershipRelation(Relation*);
     void setDescentRelation(Relation*);
@@ -49,11 +43,13 @@ public:
 
 private:
     void fillFields();
+    QString convertDateFormatForDisplay(QString);
 
     QGraphicsProxyWidget* proxy;
     QVBoxLayout *layout;
 
-    QMap<QString, QLabel*> labels_map;
+    QList<std::tuple<QString, QString, bool>> form_types;
+    QMap<QString, QLabel*> labels;
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;

@@ -15,13 +15,29 @@
 
 MainWindow::MainWindow(QWidget *parent)
 {
+    defineDataItems();
     createActions();
     createMenu();
     createDockWidgets();
     createWorkSheet();
     save_file = "";
-    zoom_in_factor = 1.25;
-    zoom_out_factor = 0.8;
+    //zoom_in_factor = 1.25;
+    //zoom_out_factor = 0.8;
+}
+
+
+void MainWindow::defineDataItems()
+{
+    data_types = {
+        {"First Name", "QLineEdit", true},
+        {"Last Name", "QLineEdit", true},
+        {"Birth Name", "QLineEdit", false},
+        {"Sex", "QComboBox", false},
+        {"Place of birth", "QLineEdit", true},
+        {"Date of birth", "QDateEdit", true},
+        {"Place of death", "QLineEdit", true},
+        {"Date of death", "QDateEdit", true}
+    };
 }
 
 
@@ -187,7 +203,7 @@ void MainWindow::openFile()
     if (handler.openFromFile(file_data, save_file))
     {
         prepareNewSheet(file_data.worksheet);
-        worksheet->createTreeFromFile(file_data);
+        worksheet->createTreeFromFile(file_data, data_types);
     }
 }
 
@@ -261,9 +277,9 @@ void MainWindow::quit()
 
 void MainWindow::addPerson()
 {
-    AddPersonDialog addPerson;
+    AddPersonDialog addPerson(data_types);
     if (addPerson.exec() == QDialog::Accepted)
-        worksheet->createTreeCard(addPerson.fetchFormInputs());
+        worksheet->createTreeCard(addPerson.fetchFormInputs(), data_types);
 }
 
 
