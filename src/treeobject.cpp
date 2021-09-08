@@ -9,7 +9,7 @@
 
 
 TreeObject::TreeObject(person new_person, QList<std::tuple<QString, QString, bool>> data_types)
-    : form_types(data_types))
+    : form_types(data_types)
 {
     individual = new_person;
 
@@ -50,7 +50,7 @@ void TreeObject::updateBiographyEditor()
     BiographyEditor *biography_editor =
             qobject_cast<BiographyEditor *>(scene()->parent()->findChild<BiographyEditor *>());
     biography_editor->clear();
-    biography_editor->update(this, individual);
+    biography_editor->update(this, individual, form_types);
 }
 
 

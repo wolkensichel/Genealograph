@@ -70,14 +70,19 @@ void BiographyEditor::createBio()
 }
 
 
-void BiographyEditor::populateGroupBox(QLayout *layout, person individual)
+void BiographyEditor::populateGroupBox(QLayout *layout, person individual, QList<std::tuple<QString, QString, bool>> form_types)
 {
-    foreach (QString key, keys) {
-        bool show_status = true; //individual.bio[key].show;
-        BiographyListItem *label = new BiographyListItem(individual.bio[key], key,
-                                                         checkbox_enable_edit->isChecked(), show_status,
-                                                         checkbox_placeholder_mode->isChecked(), current_owner);
-        layout->addWidget(label);
+    QList<std::tuple<QString, QString, bool>>::iterator iter;
+    for (iter = form_types.begin(); iter != form_types.end(); ++iter)
+    {
+        QString key = std::get<0>(*iter);
+
+        BiographyListItem *item = new BiographyListItem(key, individual.bio[key],
+                                                        checkbox_enable_edit->isChecked(),
+                                                        checkbox_placeholder_mode->isChecked(),
+                                                        current_owner);
+
+        layout->addWidget(item);
     }
 }
 
@@ -102,7 +107,7 @@ void BiographyEditor::clear()
 }
 
 
-void BiographyEditor::update(TreeObject* treecard, person individual)
+void BiographyEditor::update(TreeObject* treecard, person individual, QList<std::tuple<QString, QString, bool>> form_types)
 {
     current_owner = treecard;
     checkbox_enable_edit->setEnabled(true);
@@ -110,14 +115,14 @@ void BiographyEditor::update(TreeObject* treecard, person individual)
     checkbox_placeholder_mode->setEnabled(true);
     checkbox_placeholder_mode->setChecked(individual.placeholder);
 
-    populateGroupBox(widget_layout, individual);
+    populateGroupBox(widget_layout, individual, form_types);
 }
 
 
 void BiographyEditor::changeLockStatus(bool status)
 {
     foreach (BiographyListItem *item, widget->findChildren<BiographyListItem *>())
-        item->enableTextEditing(status);
+        item->enableFormEditing(status);
 
     current_owner->updateBiographyLockStatus(status);
 }
@@ -126,7 +131,7 @@ void BiographyEditor::changeLockStatus(bool status)
 void BiographyEditor::changePlaceholderStatus(bool status)
 {
     foreach (BiographyListItem *item, widget->findChildren<BiographyListItem *>())
-        item->enableEditing(status);
+        item->enableFormEditing(status);
 
     current_owner->updateBiographyPlaceholderStatus(status);
 }

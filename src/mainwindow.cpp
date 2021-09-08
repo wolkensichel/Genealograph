@@ -153,6 +153,9 @@ void MainWindow::prepareNewSheet(sheet size)
     view->resize(worksheet->width()+2*view->frameWidth(), worksheet->height()+2*view->frameWidth());
     //view->setRenderHints(QPainter::Antialiasing);
     scrollarea->setWidget(view);
+
+    biography_editor->clear();
+    relations_editor->clear();
 }
 
 

@@ -1,7 +1,6 @@
 #ifndef BIOGRAPHYLISTITEM_H
 #define BIOGRAPHYLISTITEM_H
 
-#include <QLabel>
 #include <QHBoxLayout>
 #include <QLineEdit>
 #include <QCheckBox>
@@ -12,28 +11,33 @@
 class TreeObject;
 
 
-class BiographyListItem : public QWidget// : public QLabel
+class BiographyListItem : public QWidget
 {
     Q_OBJECT
 
 public:
-    BiographyListItem(QVariant&, QString, bool, bool, bool, TreeObject*);
-    void enableTextEditing(bool);
+    BiographyListItem(QString, bio_item&, bool, bool, TreeObject*);
+    void enableFormEditing(bool);
     void enableEditing(bool);
 
 private:
-    void adjustStyle();
+    void fillField(QString, bio_item);
+    void enableForm();
 
-    bool enable_text_editing;
+    QString key;
+    QString form_type;
+    bool enable_form_editing;
+    TreeObject *owner;
 
-    TreeObject *current_owner;
     QHBoxLayout *layout;
+
     QLabel *label;
-    QLineEdit *form;
+    input_form form_object;
     QCheckBox *checkbox;
 
 private slots:
     void updateTreeObjectBio(QString);
+    void prepareDateAndUpdateTreeObjectBio(QDate);
     void changeBioShowStatus(bool);
 };
 
