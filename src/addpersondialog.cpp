@@ -39,6 +39,8 @@ void AddPersonDialog::initializeInputs()
             form_object.date_edit->setDisplayFormat("dd.MM.yyyy");
             form_object.date_edit->setMinimumDate(QDate(100, 1, 1));
             form_object.date_edit->setMaximumDate(QDate(9999, 12, 31));
+            if (key == "Date of death")
+                form_object.date_edit->setDate(QDate(9999, 12, 31));
             layout->addRow(key + ":", form_object.date_edit);
         }
         else if (form_type == "QComboBox") {

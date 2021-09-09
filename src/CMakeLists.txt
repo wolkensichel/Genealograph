@@ -7,6 +7,7 @@ set(PROJECT_SOURCES
     relationseditor.cpp
     treeobject.cpp
     relation.cpp
+    #[[partnershipinfo.cpp]]
     addpersondialog.cpp
     addpartnershipdialog.cpp
     adddescentdialog.cpp

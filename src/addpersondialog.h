@@ -33,7 +33,6 @@ private:
     QLineEdit *form_lastname;
 
     QDialogButtonBox *buttonbox;
-
 };
 
 #endif // ADDPERSONDIALOG_H

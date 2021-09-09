@@ -33,10 +33,10 @@ void MainWindow::defineDataItems()
         {"Last Name", "QLineEdit", true},
         {"Birth Name", "QLineEdit", false},
         {"Sex", "QComboBox", false},
+        {"Date of birth", "QLineEdit", true},
         {"Place of birth", "QLineEdit", true},
-        {"Date of birth", "QDateEdit", true},
-        {"Place of death", "QLineEdit", true},
-        {"Date of death", "QDateEdit", true}
+        {"Date of death", "QLineEdit", false},
+        {"Place of death", "QLineEdit", false}
     };
 }
 

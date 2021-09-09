@@ -20,7 +20,6 @@ BiographyListItem::BiographyListItem(QString item_key, bio_item &item, bool lock
 
     fillField(key, item);
     enableForm();
-    layout->addStretch();
 
     checkbox = new QCheckBox;
     checkbox->setChecked(item.show);
@@ -45,6 +44,7 @@ void BiographyListItem::fillField(QString key, bio_item item)
         form_object.date_edit->setMaximumDate(QDate(9999, 12, 31));
         form_object.date_edit->setDate(item.value.toDate());
         layout->addWidget(form_object.date_edit);
+        layout->addStretch();
         connect(form_object.date_edit, SIGNAL(dateChanged(QDate)), this, SLOT(prepareDateAndUpdateTreeObjectBio(QDate)));
     }
     else if (form_type == "QComboBox") {
@@ -57,6 +57,7 @@ void BiographyListItem::fillField(QString key, bio_item item)
         }
         form_object.box_edit->setCurrentText(item.value.toByteArray());
         layout->addWidget(form_object.box_edit);
+        layout->addStretch();
         connect(form_object.box_edit, SIGNAL(currentTextChanged(QString)), this, SLOT(updateTreeObjectBio(QString)));
     }
     else if (form_type == "QTextEdit") {
