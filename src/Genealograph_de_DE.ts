@@ -30,6 +30,26 @@
         <source>Select</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Form of Partnership:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>From:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Place:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Until:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Married</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>BiographyEditor</name>

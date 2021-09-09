@@ -112,4 +112,14 @@ union input_form
     QComboBox *box_edit;
 };
 
+
+struct partnership
+{
+    int type;
+    int* persons;
+    QString from;
+    QString place;
+    QString until;
+};
+
 #endif // DATA_H

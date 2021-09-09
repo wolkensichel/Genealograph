@@ -3,6 +3,10 @@
 
 
 #include <QGraphicsPathItem>
+#include <QLabel>
+
+#include "partnershipinfo.h"
+#include "data.h"
 
 
 class TreeObject;
@@ -11,8 +15,9 @@ class WorkSheet;
 class Relation : public QGraphicsPathItem
 {
 public:
-    Relation(TreeObject*, TreeObject*, QGraphicsScene*);
-    Relation(Relation*, TreeObject*, QGraphicsScene*);
+    Relation(TreeObject*, TreeObject*, PartnershipInfo*);
+    Relation(Relation*, TreeObject*);
+    void fillInfoCard();
     void updatePosition();
     QList<TreeObject *>getTreeObjects();
     Relation* getParentsRelation();
@@ -23,6 +28,8 @@ public:
     QList<TreeObject *> tree_objects;
     Relation* parents = nullptr;
     QList<Relation *> descents;
+
+    PartnershipInfo *infocard;
 
 private:
     enum Mode {Upper, Lower};

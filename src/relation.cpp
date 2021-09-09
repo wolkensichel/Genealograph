@@ -6,12 +6,14 @@
 #include "worksheet.h"
 
 
-Relation::Relation(TreeObject* treecard1, TreeObject* treecard2, QGraphicsScene *scene)
+Relation::Relation(TreeObject* treecard1, TreeObject* treecard2, PartnershipInfo *info)
 {
     descents = QList<Relation *>();
     tree_objects = QList<TreeObject *>();
     tree_objects.append(treecard1);
     tree_objects.append(treecard2);
+
+    infocard = info;
 
     treecard1->addPartnershipRelation(this);
     treecard2->addPartnershipRelation(this);
@@ -19,12 +21,10 @@ Relation::Relation(TreeObject* treecard1, TreeObject* treecard2, QGraphicsScene 
     setPen(QPen(Qt::black, 1));
     setZValue(-1);
     updatePosition();
-
-    scene->addItem(this);
 }
 
 
-Relation::Relation(Relation* partnership, TreeObject* child, QGraphicsScene *scene)
+Relation::Relation(Relation* partnership, TreeObject* child)
 {
     descents = QList<Relation *>();
     tree_objects = QList<TreeObject *>();
@@ -37,22 +37,30 @@ Relation::Relation(Relation* partnership, TreeObject* child, QGraphicsScene *sce
     setPen(QPen(Qt::black, 1));
     setZValue(-1);
     updatePosition();
-
-    scene->addItem(this);
 }
 
 
 void Relation::updatePosition()
 {
     path.clear();
+
     if (parents == nullptr)
     {
         qint32 y_off = computePartnershipYOffset(this);
 
         path.moveTo(tree_objects[0]->pos().x() + tree_objects[0]->rect().center().x(),
-                    tree_objects[0]->pos().y() + y_off);
+                    tree_objects[0]->pos().y() + y_off - 2);
         path.lineTo(tree_objects[1]->pos().x() + tree_objects[1]->rect().center().x(),
-                    tree_objects[1]->pos().y() + y_off);
+                    tree_objects[1]->pos().y() + y_off - 2);
+
+        if (infocard->relation_type == 1) {
+            path.moveTo(tree_objects[1]->pos().x() + tree_objects[1]->rect().center().x(),
+                        tree_objects[1]->pos().y() + y_off + 2);
+            path.lineTo(tree_objects[0]->pos().x() + tree_objects[0]->rect().center().x(),
+                        tree_objects[0]->pos().y() + y_off + 2);
+        }
+
+        infocard->updatePosition(path.boundingRect().center());
     }
     else
     {

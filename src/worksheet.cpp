@@ -12,6 +12,7 @@
 #include "mainwindow.h"
 #include "biographyeditor.h"
 #include "relationseditor.h"
+#include "partnershipinfo.h"
 
 
 WorkSheet::WorkSheet(QMenu *menuCreate, QObject *parent)
@@ -59,13 +60,16 @@ void WorkSheet::createTreeCardFromFile(person new_person, QList<std::tuple<QStri
 }
 
 
-void WorkSheet::createPartnershipRelation(int* partnership)
+void WorkSheet::createPartnershipRelation(partnership new_partnership)
 {
-    TreeObject* partner1 = tree_objects.at(*partnership);
-    TreeObject* partner2 = tree_objects.at(*(partnership+1));
+    TreeObject* partner1 = tree_objects.at(*new_partnership.persons);
+    TreeObject* partner2 = tree_objects.at(*(new_partnership.persons+1));
 
-    Relation *relation = new Relation(partner1, partner2, this);
+    PartnershipInfo *infocard = new PartnershipInfo(new_partnership);
+    addItem(infocard);
+    Relation *relation = new Relation(partner1, partner2, infocard);
     addItem(relation);
+
     partnership_relations.append(relation);
 }
 
@@ -75,7 +79,7 @@ void WorkSheet::createDescentRelation(int* descent)
     Relation* partnership = partnership_relations.at(*descent);
     TreeObject* child = tree_objects.at(*(descent+1));
 
-    Relation *relation = new Relation(partnership, child, this);
+    Relation *relation = new Relation(partnership, child);
     addItem(relation);
     descent_relations.append(relation);
 }
@@ -289,7 +293,7 @@ void WorkSheet::createTreeFromFile(load_data &data, QList<std::tuple<QString, QS
         reference_ids[0] = getTreeObjectListPosition(current_object->id_partner1);
         reference_ids[1] = getTreeObjectListPosition(current_object->id_partner2);
 
-        createPartnershipRelation(reference_ids);
+        //createPartnershipRelation(reference_ids);
     }
 
     QListIterator<descent_data *> it_d(data.descents);

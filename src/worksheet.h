@@ -24,7 +24,7 @@ public:
     void setMode(Mode mode);
     void createTreeCard(person, QList<std::tuple<QString, QString, bool>>);
     void createTreeCardFromFile(person, QList<std::tuple<QString, QString, bool>>);
-    void createPartnershipRelation(int*);
+    void createPartnershipRelation(partnership);
     void createDescentRelation(int*);
     void createTreeFromFile(load_data&, QList<std::tuple<QString, QString, bool>>);
     void clean();

@@ -16,16 +16,20 @@ class AddPartnershipDialog : public QDialog
 public:
     AddPartnershipDialog(QWidget *parent = nullptr);
     void populateDropDownMenus(QList<TreeObject *>);
-    int * fetchFormInputs();
+    partnership fetchFormInputs();
 
 private:
     QLabel *label_partner1;
     QLabel *label_partner2;
 
-    QLabel *info;
-
+    QComboBox *form_partnership_type;
+    QLineEdit *form_partnership_start_date;
+    QLineEdit *form_partnership_start_place;
+    QLineEdit *form_partnership_end_date;
     QComboBox *form_partner1;
     QComboBox *form_partner2;
+
+    QLabel *info;
 
     QDialogButtonBox *buttonbox;
 

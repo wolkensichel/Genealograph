@@ -9,6 +9,11 @@
 
 AddPartnershipDialog::AddPartnershipDialog(QWidget *parent) : QDialog(parent)
 {
+    form_partnership_type = new QComboBox();
+    form_partnership_start_date = new QLineEdit();
+    form_partnership_start_place = new QLineEdit();
+    form_partnership_end_date = new QLineEdit();
+
     form_partner1 = new QComboBox();
     form_partner1->setEditable(true);
 
@@ -26,8 +31,12 @@ AddPartnershipDialog::AddPartnershipDialog(QWidget *parent) : QDialog(parent)
     connect(buttonbox, SIGNAL(rejected()), this, SLOT(reject()));
 
     QFormLayout *layout = new QFormLayout;
+    layout->addRow(tr("Form of Partnership:"), form_partnership_type);
     layout->addRow(tr("Partner 1:"), form_partner1);
     layout->addRow(tr("Partner 2:"), form_partner2);
+    layout->addRow(tr("From:"), form_partnership_start_date);
+    layout->addRow(tr("Place:"), form_partnership_start_place);
+    layout->addRow(tr("Until:"), form_partnership_end_date);
     layout->addRow(info);
     layout->addRow(buttonbox);
     setLayout(layout);
@@ -57,16 +66,27 @@ void AddPartnershipDialog::populateDropDownMenus(QList<TreeObject *> tree_object
     form_partner2->model()->sort(0);
     form_partner2->setCurrentIndex(-1);
     connect(form_partner2, SIGNAL(currentIndexChanged(int)), this, SLOT(analyzeInputPairs()));
+
+    form_partnership_type->addItem("");
+    form_partnership_type->addItem(tr("Married"));
 }
 
 
-int * AddPartnershipDialog::fetchFormInputs()
+partnership AddPartnershipDialog::fetchFormInputs()
 {
-    static int partnership[2];
-    partnership[0] = persons_in_dropdown[form_partner1->currentText()];
-    partnership[1] = persons_in_dropdown[form_partner2->currentText()];
+    partnership new_partnership;
 
-    return partnership;
+    static int persons_indices[2];
+    persons_indices[0] = persons_in_dropdown[form_partner1->currentText()];
+    persons_indices[1] = persons_in_dropdown[form_partner2->currentText()];
+    new_partnership.persons = persons_indices;
+
+    new_partnership.type = form_partnership_type->currentIndex();
+    new_partnership.from = form_partnership_start_date->text();
+    new_partnership.until = form_partnership_end_date->text();
+    new_partnership.place = form_partnership_start_place->text();
+
+    return new_partnership;
 }
 
 
