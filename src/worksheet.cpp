@@ -30,7 +30,7 @@ void WorkSheet::setMode(Mode mode)
 }
 
 
-void WorkSheet::createTreeCard(person new_person, QList<std::tuple<QString, QString, bool>> data_types)
+void WorkSheet::createTreeCard(person new_person, QList<std::tuple<QString, QString, bool>> input_cfg_persons)
 {
     clearSelection();
     new_person.id = id_counter;
@@ -38,7 +38,7 @@ void WorkSheet::createTreeCard(person new_person, QList<std::tuple<QString, QStr
     new_person.relations_dock_lock = true;
     new_person.placeholder = false;
 
-    TreeObject *treecard = new TreeObject(new_person, data_types);
+    TreeObject *treecard = new TreeObject(new_person, input_cfg_persons);
     tree_objects.append(treecard);
     addItem(treecard);
     id_counter++;
@@ -47,11 +47,11 @@ void WorkSheet::createTreeCard(person new_person, QList<std::tuple<QString, QStr
 }
 
 
-void WorkSheet::createTreeCardFromFile(person new_person, QList<std::tuple<QString, QString, bool>> data_types) {
-
+void WorkSheet::createTreeCardFromFile(person new_person, QList<std::tuple<QString, QString, bool>> input_cfg_persons)
+{
     clearSelection();
 
-    TreeObject *treecard = new TreeObject(new_person, data_types);
+    TreeObject *treecard = new TreeObject(new_person, input_cfg_persons);
     tree_objects.append(treecard);
     addItem(treecard);
     if (id_counter < new_person.id)
@@ -60,17 +60,18 @@ void WorkSheet::createTreeCardFromFile(person new_person, QList<std::tuple<QStri
 }
 
 
-void WorkSheet::createPartnershipRelation(partnership new_partnership)
+void WorkSheet::createPartnershipRelation(partnership new_partnership, QList<std::tuple<QString, QString, bool>> input_cfg_partnerships)
 {
-    TreeObject* partner1 = tree_objects.at(*new_partnership.persons);
-    TreeObject* partner2 = tree_objects.at(*(new_partnership.persons+1));
+    TreeObject* partner1 = tree_objects.at(new_partnership.items["Partner 1"].value.toInt());
+    TreeObject* partner2 = tree_objects.at(new_partnership.items["Partner 2"].value.toInt());
 
-    PartnershipInfo *infocard = new PartnershipInfo(new_partnership);
-    addItem(infocard);
-    Relation *relation = new Relation(partner1, partner2, infocard);
+    PartnershipInfo *partnership_info = new PartnershipInfo(new_partnership, input_cfg_partnerships);
+    addItem(partnership_info);
+    Relation *relation = new Relation(partner1, partner2, partnership_info);
     addItem(relation);
-
     partnership_relations.append(relation);
+
+    parent()->findChild<RelationsEditor *>()->current_owner->updateRelationsEditor();
 }
 
 
@@ -82,6 +83,8 @@ void WorkSheet::createDescentRelation(int* descent)
     Relation *relation = new Relation(partnership, child);
     addItem(relation);
     descent_relations.append(relation);
+
+    parent()->findChild<RelationsEditor *>()->current_owner->updateRelationsEditor();
 }
 
 
@@ -279,11 +282,11 @@ QList<Relation *> WorkSheet::getDescentRelationList()
 }
 
 
-void WorkSheet::createTreeFromFile(load_data &data, QList<std::tuple<QString, QString, bool>> data_types)
+void WorkSheet::createTreeFromFile(load_data &data, QList<std::tuple<QString, QString, bool>> input_cfg_persons)
 {
     QListIterator<person *> it_od(data.persons);
     while (it_od.hasNext())
-        createTreeCardFromFile(*it_od.next(), data_types);
+        createTreeCardFromFile(*it_od.next(), input_cfg_persons);
 
     int reference_ids[2];
     QListIterator<partnership_data *> it_ps(data.partnerships);
@@ -310,7 +313,7 @@ void WorkSheet::createTreeFromFile(load_data &data, QList<std::tuple<QString, QS
 
 int WorkSheet::getTreeObjectListPosition(quint16 id)
 {
-    auto predicate = [id](TreeObject *tree_object) { return tree_object->individual.id == id; };
+    auto predicate = [id](TreeObject *tree_object) { return tree_object->content.id == id; };
     return std::find_if(tree_objects.begin(), tree_objects.end(), predicate)
             - tree_objects.begin();
 }
@@ -319,8 +322,8 @@ int WorkSheet::getTreeObjectListPosition(quint16 id)
 int WorkSheet::getPartnershipRelationListPosition(quint16 id_parent1, quint16 id_parent2)
 {
     auto predicate = [id_parent1, id_parent2](Relation *partnership) {
-        return (partnership->tree_objects.first()->individual.id == id_parent1
-                && partnership->tree_objects.last()->individual.id == id_parent2);
+        return (partnership->tree_objects.first()->content.id == id_parent1
+                && partnership->tree_objects.last()->content.id == id_parent2);
         };
     return std::find_if(partnership_relations.begin(), partnership_relations.end(), predicate)
             - partnership_relations.begin();

@@ -21,8 +21,10 @@ class RelationsEditor : public QWidget
 public:
     enum Relationship {Parents, Partner, Child};
     RelationsEditor();
-    void update(TreeObject*, QList<Relation *>, Relation*, bool);
+    void update(TreeObject*);
     void clear();
+
+    TreeObject *current_owner = nullptr;
 
 private:
     void createGroupBox(QGroupBox*, int);
@@ -38,7 +40,6 @@ private:
     QScrollArea *scrollarea[3];
     QWidget *widget[3];
 
-    TreeObject *current_owner = nullptr;
     QCheckBox *checkbox_enable_edit;
 
     QPalette palette;

@@ -28,15 +28,24 @@ MainWindow::MainWindow(QWidget *parent)
 
 void MainWindow::defineDataItems()
 {
-    data_types = {
-        {"First Name", "QLineEdit", true},
-        {"Last Name", "QLineEdit", true},
-        {"Birth Name", "QLineEdit", false},
+    input_cfg_persons = {
+        {"First name", "QLineEdit", true},
+        {"Last name", "QLineEdit", true},
+        {"Birth name", "QLineEdit", false},
         {"Sex", "QComboBox", false},
         {"Date of birth", "QLineEdit", true},
         {"Place of birth", "QLineEdit", true},
         {"Date of death", "QLineEdit", false},
         {"Place of death", "QLineEdit", false}
+    };
+
+    input_cfg_partnerships = {
+        {"Type", "QComboBox", true},
+        {"Partner 1", "QComboBox", true},
+        {"Partner 2", "QComboBox", true},
+        {"Date formed", "QLineEdit", true},
+        {"Formed in", "QLineEdit", false},
+        {"Date ended", "QLineEdit", true}
     };
 }
 
@@ -206,7 +215,7 @@ void MainWindow::openFile()
     if (handler.openFromFile(file_data, save_file))
     {
         prepareNewSheet(file_data.worksheet);
-        worksheet->createTreeFromFile(file_data, data_types);
+        worksheet->createTreeFromFile(file_data, input_cfg_persons);
     }
 }
 
@@ -280,19 +289,17 @@ void MainWindow::quit()
 
 void MainWindow::addPerson()
 {
-    AddPersonDialog addPerson(data_types);
+    AddPersonDialog addPerson(input_cfg_persons);
     if (addPerson.exec() == QDialog::Accepted)
-        worksheet->createTreeCard(addPerson.fetchFormInputs(), data_types);
+        worksheet->createTreeCard(addPerson.fetchFormInputs(), input_cfg_persons);
 }
 
 
 void MainWindow::addPartnership()
 {
-    AddPartnershipDialog addPartnership;
-    addPartnership.populateDropDownMenus(worksheet->getTreeObjectList());
-
+    AddPartnershipDialog addPartnership(input_cfg_partnerships, worksheet->getTreeObjectList());
     if (addPartnership.exec() == QDialog::Accepted)
-        worksheet->createPartnershipRelation(addPartnership.fetchFormInputs());
+        worksheet->createPartnershipRelation(addPartnership.fetchFormInputs(), input_cfg_partnerships);
 }
 
 

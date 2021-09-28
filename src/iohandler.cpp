@@ -90,8 +90,8 @@ void IOHandler::store(QFile &file, save_data &worksheet_data)
     while (it_to.hasNext())
     {
         TreeObject *current_object = it_to.next();
-        current_object->individual.pos = current_object->pos();
-        out << indicator << current_object->individual;
+        current_object->content.pos = current_object->pos();
+        out << indicator << current_object->content;
     }
 
     indicator = QString("<PRTN>");
@@ -99,8 +99,8 @@ void IOHandler::store(QFile &file, save_data &worksheet_data)
     while (it_ps.hasNext())
     {
         Relation *current_relation = it_ps.next();
-        out << indicator << current_relation->tree_objects.first()->individual.id
-                         << current_relation->tree_objects.last()->individual.id;
+        out << indicator << current_relation->tree_objects.first()->content.id
+                         << current_relation->tree_objects.last()->content.id;
     }
 
     indicator = QString("<DSCN>");
@@ -108,9 +108,9 @@ void IOHandler::store(QFile &file, save_data &worksheet_data)
     while (it_d.hasNext())
     {
         Relation *current_relation = it_d.next();
-        out << indicator << current_relation->tree_objects.last()->individual.id
-                         << current_relation->parents->tree_objects.first()->individual.id
-                         << current_relation->parents->tree_objects.last()->individual.id;
+        out << indicator << current_relation->tree_objects.last()->content.id
+                         << current_relation->parents->tree_objects.first()->content.id
+                         << current_relation->parents->tree_objects.last()->content.id;
     }
 }
 
@@ -137,9 +137,9 @@ bool IOHandler::load(QFile &file, load_data &file_data)
         in >> indicator;
         if (indicator == QString("<TRBJ>"))
         {
-            person *individual = new person();
-            in >> individual;
-            persons->append(individual);
+            person *content = new person();
+            in >> content;
+            persons->append(content);
         }
         else if (indicator == QString("<PRTN>"))
         {

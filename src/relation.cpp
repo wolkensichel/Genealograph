@@ -53,7 +53,7 @@ void Relation::updatePosition()
         path.lineTo(tree_objects[1]->pos().x() + tree_objects[1]->rect().center().x(),
                     tree_objects[1]->pos().y() + y_off - 2);
 
-        if (infocard->relation_type == 1) {
+        if (infocard->content.items["Type"].value == 1) {
             path.moveTo(tree_objects[1]->pos().x() + tree_objects[1]->rect().center().x(),
                         tree_objects[1]->pos().y() + y_off + 2);
             path.lineTo(tree_objects[0]->pos().x() + tree_objects[0]->rect().center().x(),

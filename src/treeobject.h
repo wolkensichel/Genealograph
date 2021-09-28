@@ -38,7 +38,8 @@ public:
     void changeBioShowStatus(QString, bool);
     void updateBiographyPlaceholderStatus(bool);
 
-    person individual;
+    QList<std::tuple<QString, QString, bool>> input_cfg;
+    person content;
 
     QList<Relation *> partnerships;
     Relation* descent = nullptr;
@@ -48,16 +49,15 @@ public:
 private:
     void fillFields();
     void createLabel(QString&);
-    QString getValue(bio_item&);
+    QString getValue(container_item&);
     QString appendices(QString&, QString);
     void toggleShowHide(QString&);
-    void updateDependantBiographyLabel(QString&);
+    void updateDependantLabel(QString&);
     QString convertDateFormatForDisplay(QString);
 
     QGraphicsProxyWidget* proxy;
     QVBoxLayout *layout;
 
-    QList<std::tuple<QString, QString, bool>> form_types;
     QMap<QString, QLabel*> labels;
 
 protected:

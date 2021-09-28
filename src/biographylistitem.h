@@ -16,12 +16,12 @@ class BiographyListItem : public QWidget
     Q_OBJECT
 
 public:
-    BiographyListItem(QString, bio_item&, bool, bool, TreeObject*);
+    BiographyListItem(QString, bool, bool, TreeObject*);
     void enableFormEditing(bool);
     void enableEditing(bool);
 
 private:
-    void fillField(QString, bio_item);
+    void fillField(QString, container_item);
     void enableForm();
 
     QString key;

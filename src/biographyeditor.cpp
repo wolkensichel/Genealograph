@@ -70,19 +70,19 @@ void BiographyEditor::createBio()
 }
 
 
-void BiographyEditor::populateGroupBox(QLayout *layout, person individual, QList<std::tuple<QString, QString, bool>> form_types)
+void BiographyEditor::populateGroupBox()
 {
     QList<std::tuple<QString, QString, bool>>::iterator iter;
-    for (iter = form_types.begin(); iter != form_types.end(); ++iter)
+    for (iter = current_owner->input_cfg.begin(); iter != current_owner->input_cfg.end(); ++iter)
     {
         QString key = std::get<0>(*iter);
 
-        BiographyListItem *item = new BiographyListItem(key, individual.bio[key],
+        BiographyListItem *item = new BiographyListItem(key,
                                                         checkbox_enable_edit->isChecked(),
                                                         checkbox_placeholder_mode->isChecked(),
                                                         current_owner);
 
-        layout->addWidget(item);
+        widget_layout->addWidget(item);
     }
 }
 
@@ -107,15 +107,15 @@ void BiographyEditor::clear()
 }
 
 
-void BiographyEditor::update(TreeObject* treecard, person individual, QList<std::tuple<QString, QString, bool>> form_types)
+void BiographyEditor::update(TreeObject* treecard)
 {
     current_owner = treecard;
     checkbox_enable_edit->setEnabled(true);
-    checkbox_enable_edit->setChecked(individual.biography_dock_lock);
+    checkbox_enable_edit->setChecked(current_owner->content.biography_dock_lock);
     checkbox_placeholder_mode->setEnabled(true);
-    checkbox_placeholder_mode->setChecked(individual.placeholder);
+    checkbox_placeholder_mode->setChecked(current_owner->content.placeholder);
 
-    populateGroupBox(widget_layout, individual, form_types);
+    populateGroupBox();
 }
 
 

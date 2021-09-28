@@ -21,12 +21,12 @@ class BiographyEditor : public QWidget
 
 public:
     BiographyEditor();
-    void update(TreeObject*, person, QList<std::tuple<QString, QString, bool>>);
+    void update(TreeObject*);
     void clear();
 
 private:
     void createBio();
-    void populateGroupBox(QLayout*, person, QList<std::tuple<QString, QString, bool>>);
+    void populateGroupBox();
     void cleanGroupBox(QLayout*);
 
     QWidget *widget;

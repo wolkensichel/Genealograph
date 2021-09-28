@@ -7,41 +7,73 @@
 #include "worksheet.h"
 
 
-AddPartnershipDialog::AddPartnershipDialog(QWidget *parent) : QDialog(parent)
+AddPartnershipDialog::AddPartnershipDialog(QList<std::tuple<QString, QString, bool>> input_cfg_partnerships, QList<TreeObject *> tree_objects, QWidget *parent)
+    : QDialog(parent), input_cfg(input_cfg_partnerships)
 {
-    form_partnership_type = new QComboBox();
-    form_partnership_start_date = new QLineEdit();
-    form_partnership_start_place = new QLineEdit();
-    form_partnership_end_date = new QLineEdit();
+    layout = new QFormLayout;
 
-    form_partner1 = new QComboBox();
-    form_partner1->setEditable(true);
-
-    form_partner2 = new QComboBox();
-    form_partner2->setEditable(true);
+    initializeInputs();
+    populateDropDownMenus(tree_objects);
 
     info = new QLabel("");
     QPalette palette = info->palette();
     palette.setColor(info->foregroundRole(), Qt::red);
     info->setPalette(palette);
+    layout->addRow(info);
 
     buttonbox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-    buttonbox->button(QDialogButtonBox::Ok)->setEnabled(false);
     connect(buttonbox, SIGNAL(accepted()), this, SLOT(accept()));
     connect(buttonbox, SIGNAL(rejected()), this, SLOT(reject()));
 
-    QFormLayout *layout = new QFormLayout;
-    layout->addRow(tr("Form of Partnership:"), form_partnership_type);
-    layout->addRow(tr("Partner 1:"), form_partner1);
-    layout->addRow(tr("Partner 2:"), form_partner2);
-    layout->addRow(tr("From:"), form_partnership_start_date);
-    layout->addRow(tr("Place:"), form_partnership_start_place);
-    layout->addRow(tr("Until:"), form_partnership_end_date);
-    layout->addRow(info);
     layout->addRow(buttonbox);
-    setLayout(layout);
 
+    setLayout(layout);
     setWindowTitle("Add Partnership");
+}
+
+
+void AddPartnershipDialog::initializeInputs()
+{
+    QList<std::tuple<QString, QString, bool>>::iterator iter;
+    for (iter = input_cfg.begin(); iter != input_cfg.end(); ++iter)
+    {
+        QString key = std::get<0>(*iter);
+        QString form_type = std::get<1>(*iter);
+
+        input_form form_object;
+        if (form_type == "QLineEdit")
+        {
+            form_object.line_edit = new QLineEdit;
+            layout->addRow(key + ":", form_object.line_edit);
+        }
+        else if (form_type == "QDateEdit")
+        {
+            // use QSpinBoxes instead?
+            form_object.date_edit = new QDateEdit;
+            form_object.date_edit->setDisplayFormat("dd.MM.yyyy");
+            form_object.date_edit->setMinimumDate(QDate(100, 1, 1));
+            form_object.date_edit->setMaximumDate(QDate(9999, 12, 31));
+            if (key == "Date ended")
+                form_object.date_edit->setDate(QDate(9999, 12, 31));
+            layout->addRow(key + ":", form_object.date_edit);
+        }
+        else if (form_type == "QComboBox")
+        {
+            form_object.box_edit = new QComboBox;
+            if (key == "Type")
+            {
+                form_object.box_edit->addItem("");
+                form_object.box_edit->addItem("Married");
+            }
+            layout->addRow(key + ":", form_object.box_edit);
+        }
+        else if (form_type == "QTextEdit")
+        {
+            form_object.text_edit = new QTextEdit;
+            layout->addRow(key + ":", form_object.text_edit);
+        }
+        forms.insert(key, form_object);
+    }
 }
 
 
@@ -49,26 +81,37 @@ void AddPartnershipDialog::populateDropDownMenus(QList<TreeObject *> tree_object
 {  
     treecards = tree_objects;
 
-    form_partner1->lineEdit()->setPlaceholderText(tr("Select"));
-    form_partner2->lineEdit()->setPlaceholderText(tr("Select"));
+    forms["Partner 1"].box_edit->setEditable(true);
+    forms["Partner 2"].box_edit->setEditable(true);
+
+    forms["Partner 1"].box_edit->lineEdit()->setPlaceholderText(tr("Select"));
+    forms["Partner 2"].box_edit->lineEdit()->setPlaceholderText(tr("Select"));
 
     int i = 0;
-    foreach(TreeObject *treecard, tree_objects) {
-        persons_in_dropdown.insert(treecard->getName(), i++);
-        form_partner1->addItem(treecard->getName());
-        form_partner2->addItem(treecard->getName());
+    foreach(TreeObject *treecard, tree_objects)
+    {
+        QString birth_date = treecard->content.items["Date of birth"].value.toString();
+        birth_date = (!birth_date.isEmpty()) ? ", b. " + birth_date : "";
+        QString death_date = treecard->content.items["Date of death"].value.toString();
+        death_date = (!death_date.isEmpty()) ? ", d. " + death_date : "";
+        QString first_name = treecard->content.items["First name"].value.toString();
+        first_name = (!first_name.isEmpty()) ? ", " + first_name : "";
+        QString last_name = treecard->content.items["Last name"].value.toString();
+        QString value = last_name + first_name + birth_date + death_date;
+        if (!value.isEmpty() && value.startsWith(", "))
+            value.remove(0, 2);
+        persons_in_dropdown.insert(value, i++);
+        forms["Partner 1"].box_edit->addItem(value);
+        forms["Partner 2"].box_edit->addItem(value);
     }
 
-    form_partner1->model()->sort(0);
-    form_partner1->setCurrentIndex(-1);
-    connect(form_partner1, SIGNAL(currentIndexChanged(int)), this, SLOT(analyzeInputPairs()));
+    forms["Partner 1"].box_edit->model()->sort(0);
+    forms["Partner 1"].box_edit->setCurrentIndex(-1);
+    connect(forms["Partner 1"].box_edit, SIGNAL(currentIndexChanged(int)), this, SLOT(analyzeInputPairs()));
 
-    form_partner2->model()->sort(0);
-    form_partner2->setCurrentIndex(-1);
-    connect(form_partner2, SIGNAL(currentIndexChanged(int)), this, SLOT(analyzeInputPairs()));
-
-    form_partnership_type->addItem("");
-    form_partnership_type->addItem(tr("Married"));
+    forms["Partner 2"].box_edit->model()->sort(0);
+    forms["Partner 2"].box_edit->setCurrentIndex(-1);
+    connect(forms["Partner 2"].box_edit, SIGNAL(currentIndexChanged(int)), this, SLOT(analyzeInputPairs()));
 }
 
 
@@ -76,15 +119,30 @@ partnership AddPartnershipDialog::fetchFormInputs()
 {
     partnership new_partnership;
 
-    static int persons_indices[2];
-    persons_indices[0] = persons_in_dropdown[form_partner1->currentText()];
-    persons_indices[1] = persons_in_dropdown[form_partner2->currentText()];
-    new_partnership.persons = persons_indices;
+    QList<std::tuple<QString, QString, bool>>::iterator iter;
+    for (iter = input_cfg.begin(); iter != input_cfg.end(); ++iter)
+    {
+        QString key = std::get<0>(*iter);
+        QString form = std::get<1>(*iter);
 
-    new_partnership.type = form_partnership_type->currentIndex();
-    new_partnership.from = form_partnership_start_date->text();
-    new_partnership.until = form_partnership_end_date->text();
-    new_partnership.place = form_partnership_start_place->text();
+        container_item item;
+        item.form_type = std::get<1>(*iter);
+        item.show = std::get<2>(*iter);
+
+        if (form == "QLineEdit")
+            item.value = forms[key].line_edit->text();
+        else if (form == "QDateEdit")
+            item.value = forms[key].date_edit->date();
+        else if (form == "QComboBox")
+            if (key == "Partner 1" || key == "Partner 2")
+                item.value = persons_in_dropdown[forms[key].box_edit->currentText()];
+            else
+                item.value = forms[key].box_edit->currentText();
+        else if (form == "QTextEdit")
+            item.value = forms[key].text_edit->toPlainText();
+
+        new_partnership.items.insert(key, item);
+    }
 
     return new_partnership;
 }
@@ -92,21 +150,25 @@ partnership AddPartnershipDialog::fetchFormInputs()
 
 void AddPartnershipDialog::analyzeInputPairs()
 {
-    if (form_partner1->currentIndex() >= 0 && form_partner2->currentIndex() >= 0) {
+    if (forms["Partner 1"].box_edit->currentIndex() >= 0 && forms["Partner 2"].box_edit->currentIndex() >= 0)
+    {
 
-        if (form_partner1->currentIndex() == form_partner2->currentIndex()) {
+        if (forms["Partner 1"].box_edit->currentIndex() == forms["Partner 2"].box_edit->currentIndex())
+        {
             info->setText("Partners selected are the same person.");
             buttonbox->button(QDialogButtonBox::Ok)->setEnabled(false);
         }
-        else {
+        else
+        {
             info->setText("");
             buttonbox->button(QDialogButtonBox::Ok)->setEnabled(true);
 
-            TreeObject *partner1 = treecards[persons_in_dropdown[form_partner1->currentText()]];
-            TreeObject *partner2 = treecards[persons_in_dropdown[form_partner2->currentText()]];
+            TreeObject *partner1 = treecards[persons_in_dropdown[forms["Partner 1"].box_edit->currentText()]];
+            TreeObject *partner2 = treecards[persons_in_dropdown[forms["Partner 2"].box_edit->currentText()]];
 
             foreach (Relation *partnership, partner1->partnerships)
-                if (partnership->tree_objects[0] == partner2 || partnership->tree_objects[1] == partner2) {
+                if (partnership->tree_objects[0] == partner2 || partnership->tree_objects[1] == partner2)
+                {
                     info->setText("Partnership already exists.");
                     buttonbox->button(QDialogButtonBox::Ok)->setEnabled(false);
                     break;

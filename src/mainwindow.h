@@ -76,7 +76,8 @@ private:
     qreal zoom_in_factor;
     qreal zoom_out_factor;
 
-    QList<std::tuple<QString, QString, bool>> data_types;
+    QList<std::tuple<QString, QString, bool>> input_cfg_persons;
+    QList<std::tuple<QString, QString, bool>> input_cfg_partnerships;
 
 public slots:
     void scrollToItem();

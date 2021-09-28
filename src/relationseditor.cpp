@@ -103,20 +103,20 @@ void RelationsEditor::clear()
 }
 
 
-void RelationsEditor::update(TreeObject* treecard, QList<Relation *> partnerships, Relation *descent, bool lock_status)
+void RelationsEditor::update(TreeObject* treecard)
 {
     current_owner = treecard;
     checkbox_enable_edit->setEnabled(true);
-    checkbox_enable_edit->setChecked(lock_status);
+    checkbox_enable_edit->setChecked(current_owner->content.relations_dock_lock);
 
     // set parents
-    if(descent != nullptr)
-        populateGroupBox(widget_layout[0], descent->parents->getTreeObjects(), Parents);
+    if(current_owner->descent != nullptr)
+        populateGroupBox(widget_layout[0], current_owner->descent->parents->getTreeObjects(), Parents);
 
     QList<TreeObject *> partners = QList<TreeObject *>();
     QList<TreeObject *> children = QList<TreeObject *>();
 
-    foreach(Relation *partnership, partnerships)
+    foreach(Relation *partnership, current_owner->partnerships)
     {
         // set partners
         if (partnership->tree_objects[0] == current_owner)

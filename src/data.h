@@ -14,18 +14,18 @@ class TreeObject;
 class Relation;
 
 
-struct bio_item {
+struct container_item {
     QVariant value;
     QString form_type;
     bool show;
 
-    friend QDataStream & operator << (QDataStream &stream, const bio_item item) {
+    friend QDataStream & operator << (QDataStream &stream, const container_item item) {
         stream << item.value;
         stream << item.form_type;
         stream << item.show;
         return stream;
     }
-    friend QDataStream & operator >> (QDataStream &stream, bio_item &item) {
+    friend QDataStream & operator >> (QDataStream &stream, container_item &item) {
         stream >> item.value;
         stream >> item.form_type;
         stream >> item.show;
@@ -40,25 +40,40 @@ struct person {
     bool relations_dock_lock;
     bool biography_dock_lock;
     bool placeholder;
-    QMap<QString, bio_item> bio;
+    QMap<QString, container_item> items;
 
-    friend QDataStream & operator << (QDataStream &stream, const person& individual) {
-        stream << individual.id;
-        stream << individual.pos;
-        stream << individual.relations_dock_lock;
-        stream << individual.biography_dock_lock;
-        stream << individual.placeholder;
-        stream << individual.bio;
+    friend QDataStream & operator << (QDataStream &stream, const person& instance) {
+        stream << instance.id;
+        stream << instance.pos;
+        stream << instance.relations_dock_lock;
+        stream << instance.biography_dock_lock;
+        stream << instance.placeholder;
+        stream << instance.items;
         return stream;
     }
 
-    friend QDataStream & operator >> (QDataStream &stream, person *individual) {
-        stream >> individual->id;
-        stream >> individual->pos;
-        stream >> individual->relations_dock_lock;
-        stream >> individual->biography_dock_lock;
-        stream >> individual->placeholder;
-        stream >> individual->bio;
+    friend QDataStream & operator >> (QDataStream &stream, person *instance) {
+        stream >> instance->id;
+        stream >> instance->pos;
+        stream >> instance->relations_dock_lock;
+        stream >> instance->biography_dock_lock;
+        stream >> instance->placeholder;
+        stream >> instance->items;
+        return stream;
+    }
+};
+
+
+struct partnership
+{
+    QMap<QString, container_item> items;
+
+    friend QDataStream & operator << (QDataStream &stream, const partnership& instance) {
+        stream << instance.items;
+        return stream;
+    }
+    friend QDataStream & operator >> (QDataStream &stream, partnership *instance) {
+        stream >> instance->items;
         return stream;
     }
 };
@@ -110,16 +125,6 @@ union input_form
     QTextEdit *text_edit;
     QDateEdit *date_edit;
     QComboBox *box_edit;
-};
-
-
-struct partnership
-{
-    int type;
-    int* persons;
-    QString from;
-    QString place;
-    QString until;
 };
 
 #endif // DATA_H

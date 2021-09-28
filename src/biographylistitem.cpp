@@ -6,9 +6,11 @@
 #include "treeobject.h"
 
 
-BiographyListItem::BiographyListItem(QString item_key, bio_item &item, bool lock_status, bool ph_status, TreeObject *treecard)
-    : key(item_key), form_type(item.form_type), enable_form_editing(!lock_status), owner(treecard)
+BiographyListItem::BiographyListItem(QString item_key, bool lock_status, bool ph_status, TreeObject *treecard)
+    : key(item_key), enable_form_editing(!lock_status), owner(treecard)
 {
+    form_type = owner->content.items[key].form_type;
+
     layout = new QHBoxLayout();
     layout->setSizeConstraint(QLayout::SetMaximumSize);
     setLayout(layout);
@@ -18,18 +20,18 @@ BiographyListItem::BiographyListItem(QString item_key, bio_item &item, bool lock
     label->setFixedWidth(100);
     layout->addWidget(label);
 
-    fillField(key, item);
+    fillField(key, owner->content.items[key]);
     enableForm();
 
     checkbox = new QCheckBox;
-    checkbox->setChecked(item.show);
+    checkbox->setChecked(owner->content.items[key].show);
     checkbox->setEnabled(!ph_status);
     layout->addWidget(checkbox);
     connect(checkbox, SIGNAL(clicked(bool)), this, SLOT(changeBioShowStatus(bool)));
 }
 
 
-void BiographyListItem::fillField(QString key, bio_item item)
+void BiographyListItem::fillField(QString key, container_item item)
 {
     if (form_type == "QLineEdit") {
         form_object.line_edit = new QLineEdit;

@@ -4,8 +4,8 @@
 #include "mainwindow.h"
 
 
-AddPersonDialog::AddPersonDialog(QList<std::tuple<QString, QString, bool>> data_types, QWidget *parent)
-    : QDialog(parent), form_types(data_types)
+AddPersonDialog::AddPersonDialog(QList<std::tuple<QString, QString, bool>> input_cfg_persons, QWidget *parent)
+    : QDialog(parent), input_cfg(input_cfg_persons)
 {
     layout = new QFormLayout;
 
@@ -24,7 +24,7 @@ AddPersonDialog::AddPersonDialog(QList<std::tuple<QString, QString, bool>> data_
 void AddPersonDialog::initializeInputs()
 {
     QList<std::tuple<QString, QString, bool>>::iterator iter;
-    for (iter = form_types.begin(); iter != form_types.end(); ++iter) {
+    for (iter = input_cfg.begin(); iter != input_cfg.end(); ++iter) {
         QString key = std::get<0>(*iter);
         QString form_type = std::get<1>(*iter);
 
@@ -67,11 +67,11 @@ person AddPersonDialog::fetchFormInputs()
     person new_person;
 
     QList<std::tuple<QString, QString, bool>>::iterator iter;
-    for (iter = form_types.begin(); iter != form_types.end(); ++iter) {
+    for (iter = input_cfg.begin(); iter != input_cfg.end(); ++iter) {
         QString key = std::get<0>(*iter);
         QString form = std::get<1>(*iter);
 
-        bio_item item;
+        container_item item;
         item.form_type = std::get<1>(*iter);
         item.show = std::get<2>(*iter);
 
@@ -84,7 +84,7 @@ person AddPersonDialog::fetchFormInputs()
         else if (form == "QTextEdit")
             item.value = forms[key].text_edit->toPlainText();
 
-        new_person.bio.insert(key, item);
+        new_person.items.insert(key, item);
     }
 
     return new_person;
