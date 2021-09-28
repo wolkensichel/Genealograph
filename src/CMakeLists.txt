@@ -16,6 +16,7 @@ set(PROJECT_SOURCES
     iohandler.cpp
     biographylistitem.cpp
     relationslistitem.cpp
+    partnershipinfolistitem.cpp
     clicklabel.cpp
     ${TS_FILES}
 )

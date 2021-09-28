@@ -138,7 +138,7 @@ void RelationsEditor::changeLockStatus(bool status)
 {
     for (int i = 0; i <= 2; i++)
         foreach (RelationsListItem *item, widget[i]->findChildren<RelationsListItem *>())
-            item->enableRemover(status);
+            item->enable(status);
 
     current_owner->updateRelationLockStatus(status);
 }

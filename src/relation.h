@@ -1,7 +1,6 @@
 #ifndef RELATION_H
 #define RELATION_H
 
-
 #include <QGraphicsPathItem>
 #include <QLabel>
 
@@ -29,7 +28,7 @@ public:
     Relation* parents = nullptr;
     QList<Relation *> descents;
 
-    PartnershipInfo *infocard;
+    PartnershipInfo *info_card;
 
 private:
     enum Mode {Upper, Lower};

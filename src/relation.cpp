@@ -6,20 +6,21 @@
 #include "worksheet.h"
 
 
-Relation::Relation(TreeObject* treecard1, TreeObject* treecard2, PartnershipInfo *info)
+Relation::Relation(TreeObject* treecard1, TreeObject* treecard2, PartnershipInfo *partnership_info)
 {
     descents = QList<Relation *>();
     tree_objects = QList<TreeObject *>();
     tree_objects.append(treecard1);
     tree_objects.append(treecard2);
 
-    infocard = info;
+    info_card = partnership_info;
+    info_card->connectPartnershipRelation(this);
 
     treecard1->addPartnershipRelation(this);
     treecard2->addPartnershipRelation(this);
 
     setPen(QPen(Qt::black, 1));
-    setZValue(-1);
+    setZValue(-2);
     updatePosition();
 }
 
@@ -35,7 +36,7 @@ Relation::Relation(Relation* partnership, TreeObject* child)
     partnership->descents.append(this);
 
     setPen(QPen(Qt::black, 1));
-    setZValue(-1);
+    setZValue(-2);
     updatePosition();
 }
 
@@ -53,14 +54,14 @@ void Relation::updatePosition()
         path.lineTo(tree_objects[1]->pos().x() + tree_objects[1]->rect().center().x(),
                     tree_objects[1]->pos().y() + y_off - 2);
 
-        if (infocard->content.items["Type"].value == 1) {
+        if (info_card->content.items["Type"].value == 1) {
             path.moveTo(tree_objects[1]->pos().x() + tree_objects[1]->rect().center().x(),
                         tree_objects[1]->pos().y() + y_off + 2);
             path.lineTo(tree_objects[0]->pos().x() + tree_objects[0]->rect().center().x(),
                         tree_objects[0]->pos().y() + y_off + 2);
         }
 
-        infocard->updatePosition(path.boundingRect().center());
+        info_card->updatePosition(path.boundingRect().center());
     }
     else
     {
@@ -169,6 +170,7 @@ void Relation::removePartnershipRelation()
     tree_objects.last()->partnerships.removeOne(this);
     foreach (Relation *descent, descents)
         descent->removeDescentRelation();
+    info_card->removePartnershipInfo();
     qobject_cast<WorkSheet *>(scene())->removePartnershipRelationFromList(this);
     scene()->removeItem(this);
     delete this;
