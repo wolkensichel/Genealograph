@@ -79,18 +79,18 @@ struct partnership
 };
 
 
-struct partnership_data
+struct descent
 {
-    quint16 id_partner1;
-    quint16 id_partner2;
-};
+    QMap<QString, container_item> items;
 
-
-struct descent_data
-{
-    quint16 id_child;
-    quint16 id_parent1;
-    quint16 id_parent2;
+    friend QDataStream & operator << (QDataStream &stream, const descent& instance) {
+        stream << instance.items;
+        return stream;
+    }
+    friend QDataStream & operator >> (QDataStream &stream, descent *instance) {
+        stream >> instance->items;
+        return stream;
+    }
 };
 
 
@@ -105,8 +105,8 @@ struct load_data
 {
     sheet worksheet;
     QList<person *> persons;
-    QList<partnership_data *> partnerships;
-    QList<descent_data *> descents;
+    QList<partnership *> partnerships;
+    QList<descent *> descents;
 };
 
 

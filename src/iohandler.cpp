@@ -97,21 +97,12 @@ void IOHandler::store(QFile &file, save_data &worksheet_data)
     indicator = QString("<PRTN>");
     QListIterator<Relation *> it_ps(worksheet_data.partnerships);
     while (it_ps.hasNext())
-    {
-        Relation *current_relation = it_ps.next();
-        out << indicator << current_relation->tree_objects.first()->content.id
-                         << current_relation->tree_objects.last()->content.id;
-    }
+        out << indicator << it_ps.next()->info_card->content;
 
     indicator = QString("<DSCN>");
     QListIterator<Relation *> it_d(worksheet_data.descents);
     while (it_d.hasNext())
-    {
-        Relation *current_relation = it_d.next();
-        out << indicator << current_relation->tree_objects.last()->content.id
-                         << current_relation->parents->tree_objects.first()->content.id
-                         << current_relation->parents->tree_objects.last()->content.id;
-    }
+        out << indicator << it_d.next()->info_descent;
 }
 
 
@@ -129,8 +120,8 @@ bool IOHandler::load(QFile &file, load_data &file_data)
         return false;
 
     QList<person *> *persons = new QList<person *>();
-    QList<partnership_data *> *partnerships = new QList<partnership_data *>();
-    QList<descent_data *> *descents = new QList<descent_data *>();
+    QList<partnership *> *partnerships = new QList<partnership *>();
+    QList<descent *> *descents = new QList<descent *>();
 
     while(in.atEnd() == false)
     {
@@ -143,15 +134,15 @@ bool IOHandler::load(QFile &file, load_data &file_data)
         }
         else if (indicator == QString("<PRTN>"))
         {
-            partnership_data *set = new partnership_data();
-            in >> set->id_partner1 >> set->id_partner2;
-            partnerships->append(set);
+            partnership *content = new partnership();
+            in >> content;
+            partnerships->append(content);
         }
         else if (indicator == QString("<DSCN>"))
         {
-            descent_data *set = new descent_data();
-            in >> set->id_child >> set->id_parent1 >> set->id_parent2;
-            descents->append(set);
+            descent *content = new descent();
+            in >> content;
+            descents->append(content);
         }
     }
 

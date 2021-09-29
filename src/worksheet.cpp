@@ -71,20 +71,22 @@ void WorkSheet::createPartnershipRelation(partnership new_partnership, QList<std
     addItem(relation);
     partnership_relations.append(relation);
 
-    parent()->findChild<RelationsEditor *>()->current_owner->updateRelationsEditor();
+    if (!selectedItems().isEmpty())
+        parent()->findChild<RelationsEditor *>()->current_owner->updateRelationsEditor();
 }
 
 
-void WorkSheet::createDescentRelation(int* descent)
+void WorkSheet::createDescentRelation(descent new_descent, QList<std::tuple<QString, QString, bool>> input_cfg_descents)
 {
-    Relation* partnership = partnership_relations.at(*descent);
-    TreeObject* child = tree_objects.at(*(descent+1));
+    Relation* partnership = partnership_relations.at(new_descent.items["Parents"].value.toInt());
+    TreeObject* child = tree_objects.at(new_descent.items["Child"].value.toInt());
 
-    Relation *relation = new Relation(partnership, child);
+    Relation *relation = new Relation(partnership, child, new_descent);
     addItem(relation);
     descent_relations.append(relation);
 
-    parent()->findChild<RelationsEditor *>()->current_owner->updateRelationsEditor();
+    if (!selectedItems().isEmpty())
+        parent()->findChild<RelationsEditor *>()->current_owner->updateRelationsEditor();
 }
 
 
@@ -282,51 +284,19 @@ QList<Relation *> WorkSheet::getDescentRelationList()
 }
 
 
-void WorkSheet::createTreeFromFile(load_data &data, QList<std::tuple<QString, QString, bool>> input_cfg_persons)
+void WorkSheet::createTreeFromFile(load_data &data, QList<QList<std::tuple<QString, QString, bool>>> input_cfg)
 {
     QListIterator<person *> it_od(data.persons);
     while (it_od.hasNext())
-        createTreeCardFromFile(*it_od.next(), input_cfg_persons);
+        createTreeCardFromFile(*it_od.next(), input_cfg[0]);
 
-    int reference_ids[2];
-    QListIterator<partnership_data *> it_ps(data.partnerships);
+    QListIterator<partnership *> it_ps(data.partnerships);
     while (it_ps.hasNext())
-    {
-        partnership_data *current_object = it_ps.next();
-        reference_ids[0] = getTreeObjectListPosition(current_object->id_partner1);
-        reference_ids[1] = getTreeObjectListPosition(current_object->id_partner2);
+        createPartnershipRelation(*it_ps.next(), input_cfg[1]);
 
-        //createPartnershipRelation(reference_ids);
-    }
-
-    QListIterator<descent_data *> it_d(data.descents);
+    QListIterator<descent *> it_d(data.descents);
     while (it_d.hasNext())
-    {
-        descent_data *current_object = it_d.next();
-        reference_ids[0] = getPartnershipRelationListPosition(current_object->id_parent1,
-                                                              current_object->id_parent2);
-        reference_ids[1] = getTreeObjectListPosition(current_object->id_child);
-        createDescentRelation(reference_ids);
-    }
-}
-
-
-int WorkSheet::getTreeObjectListPosition(quint16 id)
-{
-    auto predicate = [id](TreeObject *tree_object) { return tree_object->content.id == id; };
-    return std::find_if(tree_objects.begin(), tree_objects.end(), predicate)
-            - tree_objects.begin();
-}
-
-
-int WorkSheet::getPartnershipRelationListPosition(quint16 id_parent1, quint16 id_parent2)
-{
-    auto predicate = [id_parent1, id_parent2](Relation *partnership) {
-        return (partnership->tree_objects.first()->content.id == id_parent1
-                && partnership->tree_objects.last()->content.id == id_parent2);
-        };
-    return std::find_if(partnership_relations.begin(), partnership_relations.end(), predicate)
-            - partnership_relations.begin();
+        createDescentRelation(*it_d.next(), input_cfg[2]);
 }
 
 

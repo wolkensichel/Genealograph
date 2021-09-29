@@ -78,6 +78,7 @@ private:
 
     QList<std::tuple<QString, QString, bool>> input_cfg_persons;
     QList<std::tuple<QString, QString, bool>> input_cfg_partnerships;
+    QList<std::tuple<QString, QString, bool>> input_cfg_descents;
 
 public slots:
     void scrollToItem();

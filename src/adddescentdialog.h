@@ -2,6 +2,7 @@
 #define ADDDESCENTDIALOG_H
 
 #include <QDialog>
+#include <QFormLayout>
 #include <QLabel>
 #include <QComboBox>
 #include <QDialogButtonBox>
@@ -14,26 +15,25 @@ class AddDescentDialog : public QDialog
     Q_OBJECT
 
 public:
-    AddDescentDialog(QWidget *parent = nullptr);
-    void populateDropDownMenus(QList<TreeObject *>, QList<Relation *>);
-    int * fetchFormInputs();
+    AddDescentDialog(QList<std::tuple<QString, QString, bool>>, QList<TreeObject *>, QList<Relation *>, QWidget *parent = nullptr);
+    descent fetchFormInputs();
 
 private:
+    void initializeInputs();
+    void populateDropDownMenus(QList<TreeObject *>, QList<Relation *>);
+    QString createDropDownPerson(TreeObject*);
     bool detectCycle(Relation*, TreeObject*);
 
-    QLabel *label_parents;
-    QLabel *label_child;
+    QList<std::tuple<QString, QString, bool>> input_cfg;
+    QMap <QString, input_form> forms;
 
-    QComboBox *form_parents;
-    QComboBox *form_child;
+    QFormLayout *layout;
+    QDialogButtonBox *buttonbox;
 
     QLabel *info;
 
-    QDialogButtonBox *buttonbox;
-
     QList<TreeObject *> treecards;
     QList<Relation *> partnerships;
-
     QMap<QString, int> partnerships_in_dropdown = {};
     QMap<QString, int> children_in_dropdown = {};
 

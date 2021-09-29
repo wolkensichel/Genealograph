@@ -20,6 +20,7 @@ public:
 private:
     void initializeInputs();
     void populateDropDownMenus(QList<TreeObject *>);
+    QString createDropDownPerson(TreeObject*);
 
     QList<std::tuple<QString, QString, bool>> input_cfg;
     QMap <QString, input_form> forms;

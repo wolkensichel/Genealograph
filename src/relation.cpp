@@ -25,12 +25,14 @@ Relation::Relation(TreeObject* treecard1, TreeObject* treecard2, PartnershipInfo
 }
 
 
-Relation::Relation(Relation* partnership, TreeObject* child)
+Relation::Relation(Relation* partnership, TreeObject* child, descent descent_info)
 {
     descents = QList<Relation *>();
     tree_objects = QList<TreeObject *>();
     tree_objects.append(child);
     parents = partnership;
+
+    info_descent = descent_info;
 
     child->setDescentRelation(this);
     partnership->descents.append(this);
@@ -54,7 +56,7 @@ void Relation::updatePosition()
         path.lineTo(tree_objects[1]->pos().x() + tree_objects[1]->rect().center().x(),
                     tree_objects[1]->pos().y() + y_off - 2);
 
-        if (info_card->content.items["Type"].value == 1) {
+        if (info_card->content.items["Type"].value == "Married") {
             path.moveTo(tree_objects[1]->pos().x() + tree_objects[1]->rect().center().x(),
                         tree_objects[1]->pos().y() + y_off + 2);
             path.lineTo(tree_objects[0]->pos().x() + tree_objects[0]->rect().center().x(),

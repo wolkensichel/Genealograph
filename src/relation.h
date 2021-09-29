@@ -15,7 +15,7 @@ class Relation : public QGraphicsPathItem
 {
 public:
     Relation(TreeObject*, TreeObject*, PartnershipInfo*);
-    Relation(Relation*, TreeObject*);
+    Relation(Relation*, TreeObject*, descent);
     void fillInfoCard();
     void updatePosition();
     QList<TreeObject *>getTreeObjects();
@@ -29,6 +29,7 @@ public:
     QList<Relation *> descents;
 
     PartnershipInfo *info_card;
+    descent info_descent;
 
 private:
     enum Mode {Upper, Lower};

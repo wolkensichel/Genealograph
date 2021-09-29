@@ -47,6 +47,11 @@ void MainWindow::defineDataItems()
         {"Formed in", "QLineEdit", false},
         {"Date ended", "QLineEdit", true}
     };
+
+    input_cfg_descents = {
+        {"Parents", "QComboBox", true},
+        {"Child", "QComboBox", true}
+    };
 }
 
 
@@ -205,8 +210,8 @@ void MainWindow::openFile()
 
     load_data file_data;
     QList<person *> *persons = new QList<person *>();
-    QList<partnership_data *> *partnerships = new QList<partnership_data *>();
-    QList<descent_data *> *descents = new QList<descent_data *>();
+    QList<partnership *> *partnerships = new QList<partnership *>();
+    QList<descent *> *descents = new QList<descent *>();
     file_data.worksheet = {0, 0};
     file_data.persons = *persons;
     file_data.partnerships = *partnerships;
@@ -215,7 +220,9 @@ void MainWindow::openFile()
     if (handler.openFromFile(file_data, save_file))
     {
         prepareNewSheet(file_data.worksheet);
-        worksheet->createTreeFromFile(file_data, input_cfg_persons);
+        QList<QList<std::tuple<QString, QString, bool>>> input_cfg =
+            {input_cfg_persons, input_cfg_partnerships, input_cfg_descents};
+        worksheet->createTreeFromFile(file_data, input_cfg);
     }
 }
 
@@ -305,11 +312,10 @@ void MainWindow::addPartnership()
 
 void MainWindow::addDescent()
 {
-    AddDescentDialog addDescent;
-    addDescent.populateDropDownMenus(worksheet->getTreeObjectList(), worksheet->getPartnershipRelationList());
-
+    AddDescentDialog addDescent(input_cfg_descents, worksheet->getTreeObjectList(),
+                                worksheet->getPartnershipRelationList());
     if (addDescent.exec() == QDialog::Accepted)
-        worksheet->createDescentRelation(addDescent.fetchFormInputs());
+        worksheet->createDescentRelation(addDescent.fetchFormInputs(), input_cfg_descents);
 }
 
 

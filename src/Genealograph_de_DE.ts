@@ -4,14 +4,6 @@
 <context>
     <name>AddDescentDialog</name>
     <message>
-        <source>Parents:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Child:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Select</source>
         <translation type="unfinished"></translation>
     </message>

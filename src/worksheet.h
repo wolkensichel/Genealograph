@@ -25,8 +25,8 @@ public:
     void createTreeCard(person, QList<std::tuple<QString, QString, bool>>);
     void createTreeCardFromFile(person, QList<std::tuple<QString, QString, bool>>);
     void createPartnershipRelation(partnership, QList<std::tuple<QString, QString, bool>>);
-    void createDescentRelation(int*);
-    void createTreeFromFile(load_data&, QList<std::tuple<QString, QString, bool>>);
+    void createDescentRelation(descent, QList<std::tuple<QString, QString, bool>>);
+    void createTreeFromFile(load_data&, QList<QList<std::tuple<QString, QString, bool>>>);
     void clean();
 
     void removeTreeObjectFromList(TreeObject*);
@@ -38,8 +38,6 @@ public:
     QList<Relation *> getDescentRelationList();
 
 private:
-    int getTreeObjectListPosition(quint16);
-    int getPartnershipRelationListPosition(quint16, quint16);
     void outOfScopeCorrection(QGraphicsItem*);
     void snapToGrid(QGraphicsItem*);
 

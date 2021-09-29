@@ -22,6 +22,7 @@ AddPartnershipDialog::AddPartnershipDialog(QList<std::tuple<QString, QString, bo
     layout->addRow(info);
 
     buttonbox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    buttonbox->button(QDialogButtonBox::Ok)->setEnabled(false);
     connect(buttonbox, SIGNAL(accepted()), this, SLOT(accept()));
     connect(buttonbox, SIGNAL(rejected()), this, SLOT(reject()));
 
@@ -90,16 +91,7 @@ void AddPartnershipDialog::populateDropDownMenus(QList<TreeObject *> tree_object
     int i = 0;
     foreach(TreeObject *treecard, tree_objects)
     {
-        QString birth_date = treecard->content.items["Date of birth"].value.toString();
-        birth_date = (!birth_date.isEmpty()) ? ", b. " + birth_date : "";
-        QString death_date = treecard->content.items["Date of death"].value.toString();
-        death_date = (!death_date.isEmpty()) ? ", d. " + death_date : "";
-        QString first_name = treecard->content.items["First name"].value.toString();
-        first_name = (!first_name.isEmpty()) ? ", " + first_name : "";
-        QString last_name = treecard->content.items["Last name"].value.toString();
-        QString value = last_name + first_name + birth_date + death_date;
-        if (!value.isEmpty() && value.startsWith(", "))
-            value.remove(0, 2);
+        QString value = createDropDownPerson(treecard);
         persons_in_dropdown.insert(value, i++);
         forms["Partner 1"].box_edit->addItem(value);
         forms["Partner 2"].box_edit->addItem(value);
@@ -112,6 +104,23 @@ void AddPartnershipDialog::populateDropDownMenus(QList<TreeObject *> tree_object
     forms["Partner 2"].box_edit->model()->sort(0);
     forms["Partner 2"].box_edit->setCurrentIndex(-1);
     connect(forms["Partner 2"].box_edit, SIGNAL(currentIndexChanged(int)), this, SLOT(analyzeInputPairs()));
+}
+
+
+QString AddPartnershipDialog::createDropDownPerson(TreeObject *treecard)
+{
+    QString birth_date = treecard->content.items["Date of birth"].value.toString();
+    birth_date = (!birth_date.isEmpty()) ? ", b. " + birth_date : "";
+    QString death_date = treecard->content.items["Date of death"].value.toString();
+    death_date = (!death_date.isEmpty()) ? ", d. " + death_date : "";
+    QString first_name = treecard->content.items["First name"].value.toString();
+    first_name = (!first_name.isEmpty()) ? ", " + first_name : "";
+    QString last_name = treecard->content.items["Last name"].value.toString();
+    QString value = last_name + first_name + birth_date + death_date;
+    if (!value.isEmpty() && value.startsWith(", "))
+        value.remove(0, 2);
+
+    return value;
 }
 
 

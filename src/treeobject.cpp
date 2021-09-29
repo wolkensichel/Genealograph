@@ -60,7 +60,7 @@ void TreeObject::createLabel(QString &key)
         value = appendices(key, value);
 
     QLabel *label = new QLabel(value);
-    //label->setFixedSize(198, 15);
+    label->setFixedSize(198, 15);
     label->setAlignment(Qt::AlignCenter);
     if (bold_font.contains(key))
     {
@@ -123,11 +123,6 @@ QString TreeObject::appendices(QString &key, QString value)
 
 void TreeObject::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    /*QColor highlight_color;
-    highlight_color.setRgb(30, 200, 255, 255);
-    QPen pen(highlight_color);
-    pen.setWidth(2);
-    setPen(pen);*/
     setZValue(1);
 
     updateBiographyEditor();
