@@ -65,6 +65,7 @@ void AddPersonDialog::initializeInputs()
 person AddPersonDialog::fetchFormInputs()
 {
     person new_person;
+    new_person.id = 0;
 
     QList<std::tuple<QString, QString, bool>>::iterator iter;
     for (iter = input_cfg.begin(); iter != input_cfg.end(); ++iter) {

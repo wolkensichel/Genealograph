@@ -42,7 +42,7 @@ struct person {
     bool placeholder;
     QMap<QString, container_item> items;
 
-    friend QDataStream & operator << (QDataStream &stream, const person& instance) {
+    friend QDataStream & operator << (QDataStream &stream, const person &instance) {
         stream << instance.id;
         stream << instance.pos;
         stream << instance.relations_dock_lock;
@@ -66,13 +66,16 @@ struct person {
 
 struct partnership
 {
+    quint16 id;
     QMap<QString, container_item> items;
 
-    friend QDataStream & operator << (QDataStream &stream, const partnership& instance) {
+    friend QDataStream & operator << (QDataStream &stream, const partnership &instance) {
+        stream << instance.id;
         stream << instance.items;
         return stream;
     }
     friend QDataStream & operator >> (QDataStream &stream, partnership *instance) {
+        stream >> instance->id;
         stream >> instance->items;
         return stream;
     }
@@ -81,13 +84,16 @@ struct partnership
 
 struct descent
 {
+    quint16 id;
     QMap<QString, container_item> items;
 
-    friend QDataStream & operator << (QDataStream &stream, const descent& instance) {
+    friend QDataStream & operator << (QDataStream &stream, const descent &instance) {
+        stream << instance.id;
         stream << instance.items;
         return stream;
     }
     friend QDataStream & operator >> (QDataStream &stream, descent *instance) {
+        stream >> instance->id;
         stream >> instance->items;
         return stream;
     }
@@ -113,9 +119,9 @@ struct load_data
 struct save_data
 {
     sheet worksheet;
-    QList<TreeObject *> tree_objects;
-    QList<Relation *> partnerships;
-    QList<Relation *> descents;
+    QMap<quint16, TreeObject *> tree_objects;
+    QMap<quint16, Relation *> partnerships;
+    QMap<quint16, Relation *> descents;
 };
 
 

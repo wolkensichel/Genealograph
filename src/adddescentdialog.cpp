@@ -5,9 +5,10 @@
 #include "adddescentdialog.h"
 #include "mainwindow.h"
 #include "worksheet.h"
+#include "treeobject.h"
 
 
-AddDescentDialog::AddDescentDialog(QList<std::tuple<QString, QString, bool>> input_cfg_descents, QList<TreeObject *> tree_objects, QList<Relation *> partnership_relations, QWidget *parent)
+AddDescentDialog::AddDescentDialog(QList<std::tuple<QString, QString, bool>> input_cfg_descents, QMap<quint16, TreeObject *> tree_objects, QMap<quint16, Relation *> partnership_relations, QWidget *parent)
     : QDialog(parent), input_cfg(input_cfg_descents)
 {
     layout = new QFormLayout;
@@ -65,7 +66,7 @@ void AddDescentDialog::initializeInputs()
 }
 
 
-void AddDescentDialog::populateDropDownMenus(QList<TreeObject *> tree_objects, QList<Relation *> partnership_relations)
+void AddDescentDialog::populateDropDownMenus(QMap<quint16, TreeObject *> tree_objects, QMap<quint16, Relation *> partnership_relations)
 {
     treecards = tree_objects;
     partnerships = partnership_relations;
@@ -76,27 +77,28 @@ void AddDescentDialog::populateDropDownMenus(QList<TreeObject *> tree_objects, Q
     forms["Parents"].box_edit->lineEdit()->setPlaceholderText(tr("Select"));
     forms["Child"].box_edit->lineEdit()->setPlaceholderText(tr("Select"));
 
-    int i = 0;
-    foreach(Relation *partnership, partnerships)
+    QMapIterator<quint16, Relation *> iter_p(partnership_relations);
+    while (iter_p.hasNext())
     {
+        Relation *partnership = iter_p.next().value();
         QList<TreeObject *> treecards = partnership->getTreeObjects();
         QString partner1 = createDropDownPerson(treecards[0]);
         QString partner2 = createDropDownPerson(treecards[1]);
         QString value = partner1 + " and " + partner2;
-        partnerships_in_dropdown.insert(value, i++);
+        partnerships_in_dropdown.insert(value, partnership->id);
         forms["Parents"].box_edit->addItem(value);
     }
 
-    i = 0;
-    foreach(TreeObject *treecard, treecards)
+    QMapIterator<quint16, TreeObject *> iter_c(tree_objects);
+    while (iter_c.hasNext())
     {
+        TreeObject *treecard = iter_c.next().value();
         if (treecard->descent == nullptr)
         {
             QString value = createDropDownPerson(treecard);
-            children_in_dropdown.insert(value, i);
+            children_in_dropdown.insert(value, treecard->content.id);
             forms["Child"].box_edit->addItem(value);
         }
-        i++;
     }
 
     forms["Parents"].box_edit->model()->sort(0);
@@ -128,13 +130,8 @@ QString AddDescentDialog::createDropDownPerson(TreeObject *treecard)
 
 descent AddDescentDialog::fetchFormInputs()
 {
-    /*static int descent[2];
-    descent[0] = partnerships_in_dropdown[form_parents->currentText()];
-    descent[1] = children_in_dropdown[form_child->currentText()];
-
-    return descent;*/
-
     descent new_descent;
+    new_descent.id = 0;
 
     QList<std::tuple<QString, QString, bool>>::iterator iter;
     for (iter = input_cfg.begin(); iter != input_cfg.end(); ++iter) {

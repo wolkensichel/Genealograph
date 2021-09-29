@@ -86,23 +86,23 @@ void IOHandler::store(QFile &file, save_data &worksheet_data)
     out << indicator << worksheet_data.worksheet.width << worksheet_data.worksheet.height;
 
     indicator = QString("<TRBJ>");
-    QListIterator<TreeObject *> it_to(worksheet_data.tree_objects);
+    QMapIterator<quint16, TreeObject *> it_to(worksheet_data.tree_objects);
     while (it_to.hasNext())
     {
-        TreeObject *current_object = it_to.next();
-        current_object->content.pos = current_object->pos();
-        out << indicator << current_object->content;
+        QMapIterator<quint16, TreeObject *>::Item current_object = it_to.next();
+        current_object.value()->content.pos = current_object.value()->pos();
+        out << indicator << current_object.value()->content;
     }
 
     indicator = QString("<PRTN>");
-    QListIterator<Relation *> it_ps(worksheet_data.partnerships);
+    QMapIterator<quint16, Relation *> it_ps(worksheet_data.partnerships);
     while (it_ps.hasNext())
-        out << indicator << it_ps.next()->info_card->content;
+        out << indicator << it_ps.next().value()->info_card->content;
 
     indicator = QString("<DSCN>");
-    QListIterator<Relation *> it_d(worksheet_data.descents);
+    QMapIterator<quint16, Relation *> it_d(worksheet_data.descents);
     while (it_d.hasNext())
-        out << indicator << it_d.next()->info_descent;
+        out << indicator << it_d.next().value()->info_descent;
 }
 
 

@@ -8,6 +8,8 @@
 
 Relation::Relation(TreeObject* treecard1, TreeObject* treecard2, PartnershipInfo *partnership_info)
 {
+    id = partnership_info->content.id;
+
     descents = QList<Relation *>();
     tree_objects = QList<TreeObject *>();
     tree_objects.append(treecard1);
@@ -27,6 +29,8 @@ Relation::Relation(TreeObject* treecard1, TreeObject* treecard2, PartnershipInfo
 
 Relation::Relation(Relation* partnership, TreeObject* child, descent descent_info)
 {
+    id = descent_info.id;
+
     descents = QList<Relation *>();
     tree_objects = QList<TreeObject *>();
     tree_objects.append(child);
@@ -160,7 +164,7 @@ void Relation::removeDescentRelation()
 {
     tree_objects.first()->descent = nullptr;
     parents->descents.removeOne(this);
-    qobject_cast<WorkSheet *>(scene())->removeDescentRelationFromList(this);
+    qobject_cast<WorkSheet *>(scene())->removeDescentRelationFromMap(this);
     scene()->removeItem(this);
     delete this;
 }
@@ -173,7 +177,7 @@ void Relation::removePartnershipRelation()
     foreach (Relation *descent, descents)
         descent->removeDescentRelation();
     info_card->removePartnershipInfo();
-    qobject_cast<WorkSheet *>(scene())->removePartnershipRelationFromList(this);
+    qobject_cast<WorkSheet *>(scene())->removePartnershipRelationFromMap(this);
     scene()->removeItem(this);
     delete this;
 }

@@ -14,12 +14,12 @@ class AddPartnershipDialog : public QDialog
     Q_OBJECT
 
 public:
-    AddPartnershipDialog(QList<std::tuple<QString, QString, bool>>, QList<TreeObject *>, QWidget *parent = nullptr);
+    AddPartnershipDialog(QList<std::tuple<QString, QString, bool>>, QMap<quint16, TreeObject *>, QWidget *parent = nullptr);
     partnership fetchFormInputs();
 
 private:
     void initializeInputs();
-    void populateDropDownMenus(QList<TreeObject *>);
+    void populateDropDownMenus(QMap<quint16, TreeObject *>);
     QString createDropDownPerson(TreeObject*);
 
     QList<std::tuple<QString, QString, bool>> input_cfg;
@@ -31,7 +31,7 @@ private:
 
     QLabel *info;
 
-    QList<TreeObject *> treecards;
+    QMap<quint16, TreeObject *> treecards;
     QMap<QString, int> persons_in_dropdown = {};
 
 private slots:

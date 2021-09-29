@@ -33,43 +33,46 @@ void WorkSheet::setMode(Mode mode)
 void WorkSheet::createTreeCard(person new_person, QList<std::tuple<QString, QString, bool>> input_cfg_persons)
 {
     clearSelection();
-    new_person.id = id_counter;
-    new_person.biography_dock_lock = false;
-    new_person.relations_dock_lock = true;
-    new_person.placeholder = false;
 
-    TreeObject *treecard = new TreeObject(new_person, input_cfg_persons);
-    tree_objects.append(treecard);
-    addItem(treecard);
-    id_counter++;
-    treecard->setSelected(true);
-    setMode(InsertCard);
-}
-
-
-void WorkSheet::createTreeCardFromFile(person new_person, QList<std::tuple<QString, QString, bool>> input_cfg_persons)
-{
-    clearSelection();
-
-    TreeObject *treecard = new TreeObject(new_person, input_cfg_persons);
-    tree_objects.append(treecard);
-    addItem(treecard);
-    if (id_counter < new_person.id)
+    bool new_card = false;
+    if (new_person.id == 0) {
+        new_card = true;
+        new_person.id = id_counter++;
+        new_person.biography_dock_lock = false;
+        new_person.relations_dock_lock = true;
+        new_person.placeholder = false;
+    }
+    else if (id_counter <= new_person.id)
         id_counter = new_person.id+1;
-    treecard->setPos(new_person.pos);
+
+    TreeObject *treecard = new TreeObject(new_person, input_cfg_persons);
+    tree_objects.insert(new_person.id, treecard);
+    addItem(treecard);
+
+    if (new_card) {
+        treecard->setSelected(true);
+        setMode(InsertCard);
+    }
+    else
+        treecard->setPos(new_person.pos);
 }
 
 
 void WorkSheet::createPartnershipRelation(partnership new_partnership, QList<std::tuple<QString, QString, bool>> input_cfg_partnerships)
 {
-    TreeObject* partner1 = tree_objects.at(new_partnership.items["Partner 1"].value.toInt());
-    TreeObject* partner2 = tree_objects.at(new_partnership.items["Partner 2"].value.toInt());
+    if (new_partnership.id == 0)
+        new_partnership.id = id_counter++;
+    else if (id_counter <= new_partnership.id)
+        id_counter = new_partnership.id+1;
+
+    TreeObject *partner1 = tree_objects[new_partnership.items["Partner 1"].value.toInt()];
+    TreeObject *partner2 = tree_objects[new_partnership.items["Partner 2"].value.toInt()];
 
     PartnershipInfo *partnership_info = new PartnershipInfo(new_partnership, input_cfg_partnerships);
     addItem(partnership_info);
     Relation *relation = new Relation(partner1, partner2, partnership_info);
     addItem(relation);
-    partnership_relations.append(relation);
+    partnership_relations.insert(new_partnership.id, relation);
 
     if (!selectedItems().isEmpty())
         parent()->findChild<RelationsEditor *>()->current_owner->updateRelationsEditor();
@@ -78,12 +81,17 @@ void WorkSheet::createPartnershipRelation(partnership new_partnership, QList<std
 
 void WorkSheet::createDescentRelation(descent new_descent, QList<std::tuple<QString, QString, bool>> input_cfg_descents)
 {
-    Relation* partnership = partnership_relations.at(new_descent.items["Parents"].value.toInt());
-    TreeObject* child = tree_objects.at(new_descent.items["Child"].value.toInt());
+    if (new_descent.id == 0)
+        new_descent.id = id_counter++;
+    else if (id_counter <= new_descent.id)
+        id_counter = new_descent.id+1;
+
+    Relation* partnership = partnership_relations[new_descent.items["Parents"].value.toInt()];
+    TreeObject* child = tree_objects[new_descent.items["Child"].value.toInt()];
 
     Relation *relation = new Relation(partnership, child, new_descent);
     addItem(relation);
-    descent_relations.append(relation);
+    descent_relations.insert(new_descent.id, relation);
 
     if (!selectedItems().isEmpty())
         parent()->findChild<RelationsEditor *>()->current_owner->updateRelationsEditor();
@@ -198,10 +206,10 @@ void WorkSheet::keyPressEvent(QKeyEvent *event)
 {
     if (event->key() == Qt::Key_Delete && !selectedItems().isEmpty())
     {
-        QList<TreeObject *> tree_objects_for_removal;
+        QList<quint16> tree_objects_for_removal;
         foreach (QGraphicsItem *item, selectedItems())
             if (item->type() == TreeObject::Type)
-                tree_objects_for_removal.append(qgraphicsitem_cast<TreeObject *>(item));
+                tree_objects_for_removal.append(qgraphicsitem_cast<TreeObject *>(item)->content.id);
         removeTreeObjectDialog(tree_objects_for_removal);
     }
     else if (event->key() == Qt::Key_A)
@@ -218,11 +226,11 @@ void WorkSheet::keyPressEvent(QKeyEvent *event)
 }
 
 
-void WorkSheet::removeTreeObjectDialog(QList<TreeObject *> objects)
+void WorkSheet::removeTreeObjectDialog(QList<quint16> object_ids)
 {
     QString names;
-    foreach (TreeObject *object, objects)
-        names += object->getName() + "\n";
+    foreach (quint16 object_id, object_ids)
+        names += tree_objects[object_id]->getName() + "\n";
 
     QMessageBox msg_box;
     msg_box.setText(tr("Delete Tree Card"));
@@ -231,54 +239,48 @@ void WorkSheet::removeTreeObjectDialog(QList<TreeObject *> objects)
     msg_box.setDefaultButton(QMessageBox::Cancel);
 
     if (msg_box.exec() == QMessageBox::Ok)
-        removeTreeObject(objects);
+        removeTreeObjects(object_ids);
 }
 
 
-void WorkSheet::removeTreeObject(QList<TreeObject *> objects)
+void WorkSheet::removeTreeObjects(QList<quint16> object_ids)
 {
-    foreach (TreeObject *object, objects)
-    {
-        if (object->descent != nullptr)
-            object->descent->removeDescentRelation();
-        foreach(Relation *partnership, object->partnerships)
-            partnership->removePartnershipRelation();
-        object->removeTreeObject();
-    }
+    foreach (quint16 object_id, object_ids)
+        tree_objects[object_id]->removeTreeObject();
 }
 
 
-void WorkSheet::removeTreeObjectFromList(TreeObject *tree_object)
+void WorkSheet::removeTreeObjectFromMap(TreeObject *tree_object)
 {
-    tree_objects.removeOne(tree_object);
+    tree_objects.remove(tree_object->content.id);
 }
 
 
-void WorkSheet::removePartnershipRelationFromList(Relation *partnership)
+void WorkSheet::removePartnershipRelationFromMap(Relation *partnership)
 {
-    partnership_relations.removeOne(partnership);
+    partnership_relations.remove(partnership->id);
 }
 
 
-void WorkSheet::removeDescentRelationFromList(Relation *descent)
+void WorkSheet::removeDescentRelationFromMap(Relation *descent)
 {
-    descent_relations.removeOne(descent);
+    descent_relations.remove(descent->id);
 }
 
 
-QList<TreeObject *> WorkSheet::getTreeObjectList()
+QMap<quint16, TreeObject *> WorkSheet::getTreeObjectMap()
 {
     return tree_objects;
 }
 
 
-QList<Relation *> WorkSheet::getPartnershipRelationList()
+QMap<quint16, Relation *> WorkSheet::getPartnershipRelationMap()
 {
     return partnership_relations;
 }
 
 
-QList<Relation *> WorkSheet::getDescentRelationList()
+QMap<quint16, Relation *> WorkSheet::getDescentRelationMap()
 {
     return descent_relations;
 }
@@ -288,7 +290,7 @@ void WorkSheet::createTreeFromFile(load_data &data, QList<QList<std::tuple<QStri
 {
     QListIterator<person *> it_od(data.persons);
     while (it_od.hasNext())
-        createTreeCardFromFile(*it_od.next(), input_cfg[0]);
+        createTreeCard(*it_od.next(), input_cfg[0]);
 
     QListIterator<partnership *> it_ps(data.partnerships);
     while (it_ps.hasNext())
@@ -302,6 +304,5 @@ void WorkSheet::createTreeFromFile(load_data &data, QList<QList<std::tuple<QStri
 
 void WorkSheet::clean()
 {
-    QList<TreeObject *> tree_objects_for_removal = tree_objects;
-    removeTreeObject(tree_objects_for_removal);
+    removeTreeObjects(tree_objects.keys());
 }

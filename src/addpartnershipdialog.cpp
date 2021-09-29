@@ -5,9 +5,10 @@
 #include "addpartnershipdialog.h"
 #include "mainwindow.h"
 #include "worksheet.h"
+#include "treeobject.h"
 
 
-AddPartnershipDialog::AddPartnershipDialog(QList<std::tuple<QString, QString, bool>> input_cfg_partnerships, QList<TreeObject *> tree_objects, QWidget *parent)
+AddPartnershipDialog::AddPartnershipDialog(QList<std::tuple<QString, QString, bool>> input_cfg_partnerships, QMap<quint16, TreeObject *> tree_objects, QWidget *parent)
     : QDialog(parent), input_cfg(input_cfg_partnerships)
 {
     layout = new QFormLayout;
@@ -78,7 +79,7 @@ void AddPartnershipDialog::initializeInputs()
 }
 
 
-void AddPartnershipDialog::populateDropDownMenus(QList<TreeObject *> tree_objects)
+void AddPartnershipDialog::populateDropDownMenus(QMap<quint16, TreeObject *> tree_objects)
 {  
     treecards = tree_objects;
 
@@ -88,11 +89,12 @@ void AddPartnershipDialog::populateDropDownMenus(QList<TreeObject *> tree_object
     forms["Partner 1"].box_edit->lineEdit()->setPlaceholderText(tr("Select"));
     forms["Partner 2"].box_edit->lineEdit()->setPlaceholderText(tr("Select"));
 
-    int i = 0;
-    foreach(TreeObject *treecard, tree_objects)
+    QMapIterator<quint16, TreeObject *> iter(tree_objects);
+    while (iter.hasNext())
     {
+        TreeObject *treecard = iter.next().value();
         QString value = createDropDownPerson(treecard);
-        persons_in_dropdown.insert(value, i++);
+        persons_in_dropdown.insert(value, treecard->content.id);
         forms["Partner 1"].box_edit->addItem(value);
         forms["Partner 2"].box_edit->addItem(value);
     }
@@ -127,6 +129,7 @@ QString AddPartnershipDialog::createDropDownPerson(TreeObject *treecard)
 partnership AddPartnershipDialog::fetchFormInputs()
 {
     partnership new_partnership;
+    new_partnership.id = 0;
 
     QList<std::tuple<QString, QString, bool>>::iterator iter;
     for (iter = input_cfg.begin(); iter != input_cfg.end(); ++iter)
@@ -149,6 +152,9 @@ partnership AddPartnershipDialog::fetchFormInputs()
                 item.value = forms[key].box_edit->currentText();
         else if (form == "QTextEdit")
             item.value = forms[key].text_edit->toPlainText();
+
+        if (item.value.toString().isEmpty())
+            item.show = false;
 
         new_partnership.items.insert(key, item);
     }

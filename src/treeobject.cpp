@@ -193,7 +193,12 @@ void TreeObject::updateRelations()
 
 void TreeObject::removeTreeObject()
 {
-    qobject_cast<WorkSheet *>(scene())->removeTreeObjectFromList(this);
+    if (descent != nullptr)
+        descent->removeDescentRelation();
+    foreach(Relation *partnership, partnerships)
+        partnership->removePartnershipRelation();
+
+    qobject_cast<WorkSheet *>(scene())->removeTreeObjectFromMap(this);
     scene()->removeItem(this);
     delete this;
 }

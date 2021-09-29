@@ -23,32 +23,31 @@ public:
     explicit WorkSheet(QMenu*, QObject *parent = nullptr);
     void setMode(Mode mode);
     void createTreeCard(person, QList<std::tuple<QString, QString, bool>>);
-    void createTreeCardFromFile(person, QList<std::tuple<QString, QString, bool>>);
     void createPartnershipRelation(partnership, QList<std::tuple<QString, QString, bool>>);
     void createDescentRelation(descent, QList<std::tuple<QString, QString, bool>>);
     void createTreeFromFile(load_data&, QList<QList<std::tuple<QString, QString, bool>>>);
     void clean();
 
-    void removeTreeObjectFromList(TreeObject*);
-    void removePartnershipRelationFromList(Relation*);
-    void removeDescentRelationFromList(Relation*);
+    void removeTreeObjectFromMap(TreeObject*);
+    void removePartnershipRelationFromMap(Relation*);
+    void removeDescentRelationFromMap(Relation*);
 
-    QList<TreeObject *> getTreeObjectList();
-    QList<Relation *> getPartnershipRelationList();
-    QList<Relation *> getDescentRelationList();
+    QMap<quint16, TreeObject *> getTreeObjectMap();
+    QMap<quint16, Relation *> getPartnershipRelationMap();
+    QMap<quint16, Relation *> getDescentRelationMap();
 
 private:
     void outOfScopeCorrection(QGraphicsItem*);
     void snapToGrid(QGraphicsItem*);
 
     void keepItemOnScene(QGraphicsSceneMouseEvent*);
-    void removeTreeObjectDialog(QList<TreeObject *>);
-    void removeTreeObject(QList<TreeObject *>);
+    void removeTreeObjectDialog(QList<quint16>);
+    void removeTreeObjects(QList<quint16>);
 
     QList<QGraphicsItem *> item_list;
-    QList<TreeObject *> tree_objects;
-    QList<Relation *> partnership_relations;
-    QList<Relation *> descent_relations;
+    QMap<quint16, TreeObject *> tree_objects;
+    QMap<quint16, Relation *> partnership_relations;
+    QMap<quint16, Relation *> descent_relations;
 
     Mode active_mode;
 

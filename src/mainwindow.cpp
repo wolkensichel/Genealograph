@@ -159,6 +159,7 @@ void MainWindow::prepareNewSheet(sheet size)
 {
     worksheet->clean();
     worksheet->setSceneRect(QRectF(0, 0, size.width, size.height));
+    worksheet->id_counter = 1;
 
     if (view != nullptr)
         view->destroyed();
@@ -230,9 +231,9 @@ void MainWindow::openFile()
 save_data MainWindow::collectWorksheetData()
 {
     save_data worksheet_data;
-    worksheet_data.tree_objects = worksheet->getTreeObjectList();
-    worksheet_data.partnerships = worksheet->getPartnershipRelationList();
-    worksheet_data.descents = worksheet->getDescentRelationList();
+    worksheet_data.tree_objects = worksheet->getTreeObjectMap();
+    worksheet_data.partnerships = worksheet->getPartnershipRelationMap();
+    worksheet_data.descents = worksheet->getDescentRelationMap();
 
     sheet sheet_size;
     sheet_size.width = worksheet->width();
@@ -304,7 +305,7 @@ void MainWindow::addPerson()
 
 void MainWindow::addPartnership()
 {
-    AddPartnershipDialog addPartnership(input_cfg_partnerships, worksheet->getTreeObjectList());
+    AddPartnershipDialog addPartnership(input_cfg_partnerships, worksheet->getTreeObjectMap());
     if (addPartnership.exec() == QDialog::Accepted)
         worksheet->createPartnershipRelation(addPartnership.fetchFormInputs(), input_cfg_partnerships);
 }
@@ -312,8 +313,8 @@ void MainWindow::addPartnership()
 
 void MainWindow::addDescent()
 {
-    AddDescentDialog addDescent(input_cfg_descents, worksheet->getTreeObjectList(),
-                                worksheet->getPartnershipRelationList());
+    AddDescentDialog addDescent(input_cfg_descents, worksheet->getTreeObjectMap(),
+                                worksheet->getPartnershipRelationMap());
     if (addDescent.exec() == QDialog::Accepted)
         worksheet->createDescentRelation(addDescent.fetchFormInputs(), input_cfg_descents);
 }

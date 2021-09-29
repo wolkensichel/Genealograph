@@ -24,6 +24,8 @@ public:
     void removeDescentRelation();
     void removePartnershipRelation();
 
+    quint16 id;
+
     QList<TreeObject *> tree_objects;
     Relation* parents = nullptr;
     QList<Relation *> descents;
