@@ -97,12 +97,12 @@ void MainWindow::createActions()
     connect(actionSheetResize, &QAction::triggered, this, &MainWindow::resizeSheet);
 
     actionShowBiographyEditor = new QAction(tr("Show Biography Editor"), this);
-    actionShowBiographyEditor->setShortcut(QKeySequence(Qt::ALT + Qt::Key_9));
+    actionShowBiographyEditor->setShortcut(QKeySequence(Qt::ALT | Qt::Key_9));
     actionShowBiographyEditor->setCheckable(true);
     actionShowBiographyEditor->setChecked(true);
     connect(actionShowBiographyEditor, &QAction::triggered, this, &MainWindow::toggleBiographyEditor);
     actionShowRelationsEditor = new QAction(tr("Show Relations Editor"), this);
-    actionShowRelationsEditor->setShortcut(QKeySequence(Qt::ALT + Qt::Key_0));
+    actionShowRelationsEditor->setShortcut(QKeySequence(Qt::ALT | Qt::Key_0));
     actionShowRelationsEditor->setCheckable(true);
     actionShowRelationsEditor->setChecked(true);
     connect(actionShowRelationsEditor, &QAction::triggered, this, &MainWindow::toggleRelationsEditor);

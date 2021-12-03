@@ -13,8 +13,8 @@
 <context>
     <name>AddPartnershipDialog</name>
     <message>
-        <location filename="addpartnershipdialog.cpp" line="89"/>
-        <location filename="addpartnershipdialog.cpp" line="90"/>
+        <location filename="addpartnershipdialog.cpp" line="92"/>
+        <location filename="addpartnershipdialog.cpp" line="93"/>
         <source>Select</source>
         <translation type="unfinished"></translation>
     </message>

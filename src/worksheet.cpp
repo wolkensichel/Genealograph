@@ -212,7 +212,7 @@ void WorkSheet::keyPressEvent(QKeyEvent *event)
                 tree_objects_for_removal.append(qgraphicsitem_cast<TreeObject *>(item)->content.id);
         removeTreeObjectDialog(tree_objects_for_removal);
     }
-    else if (event->key() == Qt::Key_A)
+    else if (event->key() == Qt::Key_A && event->modifiers() == Qt::CTRL)
     {
         foreach (TreeObject *treecard, tree_objects)
             treecard->setSelected(true);

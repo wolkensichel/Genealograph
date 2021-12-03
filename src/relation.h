@@ -33,13 +33,13 @@ public:
     PartnershipInfo *info_card;
     descent info_descent;
 
+    QPainterPath path;
+
 private:
     enum Mode {Upper, Lower};
     quint32 computePartnershipYOffset(Relation*);
     quint32 computeCombinedEdgeParents(Relation*, Mode);
     quint32 computeHoriztonalBranchYPos(quint32, Mode);
-
-    QPainterPath path;
 };
 
 #endif // RELATION_H

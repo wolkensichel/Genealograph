@@ -86,6 +86,12 @@ QString PartnershipInfo::typeSymbol(QString value)
 {
     if (value == "Married")
         value = QString(QChar(0x26AD));
+    else if (value == "Divorced")
+        value = QString(QChar(0x26AE));
+    else if (value == "Engaged")
+        value = QString(QChar(0x26AC));
+    else if (value == "Illegitimate or Common Law")
+        value = QString(QChar(0x26AF));
 
     return value;
 }
@@ -173,6 +179,11 @@ void PartnershipInfo::updatePartnershipInfo(QString key, QVariant datum)
 
     widget->adjustSize();
     setRect(-1, -1, widget->width()+1, widget->height()+1);
+
+    if (key == "Type")
+        partnership_relation->updatePosition();
+    else
+        updatePosition(partnership_relation->path.boundingRect().center());
 }
 
 
@@ -191,7 +202,7 @@ void PartnershipInfo::changeShowStatus(QString key, bool status)
 
     widget->adjustSize();
     setRect(-1, -1, widget->width()+1, widget->height()+1);
-    partnership_relation->updatePosition();
+    updatePosition(partnership_relation->path.boundingRect().center());
 }
 
 

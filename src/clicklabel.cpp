@@ -61,10 +61,6 @@ void ClickLabel::mousePressEvent(QMouseEvent *event)
     }
     else if (label_type == Content)
     {
-        /*tree_objects.first()->scene()->clearSelection();
-        tree_objects.first()->setSelected(true);
-        tree_objects.first()->updateBiographyEditor();
-        tree_objects.first()->updateRelationsEditor();*/
         foreach (Relation *partnership, tree_objects.first()->partnerships)
             if (partnership->tree_objects.first() == tree_objects.last() ||
                 partnership->tree_objects.last() == tree_objects.last())

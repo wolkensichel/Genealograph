@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QScrollArea>
+
 #include "data.h"
 
 

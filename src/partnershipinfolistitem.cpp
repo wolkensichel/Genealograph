@@ -55,6 +55,9 @@ void PartnershipInfoListItem::fillField(QString key, container_item item)
         {
             form_object.box_edit->addItem("");
             form_object.box_edit->addItem("Married");
+            form_object.box_edit->addItem("Divorced");
+            form_object.box_edit->addItem("Engaged");
+            form_object.box_edit->addItem("Illegitimate or Common Law");
         }
         form_object.box_edit->setCurrentText(item.value.toByteArray());
         layout->addWidget(form_object.box_edit);

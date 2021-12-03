@@ -66,6 +66,9 @@ void AddPartnershipDialog::initializeInputs()
             {
                 form_object.box_edit->addItem("");
                 form_object.box_edit->addItem("Married");
+                form_object.box_edit->addItem("Divorced");
+                form_object.box_edit->addItem("Engaged");
+                form_object.box_edit->addItem("Illegitimate or Common Law");
             }
             layout->addRow(key + ":", form_object.box_edit);
         }

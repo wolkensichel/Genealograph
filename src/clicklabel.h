@@ -2,6 +2,7 @@
 #define CLICKLABEL_H
 
 #include <QLabel>
+
 #include "relationseditor.h"
 
 class TreeObject;

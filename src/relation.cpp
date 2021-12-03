@@ -60,7 +60,8 @@ void Relation::updatePosition()
         path.lineTo(tree_objects[1]->pos().x() + tree_objects[1]->rect().center().x(),
                     tree_objects[1]->pos().y() + y_off - 2);
 
-        if (info_card->content.items["Type"].value == "Married") {
+        if (info_card->content.items["Type"].value == "Married" ||
+            info_card->content.items["Type"].value == "Divorced") {
             path.moveTo(tree_objects[1]->pos().x() + tree_objects[1]->rect().center().x(),
                         tree_objects[1]->pos().y() + y_off + 2);
             path.lineTo(tree_objects[0]->pos().x() + tree_objects[0]->rect().center().x(),
