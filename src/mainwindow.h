@@ -28,6 +28,7 @@ public:
     QScrollArea *scrollarea;
 
 private:
+    void defineDataItems();
     void createActions();
     void createMenu();
     void createDockWidgets();
@@ -36,6 +37,7 @@ private:
     save_data collectWorksheetData();
     void setupSheet();
     void prepareNewSheet(sheet);
+
     void newFile();
     void openFile();
     void saveFile();
@@ -49,7 +51,8 @@ private:
 
     void resizeSheet();
 
-    void defineDataItems();
+    void toggleBiographyEditor();
+    void toggleRelationsEditor();
 
     QAction *actionNewFile;
     QAction *actionOpenFile;
@@ -64,9 +67,13 @@ private:
 
     QAction *actionSheetResize;
 
+    QAction *actionShowBiographyEditor;
+    QAction *actionShowRelationsEditor;
+
     QMenu *menuFile;
     QMenu *menuCreate;
     QMenu *menuWorksheet;
+    QMenu *menuWindows;
 
     WorkSheet *worksheet;
     QGraphicsView *view = nullptr;
@@ -82,6 +89,8 @@ private:
 
 public slots:
     void scrollToItem();
+    void setBiographyEditorWindowCheckbox();
+    void setRelationsEditorWindowCheckbox();
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;

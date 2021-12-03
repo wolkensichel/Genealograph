@@ -18,6 +18,7 @@ set(PROJECT_SOURCES
     relationslistitem.cpp
     partnershipinfolistitem.cpp
     clicklabel.cpp
+    dockwidget.cpp
     ${TS_FILES}
 )
 

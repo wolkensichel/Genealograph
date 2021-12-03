@@ -9,6 +9,7 @@
 #include "adddescentdialog.h"
 #include "printsheetdialog.h"
 #include "worksheet.h"
+#include "dockwidget.h"
 #include "biographyeditor.h"
 #include "relationseditor.h"
 
@@ -16,9 +17,9 @@
 MainWindow::MainWindow(QWidget *parent)
 {
     defineDataItems();
+    createDockWidgets();
     createActions();
     createMenu();
-    createDockWidgets();
     createWorkSheet();
     save_file = "";
     //zoom_in_factor = 1.25;
@@ -94,6 +95,17 @@ void MainWindow::createActions()
     actionSheetResize = new QAction(tr("Resize"), this);
     actionSheetResize->setShortcut(QKeySequence(Qt::ALT | Qt::Key_M));
     connect(actionSheetResize, &QAction::triggered, this, &MainWindow::resizeSheet);
+
+    actionShowBiographyEditor = new QAction(tr("Show Biography Editor"), this);
+    actionShowBiographyEditor->setShortcut(QKeySequence(Qt::ALT + Qt::Key_9));
+    actionShowBiographyEditor->setCheckable(true);
+    actionShowBiographyEditor->setChecked(true);
+    connect(actionShowBiographyEditor, &QAction::triggered, this, &MainWindow::toggleBiographyEditor);
+    actionShowRelationsEditor = new QAction(tr("Show Relations Editor"), this);
+    actionShowRelationsEditor->setShortcut(QKeySequence(Qt::ALT + Qt::Key_0));
+    actionShowRelationsEditor->setCheckable(true);
+    actionShowRelationsEditor->setChecked(true);
+    connect(actionShowRelationsEditor, &QAction::triggered, this, &MainWindow::toggleRelationsEditor);
 }
 
 
@@ -114,21 +126,27 @@ void MainWindow::createMenu()
 
     menuWorksheet = menuBar()->addMenu(tr("&Worksheet"));
     menuWorksheet->addAction(actionSheetResize);
+
+    menuWindows = menuBar()->addMenu(tr("&Windows"));
+    menuWindows->addAction(actionShowBiographyEditor);
+    menuWindows->addAction(actionShowRelationsEditor);
 }
 
 
 void MainWindow::createDockWidgets()
 {
-    dock_biography = new QDockWidget("Biography", this);
+    dock_biography = new DockWidget("Biography", this);
     dock_biography->setAllowedAreas(Qt::RightDockWidgetArea|Qt::LeftDockWidgetArea);
     addDockWidget(Qt::RightDockWidgetArea, dock_biography);
+    connect(dock_biography, SIGNAL(closed()), this, SLOT(setBiographyEditorWindowCheckbox()));
 
     biography_editor = new BiographyEditor;
     dock_biography->setWidget(biography_editor);
 
-    dock_relations = new QDockWidget("Relations", this);
+    dock_relations = new DockWidget("Relations", this);
     dock_relations->setAllowedAreas(Qt::RightDockWidgetArea|Qt::LeftDockWidgetArea);
     addDockWidget(Qt::RightDockWidgetArea, dock_relations);
+    connect(dock_relations, SIGNAL(closed()), this, SLOT(setRelationsEditorWindowCheckbox()));
 
     relations_editor = new RelationsEditor;
     dock_relations->setWidget(relations_editor);
@@ -279,18 +297,21 @@ void MainWindow::quit()
 {
     QMessageBox msg_box;
     msg_box.setText(tr("Do you want to save the current document before you quit?"));
-    msg_box.setStandardButtons(QMessageBox::Save | QMessageBox::Close);
-    QAbstractButton *close_button = msg_box.button(QMessageBox::Close);
-    close_button->setText("Quit");
+    msg_box.setStandardButtons(QMessageBox::Save | QMessageBox::Cancel | QMessageBox::Ok);
+    QAbstractButton *cancel_button = msg_box.button(QMessageBox::Cancel);
+    cancel_button->hide();
+    QAbstractButton *quit_button = msg_box.button(QMessageBox::Ok);
+    quit_button->setText("Quit");
     msg_box.setDefaultButton(QMessageBox::Save);
 
     switch (msg_box.exec()) {
-      case QMessageBox::Save:
-          save_file = "";
-          saveFile();
-      case QMessageBox::Close:
-          QCoreApplication::quit();
-          break;
+        case QMessageBox::Save:
+            save_file = "";
+            saveFile();
+        case QMessageBox::Ok:
+            QCoreApplication::quit();
+        default:
+            break;
     }
 }
 
@@ -329,6 +350,39 @@ void MainWindow::resizeSheet()
         worksheet->setSceneRect(0, 0, size.width, size.height);
         view->resize(worksheet->width()+2*view->frameWidth(), worksheet->height()+2*view->frameWidth());
     }
+}
+
+
+void MainWindow::toggleBiographyEditor()
+{
+
+    if (actionShowBiographyEditor->isChecked())
+        restoreDockWidget(dock_biography);
+    else
+        removeDockWidget(dock_biography);
+}
+
+
+void MainWindow::toggleRelationsEditor()
+{
+    if (actionShowRelationsEditor->isChecked())
+        restoreDockWidget(dock_relations);
+    else
+        removeDockWidget(dock_relations);
+}
+
+
+void MainWindow::setBiographyEditorWindowCheckbox()
+{
+    removeDockWidget(dock_biography);
+    actionShowBiographyEditor->setChecked(false);
+}
+
+
+void MainWindow::setRelationsEditorWindowCheckbox()
+{
+    removeDockWidget(dock_relations);
+    actionShowRelationsEditor->setChecked(false);
 }
 
 
