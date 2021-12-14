@@ -66,7 +66,7 @@ private:
     QAction *actionAddPartnership;
     QAction *actionAddDescent;
 
-    QAction *actionSheetResize;
+    QAction *actionResizeSheet;
 
     QAction *actionShowBiographyEditor;
     QAction *actionShowRelationsEditor;
@@ -74,7 +74,7 @@ private:
     QMenu *menuFile;
     QMenu *menuCreate;
     QMenu *menuWorksheet;
-    QMenu *menuWindows;
+    QMenu *menuWindow;
 
     WorkSheet *worksheet;
     QGraphicsView *view = nullptr;

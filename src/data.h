@@ -19,13 +19,13 @@ struct container_item {
     QString form_type;
     bool show;
 
-    friend QDataStream & operator << (QDataStream &stream, const container_item item) {
+    friend QDataStream& operator << (QDataStream &stream, const container_item item) {
         stream << item.value;
         stream << item.form_type;
         stream << item.show;
         return stream;
     }
-    friend QDataStream & operator >> (QDataStream &stream, container_item &item) {
+    friend QDataStream& operator >> (QDataStream &stream, container_item &item) {
         stream >> item.value;
         stream >> item.form_type;
         stream >> item.show;

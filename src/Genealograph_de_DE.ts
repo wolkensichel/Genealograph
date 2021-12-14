@@ -41,6 +41,10 @@
     </message>
     <message>
         <location filename="iohandler.cpp" line="20"/>
+        <source>Generations File (*.geg);;All Files (*)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="iohandler.cpp" line="71"/>
         <source>Generations File (*.gen);;All Files (*)</source>
         <translation type="unfinished"></translation>
@@ -82,11 +86,6 @@
     <message>
         <location filename="mainwindow.cpp" line="72"/>
         <source>&amp;Save</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="130"/>
-        <source>&amp;Windows</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -142,6 +141,11 @@
     <message>
         <location filename="mainwindow.cpp" line="81"/>
         <source>&amp;Quit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="130"/>
+        <source>&amp;Window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

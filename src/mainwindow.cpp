@@ -14,7 +14,7 @@
 #include "relationseditor.h"
 
 
-MainWindow::MainWindow(QWidget *parent)
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
     defineDataItems();
     createDockWidgets();
@@ -24,6 +24,11 @@ MainWindow::MainWindow(QWidget *parent)
     save_file = "";
     //zoom_in_factor = 1.25;
     //zoom_out_factor = 0.8;
+}
+
+
+MainWindow::~MainWindow()
+{
 }
 
 
@@ -53,11 +58,6 @@ void MainWindow::defineDataItems()
         {"Parents", "QComboBox", true},
         {"Child", "QComboBox", true}
     };
-}
-
-
-MainWindow::~MainWindow()
-{
 }
 
 
@@ -92,9 +92,9 @@ void MainWindow::createActions()
     actionAddDescent->setShortcut(QKeySequence(Qt::ALT | Qt::Key_R));
     connect(actionAddDescent, &QAction::triggered, this, &MainWindow::addDescent);
 
-    actionSheetResize = new QAction(tr("Resize"), this);
-    actionSheetResize->setShortcut(QKeySequence(Qt::ALT | Qt::Key_M));
-    connect(actionSheetResize, &QAction::triggered, this, &MainWindow::resizeSheet);
+    actionResizeSheet = new QAction(tr("Resize"), this);
+    actionResizeSheet->setShortcut(QKeySequence(Qt::ALT | Qt::Key_M));
+    connect(actionResizeSheet, &QAction::triggered, this, &MainWindow::resizeSheet);
 
     actionShowBiographyEditor = new QAction(tr("Show Biography Editor"), this);
     actionShowBiographyEditor->setShortcut(QKeySequence(Qt::ALT | Qt::Key_9));
@@ -125,11 +125,11 @@ void MainWindow::createMenu()
     menuCreate->addAction(actionAddDescent);
 
     menuWorksheet = menuBar()->addMenu(tr("&Worksheet"));
-    menuWorksheet->addAction(actionSheetResize);
+    menuWorksheet->addAction(actionResizeSheet);
 
-    menuWindows = menuBar()->addMenu(tr("&Windows"));
-    menuWindows->addAction(actionShowBiographyEditor);
-    menuWindows->addAction(actionShowRelationsEditor);
+    menuWindow = menuBar()->addMenu(tr("&Window"));
+    menuWindow->addAction(actionShowBiographyEditor);
+    menuWindow->addAction(actionShowRelationsEditor);
 }
 
 

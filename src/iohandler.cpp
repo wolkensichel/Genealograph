@@ -9,7 +9,7 @@
 IOHandler::IOHandler()
 {
     //setDefaultSuffix("gen"); // not working on Linux
-    suffix = ".gen";
+    suffix = ".geg";
 }
 
 
@@ -17,7 +17,7 @@ bool IOHandler::openFromFile(load_data &file_data, QString &save_file)
 {
     QString file_name = getOpenFileName(this,
         tr("Open File"), "/home/wolkensichel/",
-        tr("Generations File (*.gen);;All Files (*)"));
+        tr("Generations File (*.geg);;All Files (*)"));
 
     if (file_name.isEmpty())
         return false;
@@ -80,7 +80,6 @@ void IOHandler::saveToFile(save_data &worksheet_data, QString &save_file)
 void IOHandler::store(QFile &file, save_data &worksheet_data)
 {
     QDataStream out(&file);
-    out.setVersion(QDataStream::Qt_5_15);
 
     QString indicator = QString("<SHT>");
     out << indicator << worksheet_data.worksheet.width << worksheet_data.worksheet.height;
@@ -109,7 +108,6 @@ void IOHandler::store(QFile &file, save_data &worksheet_data)
 bool IOHandler::load(QFile &file, load_data &file_data)
 {
     QDataStream in(&file);
-    in.setVersion(QDataStream::Qt_5_15);
 
     QString indicator;
     in >> indicator;
