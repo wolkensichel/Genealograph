@@ -1,6 +1,8 @@
 # Genealograph
 A Qt-based family tree creator.
 
+<img src="images/example.png" alt="drawing" width="800"/>
+
 ## Build
 Enter the project directory and run:
 ```
